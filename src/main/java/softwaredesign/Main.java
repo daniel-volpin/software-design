@@ -1,7 +1,23 @@
 package softwaredesign;
 
-public class Main {
-    public static void main (String[] args){
-        System.out.println("Welcome to Software Design");
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+public class Main extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("/Scenes/mainPage.fxml"));
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }

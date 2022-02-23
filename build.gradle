@@ -9,8 +9,18 @@ sourceCompatibility = 11
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
+    implementation name: 'javafx.base'
+    implementation name: 'javafx.controls'
+    implementation name: 'javafx.fxml'
+    implementation name: 'javafx.graphics'
+    implementation name: 'javafx.media'
+    implementation name: 'javafx.web'
+
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 }
