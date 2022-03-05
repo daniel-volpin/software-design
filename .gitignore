@@ -1,5 +1,2 @@
-
-.gradle/buildOutputCleanup/buildOutputCleanup.lock
-.gradle/6.8.1/fileHashes/fileHashes.lock
-.gradle/6.8.1/executionHistory/executionHistory.lock
 .idea/
+.gradle/
