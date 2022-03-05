@@ -25,6 +25,10 @@ dependencies {
 //    implementation name: 'javafx.web'
 
     implementation name: 'GPXParser'
+    implementation group: 'com.dlsc', name: 'GMapsFX', version: '11.0.6'
+    implementation group: 'com.gluonhq', name: 'charm-glisten', version: '6.1.0'
+
+    implementation name: 'com'
 
     compile 'com.jfoenix:jfoenix:9.0.10'
 
