@@ -10,7 +10,8 @@ sourceCompatibility = 11
 repositories {
     mavenCentral()
     flatDir {
-        dirs 'libs'
+        dirs 'lib'
+        dirs 'lib/javafx'
     }
 }
 
@@ -21,6 +22,7 @@ dependencies {
     implementation name: 'javafx.graphics'
     implementation name: 'javafx.media'
     implementation name: 'javafx.web'
+    implementation name: 'GPXParser'
 
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 }
