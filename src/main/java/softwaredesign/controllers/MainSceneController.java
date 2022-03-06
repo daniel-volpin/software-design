@@ -6,12 +6,18 @@ import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class MainSceneController {
 
@@ -43,6 +49,9 @@ public class MainSceneController {
     @FXML
     private Slider sliderZoom;
 
+    private Marker[] trackCoordinates;
+    private CoordinateLine trackLine;
+
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
     }
@@ -70,6 +79,17 @@ public class MainSceneController {
                 afterMapIsInitialized();
             }
         });
+
+//        Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
+
+        Coordinate coordOne = new Coordinate(52.3676, 4.9041);
+        Coordinate coordTwo = new Coordinate(52.3663, 4.9008);
+        Coordinate coordThree = new Coordinate(52.3663, 4.9100);
+
+        Coordinate[] myCoordinates = {coordOne, coordTwo, coordThree};
+
+        trackLine = new CoordinateLine(myCoordinates);
+        trackLine.setColor(Color.DARKRED).setVisible(true);
 
         setupEventHandlers();
 
@@ -109,7 +129,7 @@ public class MainSceneController {
             mapView.setExtent(event.getExtent());
         });
 
-        mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
+//        mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
 
         logger.trace("map handlers initialized");
     }
@@ -156,6 +176,10 @@ public class MainSceneController {
         // start at the harbour with default zoom
         mapView.setZoom(ZOOM_DEFAULT);
         mapView.setCenter(amsterdamCenter);
+
+
+//        mapView.addMarker(testCoordinate);
+        mapView.addCoordinateLine(trackLine);
 
         // now enable the controls
         setControlsDisable(false);
