@@ -2,33 +2,27 @@ package softwaredesign.controllers;
 
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
-
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
 import org.alternativevision.gpx.beans.Track;
-import org.alternativevision.gpx.beans.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import softwaredesign.Metrics;
+
+import softwaredesign.entities.Metrics;
+import softwaredesign.helperclasses.MinMaxValue;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public class MainSceneController {
 
@@ -36,13 +30,16 @@ public class MainSceneController {
     private static final Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
     /** some coordinates from around town. */
-    private static final Coordinate amsterdamCenter = new Coordinate(52.3676, 4.9041);
+    private static Coordinate centerPoint = new Coordinate(52.086765, 4.3764505);
 
     /** default zoom value. */
     private static final int ZOOM_DEFAULT = 14;
 
     /** the markers. */
     private final Marker markerClick;
+
+    /** Need this variable across various methods */
+    private CoordinateLine trackLine;
 
     /** button to set the map's zoom. */
     @FXML
@@ -60,10 +57,10 @@ public class MainSceneController {
     @FXML
     private Slider sliderZoom;
 
-
-    /** Need this variable across various methods */
-    private CoordinateLine trackLine;
-
+    private Double minLat;
+    private Double maxLat;
+    private Double minLon;
+    private Double maxLon;
 
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
@@ -99,7 +96,7 @@ public class MainSceneController {
         try {
             in = new FileInputStream("src/testfiles/testfile1.gpx");
         } catch (java.io.FileNotFoundException e) {
-            System.out.println("ERROR: Could not find GPX file");
+            logger.trace("ERROR: Could not find GPX file");
             return;
         }
 
@@ -107,26 +104,43 @@ public class MainSceneController {
         GPXParser p = new GPXParser();
         GPX gpx = p.parseGPX(in);
 
+
         HashSet<Track> tracks = gpx.getTracks();
         if (tracks.size() == 0) {
-            System.out.println("ERROR: There are no tracks to visualize in the provided GPX file");
+            logger.trace("ERROR: There are no tracks to visualize in the provided GPX file");
             return;
         }
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = {};
         for (Track track : tracks) {
-            Metrics metrics =  new Metrics(track);
+            Metrics metrics = new Metrics(track);
             trackCoordinates = metrics.getCoordinates();
             break; // Only interested in the first track (which is probably the only track anyway)
         }
+
+        /** extract latitude and longitude coordinates*/
+        Double[] latCoordinates = new Double[trackCoordinates.length];
+        Double[] longCoordinates = new Double[trackCoordinates.length];
+        int i = 0;
+        for (Coordinate coordinate : trackCoordinates) {
+            latCoordinates[i] = coordinate.getLatitude();
+            longCoordinates[i] = coordinate.getLongitude();
+            i++;
+        }
+
+        /** created a helper class called MinMaxValue*/
+        maxLat = MinMaxValue.findMaxLat(latCoordinates);
+        minLat = MinMaxValue.findMinLat(latCoordinates);
+        maxLon = MinMaxValue.findMaxLong(longCoordinates);
+        minLon = MinMaxValue.findMinLong(longCoordinates);
+
+        centerPoint = new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
 
         trackLine = new CoordinateLine(trackCoordinates);
         trackLine.setColor(Color.ORANGERED).setVisible(true);
         // How to make a marker:
         // Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
-
-
 
         setupEventHandlers();
 
@@ -211,10 +225,9 @@ public class MainSceneController {
         logger.debug("setting center and enabling controls...");
         // start at the harbour with default zoom
         mapView.setZoom(ZOOM_DEFAULT);
-        mapView.setCenter(amsterdamCenter);
+        mapView.setCenter(centerPoint);
 
-
-//        mapView.addMarker(testCoordinate);
+        // mapView.addMarker(testCoordinate);
         mapView.addCoordinateLine(trackLine);
 
 

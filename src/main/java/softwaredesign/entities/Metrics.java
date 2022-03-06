@@ -1,4 +1,4 @@
-package softwaredesign;
+package softwaredesign.entities;
 
 import com.sothawo.mapjfx.Coordinate;
 import org.alternativevision.gpx.beans.Track;
