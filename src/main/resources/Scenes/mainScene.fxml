@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2015-2020 Peter-Josef Meisch (pj.meisch@sothawo.com)
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+       http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<?import com.sothawo.mapjfx.MapView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+            prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="softwaredesign.controllers.MainSceneController">
+    <top>
+        <HBox fx:id="topControls" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="buttonZoom" text="Zoom 14"/>
+                <Slider fx:id="sliderZoom" blockIncrement="1.0" majorTickUnit="7.0" max="28.0" minorTickCount="6"
+                        showTickLabels="true" showTickMarks="true" snapToTicks="true" value="14.0" HBox.hgrow="ALWAYS"/>
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            </padding>
+        </HBox>
+    </top>
+    <center>
+        <MapView fx:id="mapView" BorderPane.alignment="CENTER"/>
+    </center>
+    <bottom>
+    </bottom>
+    <left>
+        <VBox style="-fx-background-color: #C1BBDD;" BorderPane.alignment="CENTER">
+            <children>
+                <ImageView fitHeight="49.0" fitWidth="166.0">
+                    <image>
+                        <Image url="/VU-logo.png" />
+                    </image>
+                </ImageView>
+                <Pane prefHeight="159.0" prefWidth="137.0">
+                    <children>
+                        <Label layoutX="18.0" layoutY="53.0" text="AerobixTracker" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </Pane>
+            </children>
+        </VBox>
+    </left>
+</BorderPane>
