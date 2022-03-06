@@ -14,9 +14,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+import org.alternativevision.gpx.GPXParser;
+import org.alternativevision.gpx.beans.GPX;
+import org.alternativevision.gpx.beans.Track;
+import org.alternativevision.gpx.beans.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
+import softwaredesign.Metrics;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class MainSceneController {
@@ -49,8 +60,10 @@ public class MainSceneController {
     @FXML
     private Slider sliderZoom;
 
-    private Marker[] trackCoordinates;
+
+    /** Need this variable across various methods */
     private CoordinateLine trackLine;
+
 
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
@@ -63,7 +76,7 @@ public class MainSceneController {
      * @param projection
      *     the projection to use in the map.
      */
-    public void initMapAndControls(Projection projection) {
+    public void initMapAndControls(Projection projection) throws ParserConfigurationException, IOException, SAXException {
         logger.trace("begin initialize");
 
         // set the controls to disabled, this will be changed when the MapView is intialized
@@ -80,16 +93,40 @@ public class MainSceneController {
             }
         });
 
-//        Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
 
-        Coordinate coordOne = new Coordinate(52.3676, 4.9041);
-        Coordinate coordTwo = new Coordinate(52.3663, 4.9008);
-        Coordinate coordThree = new Coordinate(52.3663, 4.9100);
+        /** Get the GPX file */
+        FileInputStream in;
+        try {
+            in = new FileInputStream("src/testfiles/testfile1.gpx");
+        } catch (java.io.FileNotFoundException e) {
+            System.out.println("ERROR: Could not find GPX file");
+            return;
+        }
 
-        Coordinate[] myCoordinates = {coordOne, coordTwo, coordThree};
+        /** Parse the GPX file */
+        GPXParser p = new GPXParser();
+        GPX gpx = p.parseGPX(in);
 
-        trackLine = new CoordinateLine(myCoordinates);
-        trackLine.setColor(Color.DARKRED).setVisible(true);
+        HashSet<Track> tracks = gpx.getTracks();
+        if (tracks.size() == 0) {
+            System.out.println("ERROR: There are no tracks to visualize in the provided GPX file");
+            return;
+        }
+
+        /** Make a CoordinateLine for plotting */
+        Coordinate[] trackCoordinates = {};
+        for (Track track : tracks) {
+            Metrics metrics =  new Metrics(track);
+            trackCoordinates = metrics.getCoordinates();
+            break; // Only interested in the first track (which is probably the only track anyway)
+        }
+
+        trackLine = new CoordinateLine(trackCoordinates);
+        trackLine.setColor(Color.ORANGERED).setVisible(true);
+        // How to make a marker:
+        // Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
+
+
 
         setupEventHandlers();
 
@@ -99,7 +136,6 @@ public class MainSceneController {
                 .showZoomControls(false)
                 .build());
         logger.debug("initialization finished");
-
     }
 
     /**
@@ -180,6 +216,7 @@ public class MainSceneController {
 
 //        mapView.addMarker(testCoordinate);
         mapView.addCoordinateLine(trackLine);
+
 
         // now enable the controls
         setControlsDisable(false);
