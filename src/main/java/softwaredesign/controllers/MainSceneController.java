@@ -113,15 +113,14 @@ public class MainSceneController {
         Track track = trackArray[0]; // Only interested in the first track (which is probably the only track anyway)
         Metrics metrics = new Metrics(track);
 
-        /** extract latitude and longitude coordinates*/
+        /** Find minimum and maximum latitude and longitude coordinates*/
         Double[] latCoordinates = metrics.getLatitudes();
         Double[] longCoordinates = metrics.getLongitudes();
 
-        /** created a helper class called MinMaxValue*/
-        maxLat = MinMaxValue.findMax(latCoordinates);
-        minLat = MinMaxValue.findMin(latCoordinates);
-        maxLon = MinMaxValue.findMax(longCoordinates);
-        minLon = MinMaxValue.findMin(longCoordinates);
+        maxLat = Metrics.findMax(latCoordinates);
+        minLat = Metrics.findMin(latCoordinates);
+        maxLon = Metrics.findMax(longCoordinates);
+        minLon = Metrics.findMin(longCoordinates);
 
         centerPoint = new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
 
