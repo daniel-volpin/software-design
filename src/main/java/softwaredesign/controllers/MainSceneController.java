@@ -104,39 +104,29 @@ public class MainSceneController {
         GPXParser p = new GPXParser();
         GPX gpx = p.parseGPX(in);
 
-
         HashSet<Track> tracks = gpx.getTracks();
         if (tracks.size() == 0) {
             logger.trace("ERROR: There are no tracks to visualize in the provided GPX file");
             return;
         }
-
-        /** Make a CoordinateLine for plotting */
-        Coordinate[] trackCoordinates = {};
-        for (Track track : tracks) {
-            Metrics metrics = new Metrics(track);
-            trackCoordinates = metrics.getCoordinates();
-            break; // Only interested in the first track (which is probably the only track anyway)
-        }
+        Track[] trackArray = tracks.toArray(new Track[tracks.size()]);
+        Track track = trackArray[0]; // Only interested in the first track (which is probably the only track anyway)
+        Metrics metrics = new Metrics(track);
 
         /** extract latitude and longitude coordinates*/
-        Double[] latCoordinates = new Double[trackCoordinates.length];
-        Double[] longCoordinates = new Double[trackCoordinates.length];
-        int i = 0;
-        for (Coordinate coordinate : trackCoordinates) {
-            latCoordinates[i] = coordinate.getLatitude();
-            longCoordinates[i] = coordinate.getLongitude();
-            i++;
-        }
+        Double[] latCoordinates = metrics.getLatitudes();
+        Double[] longCoordinates = metrics.getLongitudes();
 
         /** created a helper class called MinMaxValue*/
-        maxLat = MinMaxValue.findMaxLat(latCoordinates);
-        minLat = MinMaxValue.findMinLat(latCoordinates);
-        maxLon = MinMaxValue.findMaxLong(longCoordinates);
-        minLon = MinMaxValue.findMinLong(longCoordinates);
+        maxLat = MinMaxValue.findMax(latCoordinates);
+        minLat = MinMaxValue.findMin(latCoordinates);
+        maxLon = MinMaxValue.findMax(longCoordinates);
+        minLon = MinMaxValue.findMin(longCoordinates);
 
         centerPoint = new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
 
+        /** Make a CoordinateLine for plotting */
+        Coordinate[] trackCoordinates = metrics.getCoordinates();
         trackLine = new CoordinateLine(trackCoordinates);
         trackLine.setColor(Color.ORANGERED).setVisible(true);
         // How to make a marker:

@@ -37,6 +37,14 @@ public class Metrics {
         }
     }
 
+    public Double[] getLatitudes() {
+        return this.latitudes;
+    }
+    public Double[] getLongitudes() {
+        return this.longitudes;
+    }
+
+
     public Coordinate[] getCoordinates() {
         Coordinate[] coordinates = new Coordinate[latitudes.length];
         for (int i = 0; i < latitudes.length; i++) {

@@ -2,44 +2,23 @@ package softwaredesign.helperclasses;
 
 public class MinMaxValue {
 
-    public static Double findMaxLat(Double[] latCoordinates) {
-        Double maxLat = latCoordinates[0];
-        for (int i = 1; i < latCoordinates.length; i++){
-            if (latCoordinates[i] > maxLat) {
-                maxLat = latCoordinates[i];
+    public static Double findMax(Double[] values) {
+        Double maxValue = values[0];
+        for (int i = 1; i < values.length; i++){
+            if (values[i] > maxValue) {
+                maxValue = values[i];
             }
         }
-        return maxLat;
+        return maxValue;
     }
 
-    public static Double findMaxLong(Double[] longCoordinates) {
-        Double maxLon = longCoordinates[0];
-        for (int i = 1; i < longCoordinates.length; i++){
-            if (longCoordinates[i] > maxLon) {
-                maxLon = longCoordinates[i];
+    public static Double findMin(Double[] values) {
+        Double minValue = values[0];
+        for (int i = 1; i < values.length; i++){
+            if (values[i] < minValue) {
+                minValue = values[i];
             }
         }
-        return maxLon;
+        return minValue;
     }
-
-    public static Double findMinLat(Double[] latCoordinates) {
-        Double minLat = latCoordinates[0];
-        for (int i = 1; i < latCoordinates.length; i++){
-            if (latCoordinates[i] < minLat) {
-                minLat = latCoordinates[i];
-            }
-        }
-        return minLat;
-    }
-
-    public static Double findMinLong(Double[] longCoordinates) {
-        Double minLong = longCoordinates[0];
-        for (int i = 1; i < longCoordinates.length; i++){
-            if (longCoordinates[i] < minLong) {
-                minLong = longCoordinates[i];
-            }
-        }
-        return minLong;
-    }
-
 }
