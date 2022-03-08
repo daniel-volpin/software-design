@@ -140,6 +140,8 @@ public class MainSceneController {
         // TODO: Make a pop-up on screen to request file.
         logger.info(requestMsg);
 
+        openGPXFile();
+
         FileInputStream in;
 
         try {
