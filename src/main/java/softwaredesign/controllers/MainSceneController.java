@@ -15,13 +15,16 @@ import org.alternativevision.gpx.beans.GPX;
 import org.alternativevision.gpx.beans.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.Metrics;
 import softwaredesign.helperclasses.Calc;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashSet;
 
 
@@ -97,10 +100,17 @@ public class MainSceneController {
             }
         });
 
+        setupEventHandlers();
 
-        String requestMsg = "Please provide a GPX File to unlock functionality";
-        FileInputStream gpxFile = requestGPXFile(requestMsg);
-        Track track = getTrackFromFile(gpxFile);
+        logger.trace("start map initialization");
+        mapView.initialize(Configuration.builder()
+                .projection(projection)
+                .showZoomControls(false)
+                .build());
+        logger.debug("initialization finished");
+    }
+
+    private void initializeActivity(Track track) {
         Activity newActivity = new Activity(track);
 
         Metrics routeData = newActivity.getRouteData();
@@ -113,14 +123,9 @@ public class MainSceneController {
         // How to make a marker:
         // Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
 
-        setupEventHandlers();
-
-        logger.trace("start map initialization");
-        mapView.initialize(Configuration.builder()
-                .projection(projection)
-                .showZoomControls(false)
-                .build());
-        logger.debug("initialization finished");
+        // mapView.addMarker(testCoordinate);
+        mapView.addCoordinateLine(trackLine);
+        mapView.setCenter(centerPoint);
     }
 
     /** Find minimum and maximum latitude and longitude coordinates*/
@@ -136,29 +141,29 @@ public class MainSceneController {
         return new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
     }
 
-    private FileInputStream requestGPXFile(String requestMsg) {
-        // TODO: Make a pop-up on screen to request file.
-        logger.info(requestMsg);
+//    private FileInputStream requestGPXFile(String requestMsg) {
+//        // TODO: Make a pop-up on screen to request file.
+//        logger.info(requestMsg);
+//
+//        openGPXFile();
+//
+//        FileInputStream in;
+//
+//        try {
+//            in = new FileInputStream("src/testfiles/testfile1.gpx");
+//        } catch (java.io.FileNotFoundException e) {
+//            logger.trace("ERROR: Could not find GPX file");
+//            return null;
+//        }
+//        return in;
+//    }
 
-        openGPXFile();
-
-        FileInputStream in;
-
-        try {
-            in = new FileInputStream("src/testfiles/testfile1.gpx");
-        } catch (java.io.FileNotFoundException e) {
-            logger.trace("ERROR: Could not find GPX file");
-            return null;
-        }
-        return in;
-    }
-
-    private Track getTrackFromFile(FileInputStream gpxFile) {
+    private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
         GPXParser p = new GPXParser();
-        String requestMsg;
-
-        while (true) {
-            try {
+//        String requestMsg;
+//
+//        while (true) {
+//            try {
                 GPX gpx = p.parseGPX(gpxFile);
                 HashSet<Track> tracks = gpx.getTracks();
                 // TODO: Multiple tracks --> trackHistory?
@@ -166,13 +171,13 @@ public class MainSceneController {
                     Track[] trackArray = tracks.toArray(new Track[0]);
                     return trackArray[0];
                 } else {
-                    requestMsg = "Please provide a GPX File with exactly one Track";
+                    throw new IOException("Please provide a GPX File with exactly one Track");
                 }
-            } catch (Exception e) {
-                requestMsg = "Could not parse the provided GPX File. Please provide a valid GPX File.";
-            }
-            gpxFile = requestGPXFile(requestMsg);
-        }
+//            } catch (Exception e) {
+//                requestMsg = "Could not parse the provided GPX File. Please provide a valid GPX File.";
+//            }
+//            gpxFile = requestGPXFile(requestMsg);
+//        }
     }
 
     /**
@@ -246,28 +251,26 @@ public class MainSceneController {
     private void afterMapIsInitialized() {
         logger.trace("map intialized");
         logger.debug("setting center and enabling controls...");
+
         // start at the harbour with default zoom
         mapView.setZoom(ZOOM_DEFAULT);
         mapView.setCenter(centerPoint);
-
-        // mapView.addMarker(testCoordinate);
-        mapView.addCoordinateLine(trackLine);
 
         // now enable the controls
         setControlsDisable(false);
     }
 
-    private FileInputStream setGPXFile(File file) {
-        FileInputStream in;
-
-        try {
-            in = new FileInputStream(file);
-        } catch (java.io.FileNotFoundException e) {
-            logger.trace("ERROR: Could not find GPX file");
-            return null;
-        }
-        return in;
-    }
+//    private FileInputStream setGPXFile(File file) {
+//        FileInputStream in;
+//
+//        try {
+//            in = new FileInputStream(file);
+//        } catch (java.io.FileNotFoundException e) {
+//            logger.trace("ERROR: Could not find GPX file");
+//            return null;
+//        }
+//        return in;
+//    }
 
     private void openGPXFile() {
         FileChooser fileChooser = new FileChooser();
@@ -275,8 +278,17 @@ public class MainSceneController {
 
         GPXBtn.setOnAction(event -> {
             File file = fileChooser.showOpenDialog(null);
-            setGPXFile(file);
-            System.out.println(file);
+            try {
+                FileInputStream gpxFile = new FileInputStream(file);
+                Track track = getTrackFromFile(gpxFile);
+                initializeActivity(track);
+            } catch (java.io.FileNotFoundException e) {
+                // TODO: What to do?
+                System.out.println("Please provide a file\n");
+                logger.trace("ERROR: Could not find GPX file");
+            } catch (Exception e) {
+                // TODO: What to do?;
+            }
         });
 
     }
