@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import softwaredesign.entities.Activity;
 import softwaredesign.entities.Metrics;
 import softwaredesign.helperclasses.Calc;
 
@@ -29,7 +30,7 @@ public class MainSceneController {
     /** logger for the class. */
     private static final Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
-    /** some coordinates from around town. */
+    /** Coordinate of Amsterdam city centre. */
     private static Coordinate centerPoint = new Coordinate(52.086765, 4.3764505);
 
     /** default zoom value. */
@@ -56,11 +57,6 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML
     private Slider sliderZoom;
-
-    private Double minLat;
-    private Double maxLat;
-    private Double minLon;
-    private Double maxLon;
 
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
@@ -91,49 +87,21 @@ public class MainSceneController {
         });
 
 
-        /** Get the GPX file */
-        FileInputStream in;
-        try {
-            in = new FileInputStream("src/testfiles/testfile1.gpx");
-        } catch (java.io.FileNotFoundException e) {
-            logger.trace("ERROR: Could not find GPX file");
-            return;
-        }
+        String requestMsg = "Please provide a GPX File to unlock functionality";
+        FileInputStream GPXFile = requestGPXFile(requestMsg);
+        Track track = getTrackFromFile(GPXFile);
+        Activity newActivity = new Activity(track);
 
-        /** Parse the GPX file */
-        GPXParser p = new GPXParser();
-        GPX gpx = p.parseGPX(in);
-
-        HashSet<Track> tracks = gpx.getTracks();
-        if (tracks.size() == 0) {
-            logger.trace("ERROR: There are no tracks to visualize in the provided GPX file");
-            return;
-        }
-        Track[] trackArray = tracks.toArray(new Track[0]);
-        Track track = trackArray[0]; // Only interested in the first track (which is probably the only track anyway)
-        Metrics metrics = new Metrics(track);
-
-        /** Find minimum and maximum latitude and longitude coordinates*/
-        Double[] latCoordinates = metrics.getLatitudes();
-        Double[] longCoordinates = metrics.getLongitudes();
-
-        maxLat = Calc.findMax(latCoordinates);
-        minLat = Calc.findMin(latCoordinates);
-        maxLon = Calc.findMax(longCoordinates);
-        minLon = Calc.findMin(longCoordinates);
-
-        centerPoint = new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
-
-        Double[] distances = metrics.getDistances();
-        System.out.println("\n\nTOTAL DISTANCE TRAVELLED:");
-        System.out.println(Calc.findSum(distances));
+        Metrics routeData = newActivity.getRouteData();
+        centerPoint = findRouteMiddle(routeData);
 
         /** Make a CoordinateLine for plotting */
-        Coordinate[] trackCoordinates = metrics.getCoordinates();
+        Coordinate[] trackCoordinates = routeData.getCoordinates();
         trackLine = new CoordinateLine(trackCoordinates);
         trackLine.setColor(Color.ORANGERED).setVisible(true);
         // How to make a marker:
         // Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
+
 
         setupEventHandlers();
 
@@ -143,6 +111,54 @@ public class MainSceneController {
                 .showZoomControls(false)
                 .build());
         logger.debug("initialization finished");
+    }
+
+
+    private Coordinate findRouteMiddle(Metrics routeData) {
+        /** Find minimum and maximum latitude and longitude coordinates*/
+        Double[] latCoordinates = routeData.getLatitudes();
+        Double[] longCoordinates = routeData.getLongitudes();
+
+        Double maxLat = Calc.findMax(latCoordinates);
+        Double minLat = Calc.findMin(latCoordinates);
+        Double maxLon = Calc.findMax(longCoordinates);
+        Double minLon = Calc.findMin(longCoordinates);
+
+        return new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
+    }
+
+    private FileInputStream requestGPXFile(String requestMsg) {
+        // TODO: Make a pop-up on screen to request file.
+        FileInputStream in;
+        try {
+            in = new FileInputStream("src/testfiles/testfile5.gpx");
+        } catch (java.io.FileNotFoundException e) {
+            logger.trace("ERROR: Could not find GPX file");
+            return null;
+        }
+        return in;
+    }
+
+    private Track getTrackFromFile(FileInputStream GPXFile) {
+        GPXParser p = new GPXParser();
+        String requestMsg;
+
+        while (true) {
+            try {
+                GPX gpx = p.parseGPX(GPXFile);
+                HashSet<Track> tracks = gpx.getTracks();
+                // TODO: Multiple tracks --> trackHistory?
+                if (tracks.size() != 1) {
+                    Track[] trackArray = tracks.toArray(new Track[0]);
+                    return trackArray[0];
+                } else {
+                    requestMsg = "Please provide a GPX File with exactly one Track";
+                }
+            } catch (Exception e) {
+                requestMsg = "Could not parse the provided GPX File. Please provide a valid GPX File.";
+            }
+            GPXFile = requestGPXFile(requestMsg);
+        }
     }
 
     /**
