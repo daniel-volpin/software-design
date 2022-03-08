@@ -109,7 +109,7 @@ public class MainSceneController {
             logger.trace("ERROR: There are no tracks to visualize in the provided GPX file");
             return;
         }
-        Track[] trackArray = tracks.toArray(new Track[tracks.size()]);
+        Track[] trackArray = tracks.toArray(new Track[0]);
         Track track = trackArray[0]; // Only interested in the first track (which is probably the only track anyway)
         Metrics metrics = new Metrics(track);
 
@@ -123,6 +123,10 @@ public class MainSceneController {
         minLon = Metrics.findMin(longCoordinates);
 
         centerPoint = new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
+
+        Double[] distances = metrics.getDistances();
+        System.out.println("\n\nTOTAL DISTANCE TRAVELLED:");
+        System.out.println(Metrics.findSum(distances));
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = metrics.getCoordinates();

@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Metrics {
-    private Date[] timeStamps;
-    private Double[] latitudes;
-    private Double[] longitudes;
-    private Double[] elevations;
+    private final Date[] timeStamps;
+    private final Double[] latitudes;
+    private final Double[] longitudes;
+    private final Double[] elevations;
 
     public Metrics(Track track) {
         ArrayList<Waypoint> wayPoints = track.getTrackPoints();
@@ -28,6 +28,9 @@ public class Metrics {
             latitudes[i] = waypoint.getLatitude();
             longitudes[i] = waypoint.getLongitude();
             elevations[i] = waypoint.getElevation();
+            if (elevations[i] == null) {
+                elevations[i] = elevations[i-1];
+            }
         }
     }
 
@@ -36,11 +39,23 @@ public class Metrics {
         Double[] velocities = new Double[nrWayPoints-1];
         Double[] distances = getDistances();
 
+        // Calculating velocities between every wayPoint seems to yield very volatile values (from 0.1 to 40.2 km/h)
+        // Solution: apply a 3-waypoint moving average; velocity[i] = avg velocity from i-1 to i+1
         for (int i = 0; i < nrWayPoints - 1; i++) {
-            long timeDifference_ms = timeStamps[i].getTime() - timeStamps[i+1].getTime();
-            // TODO: Convert to km/h
-            velocities[i] = distances[i] / timeDifference_ms;
+            int from = Math.max(i - 1, 0);
+            int to = Math.min(i + 1, nrWayPoints - 1);
+
+            long timeDifference_ms = timeStamps[to].getTime() - timeStamps[from].getTime();
+            Double timeDifferenceSec = timeDifference_ms / 1000.0;
+
+            Double threePointDistance = 0.0;
+            for (int j = from; j < to; j++) {
+                threePointDistance += distances[j];
+            }
+            double velocityMpS = threePointDistance / timeDifferenceSec;  // in Meters per Second
+            velocities[i] = velocityMpS * 3.6;                      // Convert m/s to km/h
         }
+
         return velocities;
     }
 
@@ -50,17 +65,31 @@ public class Metrics {
         for (int i = 0; i < nrWayPoints - 1; i++) {
             distances[i] = calculateDistance(i, i+1);
         }
+        // distances[i] stores the distance from wayPoint[i] to wayPoint[i+1]
         return distances;
     }
 
-    // TODO: calculateDistance
     private Double calculateDistance(int from, int to) {
-        // TODO: Haversine formula for calculating distance between geopoints
-//        latitudes[from];
-//        latitudes[to];
-//        longitudes[from];
-//        longitudes[to];
-        return 0.0;
+        final int RADIUS_EARTH = 6371; // in KM
+
+        double latDistance = Math.toRadians(latitudes[to] - latitudes[from]);
+        double lonDistance = Math.toRadians(longitudes[from] - longitudes[to]);
+
+        // Haversine formula for calculating distance between geopoints
+        double a = Math.pow(Math.sin(latDistance / 2), 2)
+                 + Math.pow(Math.sin(lonDistance / 2), 2)
+                 * Math.cos(Math.toRadians(latitudes[from])) * Math.cos(Math.toRadians(latitudes[to]));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double horDistanceKM = RADIUS_EARTH * c;
+        double horDistanceM = horDistanceKM * 1000; // Convert KM to Meters
+
+        double verDistanceM = elevations[from] - elevations[to];
+
+        // Pythagoras with vertical distance and horizontal distance
+        Double totalDistanceM = Math.sqrt( Math.pow(horDistanceM, 2) + Math.pow(verDistanceM, 2) );
+        return totalDistanceM;
     }
 
     public Coordinate[] getCoordinates() {
@@ -105,5 +134,13 @@ public class Metrics {
             }
         }
         return minValue;
+    }
+
+    public static Double findSum(Double[] values) {
+        Double sum = 0.0;
+        for (Double value : values) {
+            sum += value;
+        }
+        return sum;
     }
 }
