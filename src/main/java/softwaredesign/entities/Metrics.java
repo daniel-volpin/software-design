@@ -45,8 +45,8 @@ public class Metrics {
             int from = Math.max(i - 1, 0);
             int to = Math.min(i + 1, nrWayPoints - 1);
 
-            long timeDifference_ms = timeStamps[to].getTime() - timeStamps[from].getTime();
-            Double timeDifferenceSec = timeDifference_ms / 1000.0;
+            long timeDifferenceMilliSec = timeStamps[to].getTime() - timeStamps[from].getTime();
+            Double timeDifferenceSec = timeDifferenceMilliSec / 1000.0;
 
             Double threePointDistance = 0.0;
             for (int j = from; j < to; j++) {
@@ -88,8 +88,7 @@ public class Metrics {
         double verDistanceM = elevations[from] - elevations[to];
 
         // Pythagoras with vertical distance and horizontal distance
-        Double totalDistanceM = Math.sqrt( Math.pow(horDistanceM, 2) + Math.pow(verDistanceM, 2) );
-        return totalDistanceM;
+        return Math.sqrt( Math.pow(horDistanceM, 2) + Math.pow(verDistanceM, 2) );
     }
 
     public Coordinate[] getCoordinates() {

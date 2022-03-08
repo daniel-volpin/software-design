@@ -14,15 +14,12 @@ import org.alternativevision.gpx.beans.GPX;
 import org.alternativevision.gpx.beans.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.Metrics;
 import softwaredesign.helperclasses.Calc;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashSet;
 
 public class MainSceneController {
@@ -69,7 +66,7 @@ public class MainSceneController {
      * @param projection
      *     the projection to use in the map.
      */
-    public void initMapAndControls(Projection projection) throws ParserConfigurationException, IOException, SAXException {
+    public void initMapAndControls(Projection projection) {
         logger.trace("begin initialize");
 
         // set the controls to disabled, this will be changed when the MapView is intialized
@@ -88,8 +85,8 @@ public class MainSceneController {
 
 
         String requestMsg = "Please provide a GPX File to unlock functionality";
-        FileInputStream GPXFile = requestGPXFile(requestMsg);
-        Track track = getTrackFromFile(GPXFile);
+        FileInputStream gpxFile = requestGPXFile(requestMsg);
+        Track track = getTrackFromFile(gpxFile);
         Activity newActivity = new Activity(track);
 
         Metrics routeData = newActivity.getRouteData();
@@ -129,7 +126,8 @@ public class MainSceneController {
 
     private FileInputStream requestGPXFile(String requestMsg) {
         // TODO: Make a pop-up on screen to request file.
-        System.out.println(requestMsg);
+        logger.info(requestMsg);
+
         FileInputStream in;
         try {
             in = new FileInputStream("src/testfiles/testfile1.gpx");
@@ -140,13 +138,13 @@ public class MainSceneController {
         return in;
     }
 
-    private Track getTrackFromFile(FileInputStream GPXFile) {
+    private Track getTrackFromFile(FileInputStream gpxFile) {
         GPXParser p = new GPXParser();
         String requestMsg;
 
         while (true) {
             try {
-                GPX gpx = p.parseGPX(GPXFile);
+                GPX gpx = p.parseGPX(gpxFile);
                 HashSet<Track> tracks = gpx.getTracks();
                 // TODO: Multiple tracks --> trackHistory?
                 if (tracks.size() == 1) {
@@ -158,7 +156,7 @@ public class MainSceneController {
             } catch (Exception e) {
                 requestMsg = "Could not parse the provided GPX File. Please provide a valid GPX File.";
             }
-            GPXFile = requestGPXFile(requestMsg);
+            gpxFile = requestGPXFile(requestMsg);
         }
     }
 
