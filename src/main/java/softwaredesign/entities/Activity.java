@@ -13,10 +13,7 @@ public class Activity {
         routeData = new Metrics(track);
 
         // Testing distances calculation; Remove this
-        Double[] distances = routeData.getDistances();
-        System.out.println("\n\nTOTAL DISTANCE TRAVELLED:");
-        System.out.println(Calc.findSum(distances));
-        System.out.println("\n\n");
+        System.out.printf("\n\nTOTAL DISTANCE TRAVELLED:\n%.2f m\n\n", Calc.findSum(routeData.getDistances()));
     }
 
     public Metrics getRouteData() {

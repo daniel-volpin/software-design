@@ -129,9 +129,10 @@ public class MainSceneController {
 
     private FileInputStream requestGPXFile(String requestMsg) {
         // TODO: Make a pop-up on screen to request file.
+        System.out.println(requestMsg);
         FileInputStream in;
         try {
-            in = new FileInputStream("src/testfiles/testfile5.gpx");
+            in = new FileInputStream("src/testfiles/testfile1.gpx");
         } catch (java.io.FileNotFoundException e) {
             logger.trace("ERROR: Could not find GPX file");
             return null;
