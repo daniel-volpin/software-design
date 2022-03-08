@@ -47,7 +47,7 @@
                 </Pane>
             <Pane>
                 <VBox>
-                    <Button fx:id="GPXBtn" text="Upload GPX file"/>
+                    <Button fx:id="GPXBtn" onAction="#openGPXFile" text="Upload GPX file"/>
                     <Button fx:id="ProfileBtn" text="Profile"/>
                     <Button fx:id="SettingsBtn" text="Settings"/>
                 </VBox>

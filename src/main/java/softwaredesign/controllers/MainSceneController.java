@@ -260,18 +260,7 @@ public class MainSceneController {
         setControlsDisable(false);
     }
 
-//    private FileInputStream setGPXFile(File file) {
-//        FileInputStream in;
-//
-//        try {
-//            in = new FileInputStream(file);
-//        } catch (java.io.FileNotFoundException e) {
-//            logger.trace("ERROR: Could not find GPX file");
-//            return null;
-//        }
-//        return in;
-//    }
-
+    @FXML
     private void openGPXFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GPX Files", "*.gpx"));
