@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import softwaredesign.entities.Metrics;
-import softwaredesign.helperclasses.MinMaxValue;
+import softwaredesign.helperclasses.Calc;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
@@ -117,16 +117,16 @@ public class MainSceneController {
         Double[] latCoordinates = metrics.getLatitudes();
         Double[] longCoordinates = metrics.getLongitudes();
 
-        maxLat = Metrics.findMax(latCoordinates);
-        minLat = Metrics.findMin(latCoordinates);
-        maxLon = Metrics.findMax(longCoordinates);
-        minLon = Metrics.findMin(longCoordinates);
+        maxLat = Calc.findMax(latCoordinates);
+        minLat = Calc.findMin(latCoordinates);
+        maxLon = Calc.findMax(longCoordinates);
+        minLon = Calc.findMin(longCoordinates);
 
         centerPoint = new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
 
         Double[] distances = metrics.getDistances();
         System.out.println("\n\nTOTAL DISTANCE TRAVELLED:");
-        System.out.println(Metrics.findSum(distances));
+        System.out.println(Calc.findSum(distances));
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = metrics.getCoordinates();

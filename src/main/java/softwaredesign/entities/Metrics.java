@@ -53,7 +53,7 @@ public class Metrics {
                 threePointDistance += distances[j];
             }
             double velocityMpS = threePointDistance / timeDifferenceSec;  // in Meters per Second
-            velocities[i] = velocityMpS * 3.6;                      // Convert m/s to km/h
+            velocities[i] = velocityMpS * 3.6;                            // Convert m/s to km/h
         }
 
         return velocities;
@@ -114,33 +114,5 @@ public class Metrics {
 
     public Double[] getLongitudes() {
         return longitudes;
-    }
-
-    public static Double findMax(Double[] values) {
-        Double maxValue = values[0];
-        for (int i = 1; i < values.length; i++){
-            if (values[i] > maxValue) {
-                maxValue = values[i];
-            }
-        }
-        return maxValue;
-    }
-
-    public static Double findMin(Double[] values) {
-        Double minValue = values[0];
-        for (int i = 1; i < values.length; i++){
-            if (values[i] < minValue) {
-                minValue = values[i];
-            }
-        }
-        return minValue;
-    }
-
-    public static Double findSum(Double[] values) {
-        Double sum = 0.0;
-        for (Double value : values) {
-            sum += value;
-        }
-        return sum;
     }
 }
