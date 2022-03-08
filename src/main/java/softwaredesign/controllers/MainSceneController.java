@@ -148,7 +148,7 @@ public class MainSceneController {
                 GPX gpx = p.parseGPX(GPXFile);
                 HashSet<Track> tracks = gpx.getTracks();
                 // TODO: Multiple tracks --> trackHistory?
-                if (tracks.size() != 1) {
+                if (tracks.size() == 1) {
                     Track[] trackArray = tracks.toArray(new Track[0]);
                     return trackArray[0];
                 } else {
