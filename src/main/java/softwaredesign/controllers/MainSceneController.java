@@ -8,19 +8,22 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
 import org.alternativevision.gpx.beans.Track;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.Metrics;
 import softwaredesign.helperclasses.Calc;
 
+import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashSet;
+
 
 public class MainSceneController {
 
@@ -36,8 +39,18 @@ public class MainSceneController {
     /** the markers. */
     private final Marker markerClick;
 
+    private final Desktop desktop = Desktop.getDesktop();
+
     /** Need this variable across various methods */
     private CoordinateLine trackLine;
+
+    /** Menu buttons*/
+    @FXML
+    private Button ProfileBtn;
+    @FXML
+    private Button SettingsBtn;
+    @FXML
+    private Button GPXBtn;
 
     /** button to set the map's zoom. */
     @FXML
@@ -54,6 +67,7 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML
     private Slider sliderZoom;
+
 
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
@@ -99,7 +113,6 @@ public class MainSceneController {
         // How to make a marker:
         // Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
 
-
         setupEventHandlers();
 
         logger.trace("start map initialization");
@@ -110,9 +123,8 @@ public class MainSceneController {
         logger.debug("initialization finished");
     }
 
-
+    /** Find minimum and maximum latitude and longitude coordinates*/
     private Coordinate findRouteMiddle(Metrics routeData) {
-        /** Find minimum and maximum latitude and longitude coordinates*/
         Double[] latCoordinates = routeData.getLatitudes();
         Double[] longCoordinates = routeData.getLongitudes();
 
@@ -129,6 +141,7 @@ public class MainSceneController {
         logger.info(requestMsg);
 
         FileInputStream in;
+
         try {
             in = new FileInputStream("src/testfiles/testfile1.gpx");
         } catch (java.io.FileNotFoundException e) {
@@ -238,9 +251,32 @@ public class MainSceneController {
         // mapView.addMarker(testCoordinate);
         mapView.addCoordinateLine(trackLine);
 
-
         // now enable the controls
         setControlsDisable(false);
+    }
+
+    private FileInputStream setGPXFile(File file) {
+        FileInputStream in;
+
+        try {
+            in = new FileInputStream(file);
+        } catch (java.io.FileNotFoundException e) {
+            logger.trace("ERROR: Could not find GPX file");
+            return null;
+        }
+        return in;
+    }
+
+    private void openGPXFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GPX Files", "*.gpx"));
+
+        GPXBtn.setOnAction(event -> {
+            File file = fileChooser.showOpenDialog(null);
+            setGPXFile(file);
+            System.out.println(file);
+        });
+
     }
 
 }
