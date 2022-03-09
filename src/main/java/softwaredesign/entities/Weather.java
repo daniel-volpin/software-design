@@ -1,8 +1,32 @@
 package softwaredesign.entities;
 
-import com.squere
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
 
 public class Weather {
+    private String timeZone;
+    private String conditions;
+    private double tempreture;
+    private double windSpeed;
+    private double humidity;
+    public Weather(Metrics metrics) throws IOException {
+        Date date = metrics.getTimeStamps()[0];
+
+    }
+
+
+
+
+
+
+    String day,month,year,latitude,longitude,Hours,Minutes;
+    int b = 6;
+    String a = integerToString(b);
     OkHttpClient client = new OkHttpClient();
     // test with lat="52.086967" lon="4.3763127"
     Request request = new Request.Builder()
@@ -12,5 +36,17 @@ public class Weather {
             .addHeader("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
             .build();
 
-    Response response = client.newCall(request).execute();
+    private Response response = client.newCall(request).execute();
+
+
+    //converts a number to a 2 digit format 1->01 5->05 24->24 etc..
+    String integerToString(Integer number){
+        if(number < 0){
+            return null;
+        }
+        if(number < 10) {
+            return "0" + number;
+        }
+        return number.toString();
+    }
 }
