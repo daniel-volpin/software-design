@@ -6,6 +6,7 @@ import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -21,7 +22,6 @@ import softwaredesign.entities.Metrics;
 import softwaredesign.helperclasses.Calc;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,16 +42,14 @@ public class MainSceneController {
     /** the markers. */
     private final Marker markerClick;
 
-    private final Desktop desktop = Desktop.getDesktop();
-
     /** Need this variable across various methods */
     private CoordinateLine trackLine;
 
     /** Menu buttons*/
     @FXML
-    private Button ProfileBtn;
+    private Button profileBtn;
     @FXML
-    private Button SettingsBtn;
+    private Button settingsBtn;
     @FXML
     private Button GPXBtn;
 
@@ -249,7 +247,7 @@ public class MainSceneController {
      * finishes setup after the mpa is initialzed
      */
     private void afterMapIsInitialized() {
-        logger.trace("map intialized");
+        logger.trace("map initialized");
         logger.debug("setting center and enabling controls...");
 
         // start at the harbour with default zoom
@@ -273,13 +271,27 @@ public class MainSceneController {
                 initializeActivity(track);
             } catch (java.io.FileNotFoundException e) {
                 // TODO: What to do?
-                System.out.println("Please provide a file\n");
-                logger.trace("ERROR: Could not find GPX file");
+
+                logger.trace("ERROR: GPX file not found");
             } catch (Exception e) {
                 // TODO: What to do?;
+
+                logger.trace("ERROR: GPX file not found");
             }
         });
 
+    }
+
+    public void BtnMouseEntered() {
+        GPXBtn.setOnMouseEntered(e -> GPXBtn.setStyle("-fx-background-color: #d3bbdd"));
+        profileBtn.setOnMouseEntered(e -> profileBtn.setStyle("-fx-background-color: #d3bbdd"));
+        settingsBtn.setOnMouseEntered(e -> settingsBtn.setStyle("-fx-background-color: #d3bbdd"));
+    }
+
+    public void BtnMouseExited(MouseEvent mouseEvent) {
+        GPXBtn.setOnMouseExited(e -> GPXBtn.setStyle("-fx-background-color: #C1BBDD"));
+        profileBtn.setOnMouseExited(e -> profileBtn.setStyle("-fx-background-color: #C1BBDD"));
+        settingsBtn.setOnMouseExited(e -> settingsBtn.setStyle("-fx-background-color: #C1BBDD"));
     }
 
 }
