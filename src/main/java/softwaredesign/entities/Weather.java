@@ -1,12 +1,12 @@
 package softwaredesign.entities;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
+import java.net.http.HttpClient;
 import java.io.*;
 import java.util.Date;
-import java.time.*;
 
 public class Weather {
 
@@ -15,46 +15,45 @@ public class Weather {
     private double windSpeed;
     private double humidity;
 
-    public Weather(Metrics metrics) throws IOException {
+    public Weather(Metrics metrics){
 
         Date timeStamp = metrics.getTimeStamps()[0];
-        LocalDate a;
 
-        String date,month,year,hours,minutes;
+        String date,month,hours,minutes, year;
+
         double latitude,longitude;
 
-//        date = integerToString(timeStamp.getDate());
-//        month = integerToString(timeStamp.getMonth());
-//        year = integerToString(timeStamp.getYear());
-//        hours = integerToString(timeStamp.getHours());
-//        minutes = integerToString(timeStamp.getMinutes());
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MM");
+        SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
+        SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
+        SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
+
+        year = yearFormat.format(timeStamp);
+        month = monthFormat.format(timeStamp);
+        date = dayFormat.format(timeStamp);
+        hours = hourFormat.format(timeStamp);
+        minutes = minuteFormat.format(timeStamp);
 
         latitude = metrics.getLatitudes()[0];
         longitude = metrics.getLongitudes()[0];
 
-        OkHttpClient client = new OkHttpClient();
+        HttpClient client = HttpClient.newHttpClient();
 
-        Request request = new Request.Builder()
-                .url("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true")
-                .get()
-                .addHeader("x-rapidapi-host", "visual-crossing-weather.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
-                .build();
+        HttpRequest request = HttpRequest.newBuilder(
+                        URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
+                        .header("x-rapidapi-host", "visual-crossing-weather.p.rapidapi.com")
+                        .header("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
+                        .build();
 
-        Response response = client.newCall(request).execute();
-
-
-
-    }
-
-    //converts a number to a 2 digit String format 1->"01" 5->"05" 24->"24" etc..
-    String integerToString(Integer number){
-        if(number < 0){
-            return null;
+        try {
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        if(number < 10) {
-            return "0" + number;
-        }
-        return number.toString();
+
     }
 }

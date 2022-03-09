@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.Metrics;
+import softwaredesign.entities.Weather;
 import softwaredesign.helperclasses.Calc;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -113,6 +114,9 @@ public class MainSceneController {
 
         Metrics routeData = newActivity.getRouteData();
         centerPoint = findRouteMiddle(routeData);
+
+        Weather w = new Weather(routeData);
+
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = routeData.getCoordinates();
