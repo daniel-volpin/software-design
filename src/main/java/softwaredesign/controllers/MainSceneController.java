@@ -35,7 +35,7 @@ public class MainSceneController {
     private static final Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
     /** Coordinate of Amsterdam city centre. */
-    private static Coordinate centerPoint = new Coordinate(52.086765, 4.3764505);
+    private static Coordinate centerPoint = new Coordinate(52.3717204, 4.9020727);
 
     /** default zoom value. */
     private static final int ZOOM_DEFAULT = 14;
@@ -43,8 +43,8 @@ public class MainSceneController {
     /** the markers. */
     private final Marker markerClick;
 
-    /** Need this variable across various methods */
-    private CoordinateLine trackLine;
+    /** For removing the trackLine if a new file is uploaded */
+    private CoordinateLine shownTrackLine = null;
 
     /** Menu buttons*/
     @FXML
@@ -113,22 +113,28 @@ public class MainSceneController {
         Activity newActivity = new Activity(track);
 
         Metrics routeData = newActivity.getRouteData();
-        centerPoint = findRouteMiddle(routeData);
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = routeData.getCoordinates();
-        trackLine = new CoordinateLine(trackCoordinates);
+        CoordinateLine trackLine = new CoordinateLine(trackCoordinates);
         trackLine.setColor(Color.ORANGERED).setVisible(true);
-        // How to make a marker:
-        // Marker coordinateMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(testCoordinate).setVisible(true);
 
-        // mapView.addMarker(testCoordinate);
+//         How to make a marker:
+//        Marker centerMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(routeCenterPoint).setVisible(true);
+//        mapView.addMarker(centerMarker);
+
+        if (shownTrackLine != null) {
+            mapView.removeCoordinateLine(shownTrackLine);
+        }
         mapView.addCoordinateLine(trackLine);
-        mapView.setCenter(centerPoint);
+        shownTrackLine = trackLine;
+
+        /** Set the extent of the map. Assumes the window is still its original size of when the window first opened */
+        mapView.setExtent(getMapExtent(routeData));
     }
 
-    /** Find minimum and maximum latitude and longitude coordinates*/
-    private Coordinate findRouteMiddle(Metrics routeData) {
+    private Extent getMapExtent(Metrics routeData) {
+        /** Find minimum and maximum latitude and longitude coordinates*/
         Double[] latCoordinates = routeData.getLatitudes();
         Double[] longCoordinates = routeData.getLongitudes();
 
@@ -137,46 +143,29 @@ public class MainSceneController {
         Double maxLon = Calc.findMax(longCoordinates);
         Double minLon = Calc.findMin(longCoordinates);
 
-        return new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
-    }
+        Double marginPercentage = 0.2;
+        Double latMargin = (maxLat - minLat) * marginPercentage;
+        Double lonMargin = (maxLat - minLat) * marginPercentage;
 
-//    private FileInputStream requestGPXFile(String requestMsg) {
-//        // TODO: Make a pop-up on screen to request file.
-//        logger.info(requestMsg);
-//
-//        openGPXFile();
-//
-//        FileInputStream in;
-//
-//        try {
-//            in = new FileInputStream("src/testfiles/testfile1.gpx");
-//        } catch (java.io.FileNotFoundException e) {
-//            logger.trace("ERROR: Could not find GPX file");
-//            return null;
-//        }
-//        return in;
-//    }
+        Coordinate minCoordinate = new Coordinate(minLat - latMargin, minLon - lonMargin);
+        Coordinate maxCoordinate = new Coordinate(maxLat + latMargin, maxLon + lonMargin);
+        Coordinate[] minMaxCoordinates = {minCoordinate, maxCoordinate};
+
+        return Extent.forCoordinates(minMaxCoordinates);
+    }
 
     private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
         GPXParser p = new GPXParser();
-//        String requestMsg;
-//
-//        while (true) {
-//            try {
-                GPX gpx = p.parseGPX(gpxFile);
-                HashSet<Track> tracks = gpx.getTracks();
-                // TODO: Multiple tracks --> trackHistory?
-                if (tracks.size() == 1) {
-                    Track[] trackArray = tracks.toArray(new Track[0]);
-                    return trackArray[0];
-                } else {
-                    throw new IOException("Please provide a GPX File with exactly one Track");
-                }
-//            } catch (Exception e) {
-//                requestMsg = "Could not parse the provided GPX File. Please provide a valid GPX File.";
-//            }
-//            gpxFile = requestGPXFile(requestMsg);
-//        }
+        GPX gpx = p.parseGPX(gpxFile);
+        HashSet<Track> tracks = gpx.getTracks();
+
+        // TODO: Multiple tracks --> trackHistory?
+        if (tracks.size() == 1) {
+            Track[] trackArray = tracks.toArray(new Track[0]);
+            return trackArray[0];
+        } else {
+            throw new IOException("Please provide a GPX File with exactly one Track");
+        }
     }
 
     /**
@@ -271,13 +260,11 @@ public class MainSceneController {
                 Track track = getTrackFromFile(gpxFile);
                 initializeActivity(track);
             } catch (java.io.FileNotFoundException e) {
-                // TODO: What to do?
-
-                logger.trace("ERROR: GPX file not found");
+                // TODO: Write the error the screen such that the user knows smt went wrong
+                logger.info("ERROR: GPX file not found");
             } catch (Exception e) {
-                // TODO: What to do?;
-
-                logger.trace("ERROR: GPX file not found");
+                // TODO: Write the error the screen such that the user knows smt went wrong
+                logger.info("ERROR: " + e.getMessage());
             }
         });
 
