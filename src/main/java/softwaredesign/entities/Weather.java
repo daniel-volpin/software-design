@@ -49,21 +49,31 @@ public class Weather {
 //        System.out.println(obj.getString("conditions"));
 
 
-        HttpRequest request = HttpRequest.newBuilder(
-                        URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
-                        .header("x-rapidapi-host", "visual-crossing-weather.p.rapidapi.com")
-                        .header("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
-                        .build();
+//        HttpRequest request = HttpRequest.newBuilder(
+//                        URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
+//                        .header("x-rapidapi-host", "visual-crossing-weather.p.rapidapi.com")
+//                        .header("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
+//                        .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
+                .header("x-rapidapi-host", "visual-crossing-weather.p.rapidapi.com")
+                .header("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+
 
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//            JSONObject responseJson = new JSONObject(response).getJSONObject("locations").getJSONObject(latitude + "," + longitude).getJSONArray("values").getJSONObject(0);
-//            conditions = responseJson.getString("conditions");
-//            temperature = responseJson.getDouble("temp");
-//            windSpeed = responseJson.getDouble("wspd");
-//            humidity = responseJson.getDouble("humidity");
-//
-//            System.out.println("cond " + conditions + ", temp " + temperature+ ", windspeed " + windSpeed + ", humidity " + humidity);
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("response body: "+response.body());
+
+            JSONObject responseJson = new JSONObject(response.body()).getJSONObject("locations").getJSONObject(latitude + "," + longitude).getJSONArray("values").getJSONObject(0);
+            conditions = responseJson.getString("conditions");
+            temperature = responseJson.getDouble("temp");
+            windSpeed = responseJson.getDouble("wspd");
+            humidity = responseJson.getDouble("humidity");
+
+            System.out.println("cond " + conditions + ", temp " + temperature+ ", windspeed " + windSpeed + ", humidity " + humidity);
 
             System.out.println(response);
 
