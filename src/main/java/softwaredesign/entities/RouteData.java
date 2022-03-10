@@ -1,8 +1,10 @@
 package softwaredesign.entities;
 
 import com.sothawo.mapjfx.Coordinate;
+import com.sothawo.mapjfx.Extent;
 import org.alternativevision.gpx.beans.Track;
 import org.alternativevision.gpx.beans.Waypoint;
+import softwaredesign.helperclasses.Calc;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,6 +99,29 @@ public class RouteData {
             coordinates[i] = new Coordinate(latitudes[i], longitudes[i]);
         }
         return coordinates;
+    }
+
+    public Coordinate[] getRouteExtent() {
+        /** Find minimum and maximum latitude and longitude coordinates*/
+        Double maxLat = Calc.findMax(latitudes);
+        Double minLat = Calc.findMin(latitudes);
+        Double maxLon = Calc.findMax(longitudes);
+        Double minLon = Calc.findMin(longitudes);
+
+        Double marginPercentage = 0.4;
+        Double latMargin = (maxLat - minLat) * marginPercentage;
+        Double lonMargin = (maxLat - minLat) * marginPercentage;
+
+        Double[] extremeLats = {minLat - latMargin, maxLat + latMargin};
+        Double[] extremeLons = {minLon - lonMargin, maxLon + lonMargin};
+
+        Coordinate[] extentCoordinates = new Coordinate[4];
+        for (int i = 0; i < extremeLats.length; i++) {
+            for (int j = 0; j < extremeLons.length; j++) {
+                extentCoordinates[i*extremeLons.length + j] = new Coordinate(extremeLats[i], extremeLons[j]);
+            }
+        }
+        return extentCoordinates;
     }
 
     public Date[] getTimeStamps() {
