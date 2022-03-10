@@ -42,7 +42,7 @@ public class MainSceneController {
     /** the markers. */
     private final Marker markerClick;
 
-    /* For removing the trackLine if a new file is uploaded */
+    /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine = null;
 
     /** Menu buttons*/
@@ -112,7 +112,6 @@ public class MainSceneController {
         Activity newActivity = new Activity(track);
 
         Metrics routeData = newActivity.getRouteData();
-        Coordinate routeCenterPoint = findRouteMiddle(routeData);
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = routeData.getCoordinates();
@@ -128,11 +127,13 @@ public class MainSceneController {
         }
         mapView.addCoordinateLine(trackLine);
         shownTrackLine = trackLine;
-        mapView.setCenter(routeCenterPoint);
+
+        /** Set the extent of the map. Assumes the window is still its original size of when the window first opened */
+        mapView.setExtent(getMapExtent(routeData));
     }
 
-    /** Find minimum and maximum latitude and longitude coordinates*/
-    private Coordinate findRouteMiddle(Metrics routeData) {
+    private Extent getMapExtent(Metrics routeData) {
+        /** Find minimum and maximum latitude and longitude coordinates*/
         Double[] latCoordinates = routeData.getLatitudes();
         Double[] longCoordinates = routeData.getLongitudes();
 
@@ -141,7 +142,15 @@ public class MainSceneController {
         Double maxLon = Calc.findMax(longCoordinates);
         Double minLon = Calc.findMin(longCoordinates);
 
-        return new Coordinate((maxLat + minLat) / 2, (maxLon + minLon) / 2);
+        Double marginPercentage = 0.2;
+        Double latMargin = (maxLat - minLat) * marginPercentage;
+        Double lonMargin = (maxLat - minLat) * marginPercentage;
+
+        Coordinate minCoordinate = new Coordinate(minLat - latMargin, minLon - lonMargin);
+        Coordinate maxCoordinate = new Coordinate(maxLat + latMargin, maxLon + lonMargin);
+        Coordinate[] minMaxCoordinates = {minCoordinate, maxCoordinate};
+
+        return Extent.forCoordinates(minMaxCoordinates);
     }
 
     private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
