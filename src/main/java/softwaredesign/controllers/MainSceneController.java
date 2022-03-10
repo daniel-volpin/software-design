@@ -115,9 +115,6 @@ public class MainSceneController {
         Metrics routeData = newActivity.getRouteData();
         centerPoint = findRouteMiddle(routeData);
 
-        Weather w = new Weather(routeData);
-
-
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = routeData.getCoordinates();
         trackLine = new CoordinateLine(trackCoordinates);
