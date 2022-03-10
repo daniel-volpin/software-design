@@ -22,11 +22,11 @@ dependencies {
 //    implementation name: 'javafx.graphics'
 //    implementation name: 'javafx.media'
 //    implementation name: 'javafx.web'
-
-    implementation name: 'okhttp-4.9.3'
     implementation name: 'GPXParser'
     implementation group: 'com.dlsc', name: 'GMapsFX', version: '11.0.6'
     implementation 'com.sothawo:mapjfx:2.13.0'
+    implementation 'org.json:json:20211205'
+
 
     compile 'com.jfoenix:jfoenix:9.0.10'
 

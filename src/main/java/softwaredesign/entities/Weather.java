@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.net.http.HttpClient;
 import java.io.*;
 import java.util.Date;
+import org.json.JSONObject;
 
 public class Weather {
 
@@ -29,6 +30,8 @@ public class Weather {
         SimpleDateFormat hourFormat = new SimpleDateFormat("HH");
         SimpleDateFormat minuteFormat = new SimpleDateFormat("mm");
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat();
+
         year = yearFormat.format(timeStamp);
         month = monthFormat.format(timeStamp);
         date = dayFormat.format(timeStamp);
@@ -47,8 +50,12 @@ public class Weather {
                         .build();
 
         try {
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            JSONObject obj = new JSONObject(response);
+//            String tst = obj.getJSONObject("locations").getJSONArray("values").getString(1);
+
             System.out.println(response.body());
+//            System.out.println("tst" + tst);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
