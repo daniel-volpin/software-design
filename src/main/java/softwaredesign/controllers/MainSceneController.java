@@ -18,8 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
-import softwaredesign.entities.Metrics;
-import softwaredesign.entities.Weather;
+import softwaredesign.entities.RouteData;
 import softwaredesign.helperclasses.Calc;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -112,7 +111,7 @@ public class MainSceneController {
     private void initializeActivity(Track track) {
         Activity newActivity = new Activity(track);
 
-        Metrics routeData = newActivity.getRouteData();
+        RouteData routeData = newActivity.getRouteData();
 
         /** Make a CoordinateLine for plotting */
         Coordinate[] trackCoordinates = routeData.getCoordinates();
@@ -133,7 +132,7 @@ public class MainSceneController {
         mapView.setExtent(getMapExtent(routeData));
     }
 
-    private Extent getMapExtent(Metrics routeData) {
+    private Extent getMapExtent(RouteData routeData) {
         /** Find minimum and maximum latitude and longitude coordinates*/
         Double[] latCoordinates = routeData.getLatitudes();
         Double[] longCoordinates = routeData.getLongitudes();

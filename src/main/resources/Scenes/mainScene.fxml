@@ -18,17 +18,6 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
             xmlns="http://javafx.com/javafx/11.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController">
     <top>
-        <HBox fx:id="topControls" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <Button fx:id="buttonZoom" text="Zoom 14" style="-fx-background-color: #C1BBDD"/>
-                <Slider fx:id="sliderZoom" blockIncrement="1.0" majorTickUnit="7.0" max="28.0" minorTickCount="6"
-                        showTickLabels="true" showTickMarks="true" snapToTicks="true" value="14.0" HBox.hgrow="ALWAYS"
-                        style="-fx-control-inner-background: #C1BBDD;"/>
-            </children>
-            <padding>
-                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
-            </padding>
-        </HBox>
     </top>
     <center>
         <MapView fx:id="mapView" BorderPane.alignment="CENTER"/>
@@ -84,4 +73,17 @@
             </children>
         </VBox>
     </left>
+    <bottom>
+        <HBox fx:id="topControls" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="buttonZoom" text="Zoom 14" style="-fx-background-color: #C1BBDD"/>
+                <Slider fx:id="sliderZoom" blockIncrement="1.0" majorTickUnit="7.0" max="28.0" minorTickCount="6"
+                        showTickLabels="true" showTickMarks="true" snapToTicks="true" value="14.0" HBox.hgrow="ALWAYS"
+                        style="-fx-control-inner-background: #C1BBDD;"/>
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+            </padding>
+        </HBox>
+    </bottom>
 </BorderPane>

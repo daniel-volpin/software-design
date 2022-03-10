@@ -7,13 +7,13 @@ import org.alternativevision.gpx.beans.Waypoint;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Metrics {
+public class RouteData {
     private final Date[] timeStamps;
     private final Double[] latitudes;
     private final Double[] longitudes;
     private final Double[] elevations;
 
-    public Metrics(Track track) {
+    public RouteData(Track track) {
         ArrayList<Waypoint> wayPoints = track.getTrackPoints();
         int nrWayPoints = wayPoints.size();
 

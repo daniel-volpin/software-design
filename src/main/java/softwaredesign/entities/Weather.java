@@ -16,8 +16,8 @@ public class Weather {
     private double windSpeed;
     private double humidity;
 
-    public Weather(Metrics metrics){
-        Date timeStamp = metrics.getTimeStamps()[0];
+    public Weather(RouteData routeData){
+        Date timeStamp = routeData.getTimeStamps()[0];
 
         String year = new SimpleDateFormat("yyyy").format(timeStamp);
         String month = new SimpleDateFormat("MM").format(timeStamp);
@@ -25,8 +25,8 @@ public class Weather {
         String hours = new SimpleDateFormat("HH").format(timeStamp);
         String minutes = new SimpleDateFormat("mm").format(timeStamp);
 
-        double latitude = metrics.getLatitudes()[0];
-        double longitude = metrics.getLongitudes()[0];
+        double latitude = routeData.getLatitudes()[0];
+        double longitude = routeData.getLongitudes()[0];
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
