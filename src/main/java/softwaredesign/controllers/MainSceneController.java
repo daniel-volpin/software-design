@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -41,6 +42,9 @@ public class MainSceneController {
 
     /** the markers. */
     private final Marker markerClick;
+
+    @FXML
+    public VBox rightSideVBox;
 
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
@@ -256,6 +260,7 @@ public class MainSceneController {
                 logger.info("ERROR: " + e.getMessage());
             }
         });
+
     }
 
     public void BtnMouseEntered() {

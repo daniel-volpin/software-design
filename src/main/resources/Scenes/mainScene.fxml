@@ -85,4 +85,7 @@
             </padding>
         </HBox>
     </bottom>
+    <right>
+        <VBox fx:id="rightSideVBox" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" style="visibility: false"/>
+    </right>
 </BorderPane>
