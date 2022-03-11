@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id "org.openjfx.javafxplugin" version "0.0.12"
+    id 'application'
 }
 
 group 'org.example'
@@ -13,6 +14,20 @@ repositories {
     flatDir {
         dirs 'lib'
     }
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "softwaredesign.AppLauncher"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+application {
+    mainClassName = 'softwaredesign.AppLauncher'
 }
 
 dependencies {
