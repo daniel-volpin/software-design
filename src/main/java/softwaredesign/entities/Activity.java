@@ -6,8 +6,6 @@ import softwaredesign.helperclasses.Calc;
 
 public class Activity {
     private RouteData routeData;
-    private String name;
-    private int activityID;
 
     public Activity(Track track) {
         routeData = new RouteData(track);
@@ -20,7 +18,9 @@ public class Activity {
         return routeData;
     }
 
-
+    public Double getTotalDistance() {
+        return Calc.findSum(routeData.getDistances());
+    }
 
 
 
