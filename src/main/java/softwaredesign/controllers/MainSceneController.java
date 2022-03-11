@@ -25,6 +25,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 
@@ -46,7 +47,11 @@ public class MainSceneController {
     public VBox rightSideVBox;
 
     /** For removing the trackLine if a new file is uploaded */
-    private CoordinateLine shownTrackLine = null;
+    private CoordinateLine shownTrackLine;
+
+    // TODO: Profile
+
+    private ArrayList<Activity> activityHistory;
 
     /** Menu buttons*/
     @FXML
@@ -193,17 +198,23 @@ public class MainSceneController {
 
     private void initializeActivity(Track track) {
         Activity newActivity = new Activity(track);
+        addActivity(newActivity);
+        changeShownActivity(newActivity);
+    }
 
+    private void addActivity(Activity newActivity) {
+        if (activityHistory == null) {
+            activityHistory = new ArrayList<Activity>();
+        }
+        activityHistory.add(newActivity);
+    }
+
+    private void changeShownActivity(Activity newActivity) {
         RouteData routeData = newActivity.getRouteData();
 
         /** Make a CoordinateLine for plotting */
-        Coordinate[] trackCoordinates = routeData.getCoordinates();
-        CoordinateLine trackLine = new CoordinateLine(trackCoordinates);
+        CoordinateLine trackLine = new CoordinateLine(routeData.getCoordinates());
         trackLine.setColor(Color.ORANGERED).setVisible(true);
-
-//         How to make a marker:
-//        Marker centerMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(routeCenterPoint).setVisible(true);
-//        mapView.addMarker(centerMarker);
 
         if (shownTrackLine != null) {
             mapView.removeCoordinateLine(shownTrackLine);
