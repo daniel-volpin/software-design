@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.RouteData;
-import softwaredesign.helperclasses.Calc;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -201,7 +200,7 @@ public class MainSceneController {
 
     private void addActivity(Activity newActivity) {
         if (activityHistory == null) {
-            activityHistory = new ArrayList<Activity>();
+            activityHistory = new ArrayList<>();
         }
         activityHistory.add(newActivity);
     }
@@ -250,10 +249,10 @@ public class MainSceneController {
                 Track track = getTrackFromFile(gpxFile);
                 initializeActivity(track);
             } catch (java.io.FileNotFoundException e) {
-                // TODO: Write the error the screen such that the user knows smt went wrong
+                // TODO: Write the error to the screen such that the user knows something went wrong
                 logger.info("ERROR: GPX file not found");
             } catch (Exception e) {
-                // TODO: Write the error the screen such that the user knows smt went wrong
+                // TODO: Write the error to the screen such that the user knows something went wrong
                 logger.info("ERROR: " + e.getMessage());
             }
         });
