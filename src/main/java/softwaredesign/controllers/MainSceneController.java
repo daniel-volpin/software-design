@@ -108,65 +108,6 @@ public class MainSceneController {
         logger.debug("initialization finished");
     }
 
-    private void initializeActivity(Track track) {
-        Activity newActivity = new Activity(track);
-
-        RouteData routeData = newActivity.getRouteData();
-
-        /** Make a CoordinateLine for plotting */
-        Coordinate[] trackCoordinates = routeData.getCoordinates();
-        CoordinateLine trackLine = new CoordinateLine(trackCoordinates);
-        trackLine.setColor(Color.ORANGERED).setVisible(true);
-
-//         How to make a marker:
-//        Marker centerMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(routeCenterPoint).setVisible(true);
-//        mapView.addMarker(centerMarker);
-
-        if (shownTrackLine != null) {
-            mapView.removeCoordinateLine(shownTrackLine);
-        }
-        mapView.addCoordinateLine(trackLine);
-        shownTrackLine = trackLine;
-
-        /** Set the extent of the map. Assumes the window is still its original size of when the window first opened */
-        mapView.setExtent(getMapExtent(routeData));
-    }
-
-    private Extent getMapExtent(RouteData routeData) {
-        /** Find minimum and maximum latitude and longitude coordinates*/
-        Double[] latCoordinates = routeData.getLatitudes();
-        Double[] longCoordinates = routeData.getLongitudes();
-
-        Double maxLat = Calc.findMax(latCoordinates);
-        Double minLat = Calc.findMin(latCoordinates);
-        Double maxLon = Calc.findMax(longCoordinates);
-        Double minLon = Calc.findMin(longCoordinates);
-
-        Double marginPercentage = 0.2;
-        Double latMargin = (maxLat - minLat) * marginPercentage;
-        Double lonMargin = (maxLat - minLat) * marginPercentage;
-
-        Coordinate minCoordinate = new Coordinate(minLat - latMargin, minLon - lonMargin);
-        Coordinate maxCoordinate = new Coordinate(maxLat + latMargin, maxLon + lonMargin);
-        Coordinate[] minMaxCoordinates = {minCoordinate, maxCoordinate};
-
-        return Extent.forCoordinates(minMaxCoordinates);
-    }
-
-    private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
-        GPXParser p = new GPXParser();
-        GPX gpx = p.parseGPX(gpxFile);
-        HashSet<Track> tracks = gpx.getTracks();
-
-        // TODO: Multiple tracks --> trackHistory?
-        if (tracks.size() == 1) {
-            Track[] trackArray = tracks.toArray(new Track[0]);
-            return trackArray[0];
-        } else {
-            throw new IOException("Please provide a GPX File with exactly one Track");
-        }
-    }
-
     /**
      * initializes the event handlers.
      */
@@ -195,7 +136,6 @@ public class MainSceneController {
         });
 
 //        mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
-
         logger.trace("map handlers initialized");
     }
 
@@ -247,6 +187,46 @@ public class MainSceneController {
         setControlsDisable(false);
     }
 
+
+    private void initializeActivity(Track track) {
+        Activity newActivity = new Activity(track);
+
+        RouteData routeData = newActivity.getRouteData();
+
+        /** Make a CoordinateLine for plotting */
+        Coordinate[] trackCoordinates = routeData.getCoordinates();
+        CoordinateLine trackLine = new CoordinateLine(trackCoordinates);
+        trackLine.setColor(Color.ORANGERED).setVisible(true);
+
+//         How to make a marker:
+//        Marker centerMarker = Marker.createProvided(Marker.Provided.BLUE).setPosition(routeCenterPoint).setVisible(true);
+//        mapView.addMarker(centerMarker);
+
+        if (shownTrackLine != null) {
+            mapView.removeCoordinateLine(shownTrackLine);
+        }
+        mapView.addCoordinateLine(trackLine);
+        shownTrackLine = trackLine;
+
+        /** Set the extent of the map. Assumes the window is still its original size of when the window first opened */
+        Coordinate[] routeExtent = routeData.getRouteExtent();
+        mapView.setExtent(Extent.forCoordinates(routeExtent));
+    }
+
+    private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
+        GPXParser p = new GPXParser();
+        GPX gpx = p.parseGPX(gpxFile);
+        HashSet<Track> tracks = gpx.getTracks();
+
+        // TODO: Multiple tracks --> trackHistory?
+        if (tracks.size() == 1) {
+            Track[] trackArray = tracks.toArray(new Track[0]);
+            return trackArray[0];
+        } else {
+            throw new IOException("Please provide a GPX File with exactly one Track");
+        }
+    }
+
     @FXML
     private void openGPXFile() {
         FileChooser fileChooser = new FileChooser();
@@ -266,7 +246,6 @@ public class MainSceneController {
                 logger.info("ERROR: " + e.getMessage());
             }
         });
-
     }
 
     public void BtnMouseEntered() {
