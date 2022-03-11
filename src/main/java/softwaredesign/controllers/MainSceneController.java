@@ -5,6 +5,7 @@ import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -77,6 +78,9 @@ public class MainSceneController {
     @FXML
     private Slider sliderZoom;
 
+    /** total distance label */
+    @FXML
+    Label totalDistanceLabel;
 
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
@@ -195,11 +199,16 @@ public class MainSceneController {
         setControlsDisable(false);
     }
 
-
     private void initializeActivity(Track track) {
         Activity newActivity = new Activity(track);
         addActivity(newActivity);
         changeShownActivity(newActivity);
+
+        rightSideVBox.setPrefSize(200, 300);
+        Double totalDistance = newActivity.getTotalDistance();
+        totalDistance = (double) (Math.round(totalDistance * 100) / 100);
+        totalDistanceLabel.setText("Total Distance: " + totalDistance + "m");
+
     }
 
     private void addActivity(Activity newActivity) {
