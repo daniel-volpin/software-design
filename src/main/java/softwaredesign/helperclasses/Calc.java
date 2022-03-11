@@ -1,6 +1,6 @@
 package softwaredesign.helperclasses;
 
-public class Calc {
+public abstract class Calc {
     public static Double findMax(Double[] values) {
         Double maxValue = values[0];
         for (Double value : values){
