@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.RouteData;
-import softwaredesign.helperclasses.Calc;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -41,6 +41,9 @@ public class MainSceneController {
 
     /** the markers. */
     private final Marker markerClick;
+
+    @FXML
+    public VBox rightSideVBox;
 
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine = null;
@@ -246,6 +249,7 @@ public class MainSceneController {
                 logger.info("ERROR: " + e.getMessage());
             }
         });
+
     }
 
     public void BtnMouseEntered() {
