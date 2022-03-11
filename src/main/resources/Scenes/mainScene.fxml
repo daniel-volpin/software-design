@@ -28,7 +28,7 @@
             <children>
                 <ImageView fitHeight="49.0" fitWidth="166.0">
                     <image>
-                        <Image url="@/VU-logo.png" />
+                        <Image url="@/Media/VU-logo.png" />
                     </image>
                 </ImageView>
                 <Pane prefHeight="159.0" prefWidth="137.0">

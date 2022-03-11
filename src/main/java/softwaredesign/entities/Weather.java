@@ -48,12 +48,8 @@ public class Weather {
             e.printStackTrace();
         }
     }
-
     public String getConditions() {return conditions;}
-
     public double getTemperature() {return  temperature;}
-
     public double getWindSpeed() {return  windSpeed;}
-
     public double getHumidity() {return  humidity;}
 }
