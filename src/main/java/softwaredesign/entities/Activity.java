@@ -14,27 +14,9 @@ public class Activity {
         weather = new Weather(routeData);
     }
 
-    public RouteData getRouteData() {
-        return routeData;
-    }
+    public RouteData getRouteData() { return routeData;}
 
-    public String getWeatherImagePath() {return weather.getImagePath(); }
-
-    public Double getWeatherHumidity() {
-        return weather.getHumidity();
-    }
-
-    public String getWeatherConditions() {
-        return weather.getConditions();
-    }
-
-    public Double getWeatherTemp() {
-        return weather.getTemperature();
-    }
-
-    public Double getWeatherWindSpeed() {
-        return weather.getWindSpeed();
-    }
+    public Weather getWeather() { return weather; }
 
     public Double getTotalDistance() {
         return Calc.findSum(routeData.getDistances());

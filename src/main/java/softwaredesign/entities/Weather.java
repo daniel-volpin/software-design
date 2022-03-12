@@ -1,6 +1,5 @@
 package softwaredesign.entities;
 
-import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -13,9 +12,9 @@ import org.json.JSONObject;
 public class Weather {
 
     private String conditions;
-    private double temperature;
-    private double windSpeed;
-    private double humidity;
+    private Double temperature;
+    private Double windSpeed;
+    private Double humidity;
 
     public Weather(RouteData routeData){
         Date timeStamp = routeData.getTimeStamps()[0];
@@ -26,8 +25,8 @@ public class Weather {
         String hours = new SimpleDateFormat("HH").format(timeStamp);
         String minutes = new SimpleDateFormat("mm").format(timeStamp);
 
-        double latitude = routeData.getLatitudes()[0];
-        double longitude = routeData.getLongitudes()[0];
+        Double latitude = routeData.getLatitudes()[0];
+        Double longitude = routeData.getLongitudes()[0];
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
@@ -50,9 +49,9 @@ public class Weather {
         }
     }
     public String getConditions() {return conditions;}
-    public double getTemperature() {return  temperature;}
-    public double getWindSpeed() {return  windSpeed;}
-    public double getHumidity() {return  humidity;}
+    public Double getTemperature() {return  temperature;}
+    public Double getWindSpeed() {return  windSpeed;}
+    public Double getHumidity() {return  humidity;}
 
     public String getImagePath() {
         String imagePath;

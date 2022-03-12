@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
 import softwaredesign.entities.RouteData;
+import softwaredesign.entities.Weather;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -200,27 +201,29 @@ public class MainSceneController {
         changeShownActivity(newActivity);
 
         Double totalDistance = newActivity.getTotalDistance();
-        totalDistance = (double) (Math.round(totalDistance * 100) / 100);
+        totalDistance = Math.round(totalDistance * 100) / 100.0;
         Label totalDistanceLabel = new Label();
         totalDistanceLabel.setText("Total Distance: " + totalDistance + "m");
 
-        Double temp = newActivity.getWeatherTemp();
-        Label tempLabel = new Label();
-        tempLabel.setText("Temperature: " + temp);
+        Weather weather = newActivity.getWeather();
 
-        Double humidity = newActivity.getWeatherHumidity();
+        Double temp = weather.getTemperature();
+        Label tempLabel = new Label();
+        tempLabel.setText("Temperature: " + temp + "\u00B0C");
+
+        Double humidity = weather.getHumidity();
         Label humidityLabel = new Label();
         humidityLabel.setText("Humidity: " + humidity + "%");
 
-        Double windSpeed = newActivity.getWeatherHumidity();
+        Double windSpeed = weather.getWindSpeed();
         Label windSpeedLabel = new Label();
         windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
 
-        String conditions = newActivity.getWeatherConditions();
+        String conditions = weather.getConditions();
         Label conditionsLabel = new Label();
         conditionsLabel.setText("Weather Condition: " + conditions);
 
-        String weatherImagePath = newActivity.getWeatherImagePath();
+        String weatherImagePath = weather.getImagePath();
         ImageView imageView = null;
         try {
             Image image = new Image(new FileInputStream(weatherImagePath));
