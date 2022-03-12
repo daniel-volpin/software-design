@@ -200,10 +200,20 @@ public class MainSceneController {
         addActivity(newActivity);
         changeShownActivity(newActivity);
 
-        Double totalDistance = newActivity.getTotalDistance();
+        Double totalDistance = newActivity.getTotalDistanceM();
         totalDistance = Math.round(totalDistance * 100) / 100.0;
         Label totalDistanceLabel = new Label();
         totalDistanceLabel.setText("Total Distance: " + totalDistance + "m");
+
+        Double totalTimeS = newActivity.getTotalTimeS();
+        Double totalTimeM = Math.round(totalTimeS / 60.0 * 100) / 100.0;
+        Label totalTimeLabel = new Label();
+        totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
+
+        Double avgSpeedMpS = newActivity.getAverageSpeedMpS();
+        Double avgSpeedKMpS = Math.round(avgSpeedMpS * 3.6 * 100) / 100.0;
+        Label avgSpeedLabel = new Label();
+        avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/h");
 
         Weather weather = newActivity.getWeather();
 
@@ -243,7 +253,11 @@ public class MainSceneController {
 
         conditionsLabel.setWrapText(true);
 
-        rightSideVBox.getChildren().addAll(totalDistanceLabel, tempLabel, windSpeedLabel, humidityLabel, conditionsLabel, imageView);
+        Label separatorLabel = new Label();
+        separatorLabel.setText("\n\n");
+
+        rightSideVBox.getChildren().addAll(totalDistanceLabel, totalTimeLabel, avgSpeedLabel, separatorLabel);
+        rightSideVBox.getChildren().addAll(tempLabel, windSpeedLabel, humidityLabel, conditionsLabel, imageView);
         borderPane.setRight(rightSideVBox);
 
     }
