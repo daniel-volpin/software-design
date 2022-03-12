@@ -12,7 +12,12 @@ public class Activity {
 
     public Activity(Track track) {
         routeData = new RouteData(track);
-        weather = new Weather(routeData);
+
+        if (routeData.getTimeStamps()[0] == null) {
+            weather = null;
+        } else {
+            weather = new Weather(routeData);
+        }
     }
 
     public RouteData getRouteData() { return routeData;}

@@ -30,7 +30,7 @@ public class RouteData {
             latitudes[i] = waypoint.getLatitude();
             longitudes[i] = waypoint.getLongitude();
             elevations[i] = waypoint.getElevation();
-            if (elevations[i] == null) {
+            if (elevations[i] == null && i>0) {
                 elevations[i] = elevations[i-1];
             }
         }
@@ -87,10 +87,13 @@ public class RouteData {
         double horDistanceKM = RADIUS_EARTH * c;
         double horDistanceM = horDistanceKM * 1000; // Convert KM to Meters
 
-        double verDistanceM = elevations[from] - elevations[to];
-
-        // Pythagoras with vertical distance and horizontal distance
-        return Math.sqrt( Math.pow(horDistanceM, 2) + Math.pow(verDistanceM, 2) );
+        if (elevations[from] == null || elevations[to] == null) {
+            return horDistanceM;
+        } else {
+            // Do Pythagoras with vertical distance and horizontal distance
+            double verDistanceM = elevations[from] - elevations[to];
+            return Math.sqrt(Math.pow(horDistanceM, 2) + Math.pow(verDistanceM, 2));
+        }
     }
 
     public Coordinate[] getCoordinates() {
