@@ -8,6 +8,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -27,6 +29,7 @@ import softwaredesign.entities.RouteData;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -217,6 +220,17 @@ public class MainSceneController {
         Label conditionsLabel = new Label();
         conditionsLabel.setText("Weather Condition: " + conditions);
 
+        String weatherImagePath = newActivity.getWeatherImagePath();
+        ImageView imageView = null;
+        try {
+            Image image = new Image(new FileInputStream(weatherImagePath));
+            imageView = new ImageView(image);
+            imageView.setFitWidth(100);
+            imageView.setPreserveRatio(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
         FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightSide.fxml"));
         try {
             rightSideVBox = rightSideLoader.load();
@@ -226,7 +240,7 @@ public class MainSceneController {
 
         conditionsLabel.setWrapText(true);
 
-        rightSideVBox.getChildren().addAll(totalDistanceLabel, tempLabel, windSpeedLabel, humidityLabel, conditionsLabel);
+        rightSideVBox.getChildren().addAll(totalDistanceLabel, tempLabel, windSpeedLabel, humidityLabel, conditionsLabel, imageView);
         borderPane.setRight(rightSideVBox);
 
     }

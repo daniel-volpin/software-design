@@ -18,6 +18,8 @@ public class Activity {
         return routeData;
     }
 
+    public String getWeatherImagePath() {return weather.getImagePath(); }
+
     public Double getWeatherHumidity() {
         return weather.getHumidity();
     }

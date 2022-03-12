@@ -1,5 +1,6 @@
 package softwaredesign.entities;
 
+import java.awt.*;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -52,4 +53,73 @@ public class Weather {
     public double getTemperature() {return  temperature;}
     public double getWindSpeed() {return  windSpeed;}
     public double getHumidity() {return  humidity;}
+
+    public String getImagePath() {
+        String imagePath;
+
+        switch (conditions){
+            case	"Drizzle":
+            case	"Heavy Drizzle":
+            case	"Light Drizzle":
+            case	"Heavy Drizzle/Rain":
+            case	"Light Drizzle/Rain":
+            case	"Freezing Drizzle/Freezing Rain":
+            case	"Heavy Freezing Drizzle/Freezing Rain":
+            case	"Light Freezing Drizzle/Freezing Rain":
+            case	"Heavy Freezing Rain":
+            case	"Light Freezing Rain":
+            case	"Hail":
+            case	"Heavy Rain And Snow":
+            case	"Light Rain And Snow":
+            case	"Rain Showers":
+            case	"Heavy Rain":
+            case	"Light Rain":
+            case	"Precipitation In Vicinity":
+            case	"Rain":
+            case	"Thunderstorm":
+                imagePath = "src/main/resources/Media/umbrella.png";
+            break;
+
+            case	"Duststorm":
+            case	"Fog":
+            case	"Freezing Fog":
+            case	"Mist":
+            case	"Sky Coverage Increasing":
+            case	"Sky Unchanged":
+            case	"Smoke Or Haze":
+            case	"Diamond Dust":
+                imagePath = "src/main/resources/Media/cloudy.png";
+            break;
+
+            case	"Funnel Cloud/Tornado":
+            case	"Hail Showers":
+            case	"Lightning Without Thunder":
+            case	"Overcast":
+            case	"Partially cloudy":
+            case	"Thunderstorm Without Precipitation":
+            case	"Squalls":
+                imagePath = "src/main/resources/Media/cloudy.png";
+            break;
+
+            case	"Heavy Snow":
+            case	"Light Snow":
+            case	"Snow":
+            case	"Snow And Rain Showers":
+            case	"Snow Showers":
+            case	"Ice":
+            case	"Blowing Or Drifting Snow":
+                imagePath = "src/main/resources/Media/snow.png";
+            break;
+
+            case	"Sky Coverage Decreasing":
+            case	"Clear":
+                imagePath = "src/main/resources/Media/sunny.png";
+            break;
+
+            default:
+                imagePath = "src/main/resources/Media/VU-logo.png";
+
+        }
+        return imagePath;
+    }
 }
