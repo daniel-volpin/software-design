@@ -58,7 +58,7 @@ public class MainSceneController {
 
     /** Menu buttons*/
     @FXML private Button profileBtn;
-    @FXML private Button settingsBtn;
+    @FXML private Button activityBtn;
     @FXML private Button GPXBtn;
 
     /** button to set the map's zoom. */
@@ -73,14 +73,10 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML private Slider sliderZoom;
 
-
     @FXML public VBox rightSideVBox;
     @FXML public BorderPane borderPane;
 
-
-    public MainSceneController() {
-        markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
-    }
+    public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
     /**
      * called after the fxml is loaded and all objects are created. This is not called initialize any more,
@@ -345,25 +341,15 @@ public class MainSceneController {
     public void GPXBtnEntered(MouseEvent mouseEvent) {
         GPXBtn.setStyle("-fx-background-color: #d3bbdd");
     }
-
     public void profileBtnEntered(MouseEvent mouseEvent) {
         profileBtn.setStyle("-fx-background-color: #d3bbdd");
     }
+    public void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd");}
 
-    public void settingsBtnEntered(MouseEvent mouseEvent) {
-        settingsBtn.setStyle("-fx-background-color: #d3bbdd");
-    }
-
-    public void GPXBtnExited(MouseEvent mouseEvent) {
-        GPXBtn.setStyle("-fx-background-color: #C1BBDD");
-    }
-
+    public void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void profileBtnExited(MouseEvent mouseEvent) {
         profileBtn.setStyle("-fx-background-color: #C1BBDD");
     }
-    public void settingsBtnExited(MouseEvent mouseEvent) {
-        settingsBtn.setStyle("-fx-background-color: #C1BBDD");
-    }
-
+    public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
 }
