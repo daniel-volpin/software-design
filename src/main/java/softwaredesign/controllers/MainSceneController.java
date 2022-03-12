@@ -4,10 +4,12 @@ import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -44,43 +46,33 @@ public class MainSceneController {
     /** the markers. */
     private final Marker markerClick;
 
-    @FXML
-    public VBox rightSideVBox;
-
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
 
     // TODO: Profile
-
     private ArrayList<Activity> activityHistory;
 
     /** Menu buttons*/
-    @FXML
-    private Button profileBtn;
-    @FXML
-    private Button settingsBtn;
-    @FXML
-    private Button GPXBtn;
+    @FXML private Button profileBtn;
+    @FXML private Button settingsBtn;
+    @FXML private Button GPXBtn;
 
     /** button to set the map's zoom. */
-    @FXML
-    private Button buttonZoom;
+    @FXML private Button buttonZoom;
 
     /** the MapView containing the map */
-    @FXML
-    private MapView mapView;
+    @FXML private MapView mapView;
 
     /** the box containing the top controls, must be enabled when mapView is initialized */
-    @FXML
-    private HBox topControls;
+    @FXML private HBox topControls;
 
     /** Slider to change the zoom value */
-    @FXML
-    private Slider sliderZoom;
+    @FXML private Slider sliderZoom;
 
-    /** total distance label */
-    @FXML
-    Label totalDistanceLabel;
+
+    @FXML public VBox rightSideVBox;
+    @FXML public BorderPane borderPane;
+
 
     public MainSceneController() {
         markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);
@@ -204,10 +196,38 @@ public class MainSceneController {
         addActivity(newActivity);
         changeShownActivity(newActivity);
 
-        rightSideVBox.setPrefSize(200, 300);
         Double totalDistance = newActivity.getTotalDistance();
         totalDistance = (double) (Math.round(totalDistance * 100) / 100);
+        Label totalDistanceLabel = new Label();
         totalDistanceLabel.setText("Total Distance: " + totalDistance + "m");
+
+        Double temp = newActivity.getWeatherTemp();
+        Label tempLabel = new Label();
+        tempLabel.setText("Temperature: " + temp);
+
+        Double humidity = newActivity.getWeatherHumidity();
+        Label humidityLabel = new Label();
+        humidityLabel.setText("Humidity: " + humidity + "%");
+
+        Double windSpeed = newActivity.getWeatherHumidity();
+        Label windSpeedLabel = new Label();
+        windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
+
+        String conditions = newActivity.getWeatherConditions();
+        Label conditionsLabel = new Label();
+        conditionsLabel.setText("Weather Condition: " + conditions);
+
+        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightSide.fxml"));
+        try {
+            rightSideVBox = rightSideLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        conditionsLabel.setWrapText(true);
+
+        rightSideVBox.getChildren().addAll(totalDistanceLabel, tempLabel, windSpeedLabel, humidityLabel, conditionsLabel);
+        borderPane.setRight(rightSideVBox);
 
     }
 
@@ -272,16 +292,28 @@ public class MainSceneController {
 
     }
 
-    public void BtnMouseEntered() {
-        GPXBtn.setOnMouseEntered(e -> GPXBtn.setStyle("-fx-background-color: #d3bbdd"));
-        profileBtn.setOnMouseEntered(e -> profileBtn.setStyle("-fx-background-color: #d3bbdd"));
-        settingsBtn.setOnMouseEntered(e -> settingsBtn.setStyle("-fx-background-color: #d3bbdd"));
+    public void GPXBtnEntered(MouseEvent mouseEvent) {
+        GPXBtn.setStyle("-fx-background-color: #d3bbdd");
     }
 
-    public void BtnMouseExited(MouseEvent mouseEvent) {
-        GPXBtn.setOnMouseExited(e -> GPXBtn.setStyle("-fx-background-color: #C1BBDD"));
-        profileBtn.setOnMouseExited(e -> profileBtn.setStyle("-fx-background-color: #C1BBDD"));
-        settingsBtn.setOnMouseExited(e -> settingsBtn.setStyle("-fx-background-color: #C1BBDD"));
+    public void profileBtnEntered(MouseEvent mouseEvent) {
+        profileBtn.setStyle("-fx-background-color: #d3bbdd");
     }
+
+    public void settingsBtnEntered(MouseEvent mouseEvent) {
+        settingsBtn.setStyle("-fx-background-color: #d3bbdd");
+    }
+
+    public void GPXBtnExited(MouseEvent mouseEvent) {
+        GPXBtn.setStyle("-fx-background-color: #C1BBDD");
+    }
+
+    public void profileBtnExited(MouseEvent mouseEvent) {
+        profileBtn.setStyle("-fx-background-color: #C1BBDD");
+    }
+    public void settingsBtnExited(MouseEvent mouseEvent) {
+        settingsBtn.setStyle("-fx-background-color: #C1BBDD");
+    }
+
 
 }

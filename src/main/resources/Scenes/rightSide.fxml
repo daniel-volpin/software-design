@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="softwaredesign.controllers.MainSceneController" fx:id="rightSideVBox"
+            prefWidth="170.0" prefHeight="800" BorderPane.alignment="CENTER" style="-fx-background-color: #C1BBDD">
+</VBox>

@@ -16,7 +16,8 @@
 <?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
-            xmlns="http://javafx.com/javafx/11.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController">
+            xmlns="http://javafx.com/javafx/11.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController"
+            fx:id="borderPane">
     <top>
         
     </top>
@@ -45,21 +46,21 @@
                         <VBox prefWidth="170.0">
                             <children>
                                 <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openGPXFile"
-                                        onMouseEntered="#BtnMouseEntered" onMouseExited="#BtnMouseExited" prefHeight="40.0" prefWidth="170.0"
+                                        onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0" prefWidth="170.0"
                                         style="-fx-background-color: #C1BBDD;" styleClass="menuBtn" text="Upload GPX file" textFill="WHITE">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="profileBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onMouseEntered="#BtnMouseEntered"
-                                        onMouseExited="#BtnMouseExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;"
+                                <Button fx:id="profileBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onMouseEntered="#profileBtnEntered"
+                                        onMouseExited="#profileBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;"
                                         styleClass="menuBtn" text="Profile" textFill="WHITE">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="settingsBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onMouseEntered="#BtnMouseEntered"
-                                        onMouseExited="#BtnMouseExited" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #C1BBDD;"
+                                <Button fx:id="settingsBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onMouseEntered="#settingsBtnEntered"
+                                        onMouseExited="#settingsBtnExited" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #C1BBDD;"
                                         styleClass="menuBtn" text="Settings" textFill="WHITE">
                                     <font>
                                         <Font size="14.0" />
@@ -86,10 +87,5 @@
         </HBox>
     </bottom>
     <right>
-        <VBox fx:id="rightSideVBox" prefHeight="200.0" prefWidth="0" BorderPane.alignment="CENTER" style="-fx-background-color: #C1BBDD">
-            <children>
-                <Label fx:id="totalDistanceLabel"></Label>
-            </children>
-        </VBox>
     </right>
 </BorderPane>

@@ -18,6 +18,22 @@ public class Activity {
         return routeData;
     }
 
+    public Double getWeatherHumidity() {
+        return weather.getHumidity();
+    }
+
+    public String getWeatherConditions() {
+        return weather.getConditions();
+    }
+
+    public Double getWeatherTemp() {
+        return weather.getTemperature();
+    }
+
+    public Double getWeatherWindSpeed() {
+        return weather.getWindSpeed();
+    }
+
     public Double getTotalDistance() {
         return Calc.findSum(routeData.getDistances());
     }
