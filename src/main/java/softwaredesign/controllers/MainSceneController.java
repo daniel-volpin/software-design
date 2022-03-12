@@ -327,20 +327,18 @@ public class MainSceneController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GPX Files", "*.gpx"));
 
-        GPXBtn.setOnAction(event -> {
-            File file = fileChooser.showOpenDialog(null);
-            try {
-                FileInputStream gpxFile = new FileInputStream(file);
-                Track track = getTrackFromFile(gpxFile);
-                initializeActivity(track);
-            } catch (java.io.FileNotFoundException e) {
-                // TODO: Write the error to the screen such that the user knows something went wrong
-                logger.info("ERROR: GPX file not found");
-            } catch (Exception e) {
-                // TODO: Write the error to the screen such that the user knows something went wrong
-                logger.info("ERROR: " + e.getMessage());
-            }
-        });
+        File file = fileChooser.showOpenDialog(null);
+        try {
+            FileInputStream gpxFile = new FileInputStream(file);
+            Track track = getTrackFromFile(gpxFile);
+            initializeActivity(track);
+        } catch (java.io.FileNotFoundException e) {
+            // TODO: Write the error to the screen such that the user knows something went wrong
+            logger.info("ERROR: GPX file not found");
+        } catch (Exception e) {
+            // TODO: Write the error to the screen such that the user knows something went wrong
+            logger.info("ERROR: " + e.getMessage());
+        }
 
     }
 
