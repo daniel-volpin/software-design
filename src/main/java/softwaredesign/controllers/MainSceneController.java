@@ -3,6 +3,7 @@ package softwaredesign.controllers;
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.animation.Transition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -11,9 +12,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -75,6 +74,7 @@ public class MainSceneController {
 
     @FXML public VBox rightSideVBox;
     @FXML public BorderPane borderPane;
+    @FXML public Button retractBtn;
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -196,62 +196,68 @@ public class MainSceneController {
         addActivity(newActivity);
         changeShownActivity(newActivity);
 
-        ArrayList<Label> shownLabels = new ArrayList<>();
-
-        Double totalDistance = newActivity.getTotalDistanceM();
-        totalDistance = Math.round(totalDistance * 100) / 100.0;
-        Label totalDistanceLabel = new Label();
-        totalDistanceLabel.setText("Total Distance: " + totalDistance + "m");
-        shownLabels.add(totalDistanceLabel);
+        ArrayList<Label> routDataLabels = null;
+        ArrayList<Label> weatherLabels = null;
 
         try {
-            Double totalTimeS = newActivity.getTotalTimeS();
-            Double totalTimeM = Math.round(totalTimeS / 60.0 * 100) / 100.0;
+            double totalDistanceM = Math.round(newActivity.getTotalDistanceM() * 100) / 100.0;
+            double totalTimeM = Math.round(newActivity.getTotalTimeS() / 60.0 * 100) / 100.0;
+            double avgSpeedKMpS = Math.round(newActivity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
+
+            routDataLabels = new ArrayList<>();
+
+            Label totalDistanceLabel = new Label();
+            totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
+            routDataLabels.add(totalDistanceLabel);
+
             Label totalTimeLabel = new Label();
             totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
-            shownLabels.add(totalTimeLabel);
-        } catch (Exception e) {
-            logger.trace(e.toString());
-        }
+            routDataLabels.add(totalTimeLabel);
 
-        try {
-            Double avgSpeedMpS = newActivity.getAverageSpeedMpS();
-            Double avgSpeedKMpS = Math.round(avgSpeedMpS * 3.6 * 100) / 100.0;
             Label avgSpeedLabel = new Label();
             avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/h");
-            shownLabels.add(avgSpeedLabel);
+            routDataLabels.add(avgSpeedLabel);
+
         } catch (Exception e) {
             logger.trace(e.toString());
         }
 
         Label separatorLabel = new Label();
         separatorLabel.setText("\n\n");
-        shownLabels.add(separatorLabel);
 
         ImageView imageView = null;
-        Weather weather = newActivity.getWeather();
-        if (weather != null) {
+        Weather weather = null;
 
+        try {
+            weather = newActivity.getWeather();
+        } catch (Exception e) {
+            logger.trace(e.toString());
+        }
+
+        if (weather != null) {
             Double temp = weather.getTemperature();
+            Double humidity = weather.getHumidity();
+            Double windSpeed = weather.getWindSpeed();
+
+            weatherLabels = new ArrayList<>();
+
             Label tempLabel = new Label();
             tempLabel.setText("Temperature: " + temp + "\u00B0C");
-            shownLabels.add(tempLabel);
+            weatherLabels.add(tempLabel);
 
-            Double humidity = weather.getHumidity();
             Label humidityLabel = new Label();
             humidityLabel.setText("Humidity: " + humidity + "%");
-            shownLabels.add(humidityLabel);
+            weatherLabels.add(humidityLabel);
 
-            Double windSpeed = weather.getWindSpeed();
             Label windSpeedLabel = new Label();
             windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
-            shownLabels.add(windSpeedLabel);
+            weatherLabels.add(windSpeedLabel);
 
             String conditions = weather.getConditions();
             Label conditionsLabel = new Label();
             conditionsLabel.setText("Weather Condition: " + conditions);
             conditionsLabel.setWrapText(true);
-            shownLabels.add(conditionsLabel);
+            weatherLabels.add(conditionsLabel);
 
             try {
                 String weatherImagePath = weather.getImagePath();
@@ -263,20 +269,31 @@ public class MainSceneController {
                 e.printStackTrace();
             }
         }
-        
-        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightSide.fxml"));
+
+        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
             rightSideVBox = rightSideLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        rightSideVBox.getChildren().addAll(shownLabels);
-        if (imageView != null) {
+        Label rightPaneLabel = new Label("Route Information");
+        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: 18px; -fx-text-fill: white");
+        HBox titleBox = new HBox();
+        titleBox.setStyle("-fx-alignment: center");
+
+        titleBox.getChildren().add(rightPaneLabel);
+//        rightSideVBox.getChildren().add(retractBtn);
+
+        if (routDataLabels != null && weatherLabels != null) {
+            rightSideVBox.getChildren().add(titleBox);
+            rightSideVBox.getChildren().addAll(routDataLabels);
+            rightSideVBox.getChildren().add(separatorLabel);
+            rightSideVBox.getChildren().addAll(weatherLabels);
             rightSideVBox.getChildren().addAll(imageView);
         }
-        borderPane.setRight(rightSideVBox);
 
+        borderPane.setRight(rightSideVBox);
     }
 
     private void addActivity(Activity newActivity) {
@@ -338,18 +355,36 @@ public class MainSceneController {
 
     }
 
-    public void GPXBtnEntered(MouseEvent mouseEvent) {
-        GPXBtn.setStyle("-fx-background-color: #d3bbdd");
+    public void openProfilePane(ActionEvent event) {
+        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
+        try {
+            rightSideVBox = rightSideLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Label rightPaneLabel = new Label("Profile");
+        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: 18px; -fx-text-fill: white");
+
+        HBox titleBox = new HBox();
+        titleBox.setStyle("-fx-alignment: center");
+
+        titleBox.getChildren().add(rightPaneLabel);
+        rightSideVBox.getChildren().add(titleBox);
+        borderPane.setRight(rightSideVBox);
     }
-    public void profileBtnEntered(MouseEvent mouseEvent) {
-        profileBtn.setStyle("-fx-background-color: #d3bbdd");
+
+    public void retractBtnClicked(ActionEvent event) {
+        rightSideVBox.setPrefSize(0,0);
     }
+
+    public void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd");}
+    public void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd");}
     public void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd");}
 
     public void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
-    public void profileBtnExited(MouseEvent mouseEvent) {
-        profileBtn.setStyle("-fx-background-color: #C1BBDD");
-    }
+    public void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
 }

@@ -5,5 +5,8 @@
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="softwaredesign.controllers.MainSceneController" fx:id="rightSideVBox"
-            prefWidth="170.0" prefHeight="800" BorderPane.alignment="CENTER" style="-fx-background-color: #C1BBDD">
+            prefWidth="170.0" prefHeight="800" minWidth="0" BorderPane.alignment="CENTER" style="-fx-background-color: #C1BBDD">
+    <Button fx:id="retractBtn" style="-fx-background-color: white; -fx-max-width: 30" text=">" onAction="#retractBtnClicked">
+
+    </Button>
 </VBox>
