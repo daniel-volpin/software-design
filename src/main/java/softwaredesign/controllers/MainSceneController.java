@@ -283,7 +283,6 @@ public class MainSceneController {
         titleBox.setStyle("-fx-alignment: center");
 
         titleBox.getChildren().add(rightPaneLabel);
-//        rightSideVBox.getChildren().add(retractBtn);
 
         if (routDataLabels != null && weatherLabels != null) {
             rightSideVBox.getChildren().add(titleBox);
@@ -377,6 +376,13 @@ public class MainSceneController {
 
     public void retractBtnClicked(ActionEvent event) {
         rightSideVBox.setPrefSize(0,0);
+    }
+
+    public void retractBtnEntered(MouseEvent event) {
+        retractBtn.setStyle("-fx-background-color: #d3bbdd");
+    }
+    public void retractBtnExited(MouseEvent event) {
+        retractBtn.setStyle("-fx-background-color: #C1BBDD");
     }
 
     public void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd");}
