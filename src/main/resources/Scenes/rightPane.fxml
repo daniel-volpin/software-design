@@ -4,8 +4,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="rightSideVBox" minWidth="0" prefHeight="800" prefWidth="170.0" style="-fx-background-color: #C1BBDD" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController">
-    <Button fx:id="retractBtn" style="-fx-background-color: #C1BBDD; -fx-max-width: 30" onMouseEntered="#retractBtnEntered" onMouseExited="#retractBtnExited" onAction="#retractBtnClicked" text=">">
-
+<VBox fx:id="rightSideVBox" minWidth="0" prefHeight="800" prefWidth="200.0" style="-fx-background-color: #C1BBDD" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController">
+    <Button fx:id="retractBtn" style="-fx-background-color: #C1BBDD; -fx-font-size: large;"
+            onMouseEntered="#retractBtnEntered" onMouseExited="#retractBtnExited" onAction="#retractBtnClicked"
+            text=">" prefHeight="40" prefWidth="40" textFill="white">
     </Button>
 </VBox>

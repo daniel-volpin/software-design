@@ -6,6 +6,7 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -278,18 +279,23 @@ public class MainSceneController {
         }
 
         Label rightPaneLabel = new Label("Route Information");
-        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: 18px; -fx-text-fill: white");
+        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: large; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 0 0 10 0");
+
         HBox titleBox = new HBox();
         titleBox.setStyle("-fx-alignment: center");
-
         titleBox.getChildren().add(rightPaneLabel);
 
+        VBox vBox = new VBox();
+        vBox.setPadding(new Insets(0, 0, 0, 10));
+
         if (routDataLabels != null && weatherLabels != null) {
+            vBox.getChildren().addAll(routDataLabels);
+            vBox.getChildren().add(separatorLabel);
+            vBox.getChildren().addAll(weatherLabels);
+            vBox.getChildren().add(imageView);
+
             rightSideVBox.getChildren().add(titleBox);
-            rightSideVBox.getChildren().addAll(routDataLabels);
-            rightSideVBox.getChildren().add(separatorLabel);
-            rightSideVBox.getChildren().addAll(weatherLabels);
-            rightSideVBox.getChildren().addAll(imageView);
+            rightSideVBox.getChildren().add(vBox);
         }
 
         borderPane.setRight(rightSideVBox);
@@ -354,7 +360,7 @@ public class MainSceneController {
 
     }
 
-    public void openProfilePane(ActionEvent event) {
+    public void openProfilePane(ActionEvent event) throws FileNotFoundException {
         FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
             rightSideVBox = rightSideLoader.load();
@@ -362,9 +368,8 @@ public class MainSceneController {
             e.printStackTrace();
         }
 
-
         Label rightPaneLabel = new Label("Profile");
-        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: 18px; -fx-text-fill: white");
+        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: large; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 0 0 10 0");
 
         HBox titleBox = new HBox();
         titleBox.setStyle("-fx-alignment: center");
@@ -378,17 +383,12 @@ public class MainSceneController {
         rightSideVBox.setPrefSize(0,0);
     }
 
-    public void retractBtnEntered(MouseEvent event) {
-        retractBtn.setStyle("-fx-background-color: #d3bbdd");
-    }
-    public void retractBtnExited(MouseEvent event) {
-        retractBtn.setStyle("-fx-background-color: #C1BBDD");
-    }
+    public void retractBtnEntered(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
+    public void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    public void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    public void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
 
-    public void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd");}
-    public void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd");}
-    public void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd");}
-
+    public void retractBtnExited(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
     public void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
