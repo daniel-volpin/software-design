@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.sothawo.mapjfx.MapView?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
+            xmlns="http://javafx.com/javafx/11.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController"
+            fx:id="borderPane">
+    <top>
+        
+    </top>
+    <center>
+        <MapView fx:id="mapView" BorderPane.alignment="CENTER"/>
+    </center>
+    <left>
+        <VBox prefWidth="170.0" style="-fx-background-color: #C1BBDD;" BorderPane.alignment="CENTER">
+            <children>
+                <ImageView fitHeight="49.0" fitWidth="166.0">
+                    <image>
+                        <Image url="@/Media/VU-logo.png" />
+                    </image>
+                </ImageView>
+                <Pane prefHeight="159.0" prefWidth="137.0">
+                    <children>
+                        <Label layoutX="18.0" layoutY="53.0" text="AerobixTracker" textFill="WHITE">
+                            <font>
+                                <Font name="System Bold" size="18.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </Pane>
+                <AnchorPane>
+                    <children>
+                        <VBox prefWidth="170.0">
+                            <children>
+                                <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openGPXFile"
+                                        onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0" prefWidth="170.0"
+                                        style="-fx-background-color: #C1BBDD;" styleClass="menuBtn" text="Upload GPX file" textFill="WHITE">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Button>
+                                <Button fx:id="profileBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openProfilePane" onMouseEntered="#profileBtnEntered"
+                                        onMouseExited="#profileBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;"
+                                        styleClass="menuBtn" text="Profile" textFill="WHITE">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Button>
+                                <Button fx:id="activityBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onMouseEntered="#activityBtnEntered"
+                                        onMouseExited="#activityBtnExited" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #C1BBDD;"
+                                        styleClass="menuBtn" text="Activity History" textFill="WHITE">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Button>
+                            </children>
+                        </VBox>
+                    </children>
+                </AnchorPane>
+            </children>
+        </VBox>
+    </left>
+    <bottom>
+        <HBox fx:id="topControls" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button fx:id="buttonZoom" text="Zoom 14" style="-fx-background-color: #C1BBDD"/>
+                <Slider fx:id="sliderZoom" blockIncrement="1.0" majorTickUnit="7.0" max="28.0" minorTickCount="6"
+                        showTickLabels="true" showTickMarks="true" snapToTicks="true" value="14.0" HBox.hgrow="ALWAYS"
+                        style="-fx-control-inner-background: #C1BBDD;"/>
+            </children>
+            <padding>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            </padding>
+        </HBox>
+    </bottom>
+    <right>
+    </right>
+</BorderPane>

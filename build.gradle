@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id "org.openjfx.javafxplugin" version "0.0.12"
+    id 'application'
 }
 
 group 'org.example'
@@ -10,17 +12,34 @@ sourceCompatibility = 11
 repositories {
     mavenCentral()
     flatDir {
-        dirs 'libs'
+        dirs 'lib'
     }
 }
 
+jar {
+    manifest {
+        attributes "Main-Class": "softwaredesign.AppLauncher"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+application {
+    mainClassName = 'softwaredesign.AppLauncher'
+}
+
 dependencies {
-    implementation name: 'javafx.base'
-    implementation name: 'javafx.controls'
-    implementation name: 'javafx.fxml'
-    implementation name: 'javafx.graphics'
-    implementation name: 'javafx.media'
-    implementation name: 'javafx.web'
+    implementation name: 'GPXParser'
+    implementation group: 'com.dlsc', name: 'GMapsFX', version: '11.0.6'
+    implementation 'com.sothawo:mapjfx:2.13.0'
+    implementation 'org.json:json:20211205'
 
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+}
+
+javafx {
+    version = "17"
+    modules = ['javafx.controls', 'javafx.fxml', 'javafx.base', 'javafx.graphics', 'javafx.media', 'javafx.web']
 }
