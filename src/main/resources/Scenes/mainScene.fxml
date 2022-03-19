@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.CheckBox?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0"
             xmlns="http://javafx.com/javafx/11.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController"
             fx:id="borderPane">
@@ -70,6 +71,21 @@
                         </VBox>
                     </children>
                 </AnchorPane>
+                <HBox style="-fx-translate-y: 100;" alignment="CENTER">
+                    <VBox>
+                        <HBox alignment="CENTER">
+                            <Label fx:id="metricLabel" text="Metric"
+                                   style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold"/>
+                            <Label fx:id="imperialLabel" text="Imperial"
+                                   style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal"/>
+                        </HBox>
+                        <HBox alignment="CENTER">
+                            <CheckBox fx:id="metricCheckBox" onAction="#metricCheckBoxTicked" selected="true" disable="true"/>
+                            <CheckBox fx:id="imperialCheckBox" onAction="#imperialCheckBoxTicked" selected="false" disable="false"
+                                      style="-fx-padding: 0 0 0 30;"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
             </children>
         </VBox>
     </left>

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
@@ -49,6 +50,14 @@ public class MainSceneController {
 
     /** the markers. */
     private final Marker markerClick;
+
+    /** check boxes to change route data from metric to imperial and vise versa. */
+    public CheckBox imperialCheckBox;
+    public CheckBox metricCheckBox;
+
+    /** labels for metric and imperial unit change*/
+    public Label metricLabel;
+    public Label imperialLabel;
 
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
@@ -392,5 +401,44 @@ public class MainSceneController {
     public void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
+
+
+    public void metricCheckBoxTicked(ActionEvent mouseEvent) {
+        if (metricCheckBox.isSelected()) {
+            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+            metricCheckBox.setDisable(true);
+
+            imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+            imperialCheckBox.setDisable(false);
+            imperialCheckBox.setSelected(false);
+        } else {
+            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+            metricCheckBox.setDisable(false);
+            metricCheckBox.setSelected(true);
+
+            imperialCheckBox.setDisable(true);
+            imperialCheckBox.setSelected(false);
+        }
+    }
+
+
+    public void imperialCheckBoxTicked(ActionEvent mouseEvent) {
+        if (imperialCheckBox.isSelected()) {
+            imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+            imperialCheckBox.setDisable(true);
+
+            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+            metricCheckBox.setDisable(false);
+            metricCheckBox.setSelected(false);
+        } else {
+            imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+            imperialCheckBox.setDisable(false);
+            imperialCheckBox.setSelected(false);
+
+            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+            metricCheckBox.setDisable(true);
+            metricCheckBox.setSelected(true);
+        }
+    }
 
 }
