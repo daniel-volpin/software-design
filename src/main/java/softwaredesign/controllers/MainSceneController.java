@@ -272,10 +272,8 @@ public class MainSceneController {
         return weatherLabels;
     }
 
-//    private void initializeActivity(ArrayList<Waypoint> wayPoints) {
-//        Activity newActivity = new Activity(wayPoints);
-    private void initializeActivity(Track track) {
-        Activity newActivity = new Activity(track);
+    private void initializeActivity(ArrayList<Waypoint> wayPoints) {
+        Activity newActivity = new Activity(wayPoints);
         addActivity(newActivity);
         changeShownActivity(newActivity);
 
@@ -348,26 +346,16 @@ public class MainSceneController {
         GPXParser p = new GPXParser();
         GPX gpx = p.parseGPX(gpxFile);
         HashSet<Route> routes = gpx.getRoutes();
-
-        if (routes.size() == 1) {
-            Route[] routeArray = routes.toArray(new Route[0]);
-            return routeArray[0].getRoutePoints();
-        } else {
-            throw new IOException("Please provide a GPX File with exactly one Track or Route");
-        }
-    }
-
-    private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
-        GPXParser p = new GPXParser();
-        GPX gpx = p.parseGPX(gpxFile);
         HashSet<Track> tracks = gpx.getTracks();
 
-        // TODO: Multiple tracks --> trackHistory?
-        if (tracks.size() == 1) {
+        if (routes != null && routes.size() == 1) {
+            Route[] routeArray = routes.toArray(new Route[0]);
+            return routeArray[0].getRoutePoints();
+        } else if (tracks != null && tracks.size() == 1) {
             Track[] trackArray = tracks.toArray(new Track[0]);
-            return trackArray[0];
+            return trackArray[0].getTrackPoints();
         } else {
-            throw new IOException("Please provide a GPX File with exactly one Track");
+            throw new IOException("Please provide a GPX File with exactly one Track or Route");
         }
     }
 
@@ -379,10 +367,8 @@ public class MainSceneController {
         File file = fileChooser.showOpenDialog(null);
         try {
             FileInputStream gpxFile = new FileInputStream(file);
-            Track track = getTrackFromFile(gpxFile);
-            initializeActivity(track);
-//            ArrayList<Waypoint> wayPoints = getWayPointsFromFile(gpxFile);
-//            initializeActivity(wayPoints);
+            ArrayList<Waypoint> wayPoints = getWayPointsFromFile(gpxFile);
+            initializeActivity(wayPoints);
         } catch (java.io.FileNotFoundException e) {
             // TODO: Write the error to the screen such that the user knows something went wrong
             logger.info("ERROR: GPX file not found");

@@ -13,10 +13,8 @@ public class Activity {
     private final Weather weather;
     // TODO: private ActivityType type;
 
-//    public Activity(ArrayList<Waypoint> wayPoints) {
-//        routeData = new RouteData(wayPoints);
-    public Activity(Track track) {
-        routeData = new RouteData(track);
+    public Activity(ArrayList<Waypoint> wayPoints) {
+        routeData = new RouteData(wayPoints);
 
         if (routeData.getTimeStamps()[0] == null) {
             weather = null;
