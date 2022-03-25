@@ -276,7 +276,10 @@ public class MainSceneController {
         Activity newActivity = new Activity(wayPoints);
         addActivity(newActivity);
         changeShownActivity(newActivity);
+        makeRightPane(newActivity);
+    }
 
+    private void makeRightPane(Activity newActivity) {
         ArrayList<Label> routeDataLabels = makeRouteDataLabels(newActivity);
         ArrayList<Label> weatherLabels = makeWeatherLabels(newActivity.getWeather());
         ImageView weatherImage = getWeatherImage(newActivity.getWeather());
