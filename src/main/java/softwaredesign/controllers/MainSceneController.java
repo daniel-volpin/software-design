@@ -192,84 +192,95 @@ public class MainSceneController {
         setControlsDisable(false);
     }
 
+    private ArrayList<Label> makeRouteDataLabels(Activity activity) {
+        ArrayList<Label> routeDataLabels = new ArrayList<>();
+
+        /* Calculating distance not in a try-catch-block. We assume we can always calculate the distance */
+        double totalDistanceM = Math.round(activity.getTotalDistanceM() * 100) / 100.0;
+        Label totalDistanceLabel = new Label();
+        totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
+        routeDataLabels.add(totalDistanceLabel);
+
+        try {
+            // If the GPX file does not have time-data, these function calls will fail:
+            double totalTimeM = Math.round(activity.getTotalTimeS() / 60.0 * 100) / 100.0;
+            double avgSpeedKMpS = Math.round(activity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
+
+            Label totalTimeLabel = new Label();
+            totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
+            routeDataLabels.add(totalTimeLabel);
+
+            Label avgSpeedLabel = new Label();
+            avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/h");
+            routeDataLabels.add(avgSpeedLabel);
+
+        } catch (Exception e) {
+            logger.trace(e.toString());
+        }
+
+        return routeDataLabels;
+    }
+
+    private ImageView getWeatherImage(Weather weather) {
+        if (weather == null) {
+            return null;
+        }
+        ImageView weatherImage = null;
+
+        try {
+            String weatherImagePath = weather.getImagePath();
+            Image image = new Image(new FileInputStream(weatherImagePath));
+            weatherImage = new ImageView(image);
+            weatherImage.setFitWidth(100);
+            weatherImage.setPreserveRatio(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return weatherImage;
+    }
+
+    private ArrayList<Label> makeWeatherLabels(Weather weather) {
+        if (weather == null) {
+            return null;
+        }
+        ArrayList<Label> weatherLabels = new ArrayList<>();
+
+        Double temp = weather.getTemperature();
+        Double humidity = weather.getHumidity();
+        Double windSpeed = weather.getWindSpeed();
+        String conditions = weather.getConditions();
+
+        Label tempLabel = new Label();
+        tempLabel.setText("Temperature: " + temp + "\u00B0C");
+        weatherLabels.add(tempLabel);
+
+        Label humidityLabel = new Label();
+        humidityLabel.setText("Humidity: " + humidity + "%");
+        weatherLabels.add(humidityLabel);
+
+        Label windSpeedLabel = new Label();
+        windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
+        weatherLabels.add(windSpeedLabel);
+
+        Label conditionsLabel = new Label();
+        conditionsLabel.setText("Weather Condition: " + conditions);
+        conditionsLabel.setWrapText(true);
+        weatherLabels.add(conditionsLabel);
+
+        return weatherLabels;
+    }
+
     private void initializeActivity(Track track) {
         Activity newActivity = new Activity(track);
         addActivity(newActivity);
         changeShownActivity(newActivity);
 
-        ArrayList<Label> routDataLabels = null;
-        ArrayList<Label> weatherLabels = null;
-
-        try {
-            double totalDistanceM = Math.round(newActivity.getTotalDistanceM() * 100) / 100.0;
-            double totalTimeM = Math.round(newActivity.getTotalTimeS() / 60.0 * 100) / 100.0;
-            double avgSpeedKMpS = Math.round(newActivity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
-
-            routDataLabels = new ArrayList<>();
-
-            Label totalDistanceLabel = new Label();
-            totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
-            routDataLabels.add(totalDistanceLabel);
-
-            Label totalTimeLabel = new Label();
-            totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
-            routDataLabels.add(totalTimeLabel);
-
-            Label avgSpeedLabel = new Label();
-            avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/h");
-            routDataLabels.add(avgSpeedLabel);
-
-        } catch (Exception e) {
-            logger.trace(e.toString());
-        }
+        ArrayList<Label> routeDataLabels = makeRouteDataLabels(newActivity);
+        ArrayList<Label> weatherLabels = makeWeatherLabels(newActivity.getWeather());
+        ImageView weatherImage = getWeatherImage(newActivity.getWeather());
 
         Label separatorLabel = new Label();
         separatorLabel.setText("\n\n");
-
-        ImageView imageView = null;
-        Weather weather = null;
-
-        try {
-            weather = newActivity.getWeather();
-        } catch (Exception e) {
-            logger.trace(e.toString());
-        }
-
-        if (weather != null) {
-            Double temp = weather.getTemperature();
-            Double humidity = weather.getHumidity();
-            Double windSpeed = weather.getWindSpeed();
-
-            weatherLabels = new ArrayList<>();
-
-            Label tempLabel = new Label();
-            tempLabel.setText("Temperature: " + temp + "\u00B0C");
-            weatherLabels.add(tempLabel);
-
-            Label humidityLabel = new Label();
-            humidityLabel.setText("Humidity: " + humidity + "%");
-            weatherLabels.add(humidityLabel);
-
-            Label windSpeedLabel = new Label();
-            windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
-            weatherLabels.add(windSpeedLabel);
-
-            String conditions = weather.getConditions();
-            Label conditionsLabel = new Label();
-            conditionsLabel.setText("Weather Condition: " + conditions);
-            conditionsLabel.setWrapText(true);
-            weatherLabels.add(conditionsLabel);
-
-            try {
-                String weatherImagePath = weather.getImagePath();
-                Image image = new Image(new FileInputStream(weatherImagePath));
-                imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setPreserveRatio(true);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
 
         FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
@@ -288,15 +299,18 @@ public class MainSceneController {
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(0, 0, 0, 10));
 
-        if (routDataLabels != null && weatherLabels != null) {
-            vBox.getChildren().addAll(routDataLabels);
-            vBox.getChildren().add(separatorLabel);
+        vBox.getChildren().addAll(routeDataLabels);
+        vBox.getChildren().add(separatorLabel);
+        
+        if (weatherLabels != null) {
             vBox.getChildren().addAll(weatherLabels);
-            vBox.getChildren().add(imageView);
-
-            rightSideVBox.getChildren().add(titleBox);
-            rightSideVBox.getChildren().add(vBox);
         }
+        if (weatherImage != null) {
+            vBox.getChildren().add(weatherImage);
+        }
+
+        rightSideVBox.getChildren().add(titleBox);
+        rightSideVBox.getChildren().add(vBox);
 
         borderPane.setRight(rightSideVBox);
     }
