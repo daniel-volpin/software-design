@@ -15,6 +15,7 @@ public class RouteData {
     private final Double[] longitudes;
     private final Double[] elevations;
 
+//    public RouteData(ArrayList<Waypoint> wayPoints) {
     public RouteData(Track track) {
         ArrayList<Waypoint> wayPoints = track.getTrackPoints();
         int nrWayPoints = wayPoints.size();

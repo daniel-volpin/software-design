@@ -19,7 +19,9 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
+import org.alternativevision.gpx.beans.Route;
 import org.alternativevision.gpx.beans.Track;
+import org.alternativevision.gpx.beans.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -270,6 +272,8 @@ public class MainSceneController {
         return weatherLabels;
     }
 
+//    private void initializeActivity(ArrayList<Waypoint> wayPoints) {
+//        Activity newActivity = new Activity(wayPoints);
     private void initializeActivity(Track track) {
         Activity newActivity = new Activity(track);
         addActivity(newActivity);
@@ -340,6 +344,19 @@ public class MainSceneController {
         mapView.setExtent(Extent.forCoordinates(routeExtent));
     }
 
+    private ArrayList<Waypoint> getWayPointsFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
+        GPXParser p = new GPXParser();
+        GPX gpx = p.parseGPX(gpxFile);
+        HashSet<Route> routes = gpx.getRoutes();
+
+        if (routes.size() == 1) {
+            Route[] routeArray = routes.toArray(new Route[0]);
+            return routeArray[0].getRoutePoints();
+        } else {
+            throw new IOException("Please provide a GPX File with exactly one Track or Route");
+        }
+    }
+
     private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
         GPXParser p = new GPXParser();
         GPX gpx = p.parseGPX(gpxFile);
@@ -364,6 +381,8 @@ public class MainSceneController {
             FileInputStream gpxFile = new FileInputStream(file);
             Track track = getTrackFromFile(gpxFile);
             initializeActivity(track);
+//            ArrayList<Waypoint> wayPoints = getWayPointsFromFile(gpxFile);
+//            initializeActivity(wayPoints);
         } catch (java.io.FileNotFoundException e) {
             // TODO: Write the error to the screen such that the user knows something went wrong
             logger.info("ERROR: GPX file not found");

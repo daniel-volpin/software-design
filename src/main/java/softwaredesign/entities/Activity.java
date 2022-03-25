@@ -1,7 +1,10 @@
 package softwaredesign.entities;
 
 import org.alternativevision.gpx.beans.Track;
+import org.alternativevision.gpx.beans.Waypoint;
 import softwaredesign.helperclasses.Calc;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -10,6 +13,8 @@ public class Activity {
     private final Weather weather;
     // TODO: private ActivityType type;
 
+//    public Activity(ArrayList<Waypoint> wayPoints) {
+//        routeData = new RouteData(wayPoints);
     public Activity(Track track) {
         routeData = new RouteData(track);
 
