@@ -402,7 +402,6 @@ public class MainSceneController {
     public void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
     public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
-
     public void metricCheckBoxTicked(ActionEvent mouseEvent) {
             metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
             metricCheckBox.setDisable(true);
@@ -411,8 +410,6 @@ public class MainSceneController {
             imperialCheckBox.setDisable(false);
             imperialCheckBox.setSelected(false);
     }
-
-
     public void imperialCheckBoxTicked(ActionEvent mouseEvent) {
             imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
             imperialCheckBox.setDisable(true);
