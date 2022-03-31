@@ -404,26 +404,22 @@ public class MainSceneController {
 
 
     public void metricCheckBoxTicked(ActionEvent mouseEvent) {
-        if (metricCheckBox.isSelected()) {
             metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
             metricCheckBox.setDisable(true);
 
             imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
             imperialCheckBox.setDisable(false);
             imperialCheckBox.setSelected(false);
-        }
     }
 
 
     public void imperialCheckBoxTicked(ActionEvent mouseEvent) {
-        if (imperialCheckBox.isSelected()) {
             imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
             imperialCheckBox.setDisable(true);
 
             metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
             metricCheckBox.setDisable(false);
             metricCheckBox.setSelected(false);
-        }
     }
 
 }
