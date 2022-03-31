@@ -11,9 +11,24 @@ import java.util.Date;
 public class Activity {
     private final RouteData routeData;
     private final Weather weather;
+    private ActivityType type;
     // TODO: private ActivityType type;
 
     public Activity(ArrayList<Waypoint> wayPoints) {
+        routeData = new RouteData(wayPoints);
+
+        type = null;
+
+        if (routeData.getTimeStamps()[0] == null) {
+            weather = null;
+        } else {
+            weather = new Weather(routeData);
+        }
+    }
+
+    public Activity(ArrayList<Waypoint> wayPoints, String activityName) {
+        type = new ActivityTypeFactory().getActivityType(activityName);
+
         routeData = new RouteData(wayPoints);
 
         if (routeData.getTimeStamps()[0] == null) {
@@ -21,6 +36,14 @@ public class Activity {
         } else {
             weather = new Weather(routeData);
         }
+    }
+
+    public void setActivityType(String activityName){
+        type = new ActivityTypeFactory().getActivityType(activityName);
+    }
+
+    public ActivityType getActivityType(){
+        return type;
     }
 
     public RouteData getRouteData() { return routeData;}
