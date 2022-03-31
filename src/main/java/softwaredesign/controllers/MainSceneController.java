@@ -411,13 +411,6 @@ public class MainSceneController {
             imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
             imperialCheckBox.setDisable(false);
             imperialCheckBox.setSelected(false);
-        } else {
-            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
-            metricCheckBox.setDisable(false);
-            metricCheckBox.setSelected(true);
-
-            imperialCheckBox.setDisable(true);
-            imperialCheckBox.setSelected(false);
         }
     }
 
@@ -430,14 +423,6 @@ public class MainSceneController {
             metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
             metricCheckBox.setDisable(false);
             metricCheckBox.setSelected(false);
-        } else {
-            imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
-            imperialCheckBox.setDisable(false);
-            imperialCheckBox.setSelected(false);
-
-            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
-            metricCheckBox.setDisable(true);
-            metricCheckBox.setSelected(true);
         }
     }
 
