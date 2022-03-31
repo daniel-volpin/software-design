@@ -14,7 +14,9 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -35,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -45,7 +48,7 @@ public class MainSceneController {
     private static final Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
     /** Coordinate of Amsterdam city centre. */
-    private static Coordinate centerPoint = new Coordinate(52.3717204, 4.9020727);
+    private static final Coordinate centerPoint = new Coordinate(52.3717204, 4.9020727);
 
     /** default zoom value. */
     private static final int ZOOM_DEFAULT = 14;
@@ -53,24 +56,15 @@ public class MainSceneController {
     /** the markers. */
     private final Marker markerClick;
 
-    /** check boxes to change route data from metric to imperial and vise versa. */
-    public CheckBox imperialCheckBox;
-    public CheckBox metricCheckBox;
-
-    /** labels for metric and imperial unit change*/
-    public Label metricLabel;
-    public Label imperialLabel;
-
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
 
     // TODO: Profile
     private ArrayList<Activity> activityHistory;
+    private Activity currentActivity = null;
 
-    /** Menu buttons*/
-    @FXML private Button profileBtn;
-    @FXML private Button activityBtn;
-    @FXML private Button GPXBtn;
+    /** GLOBAL boolean to update the routeData information */
+    public boolean metricOn = true;
 
     /** button to set the map's zoom. */
     @FXML private Button buttonZoom;
@@ -84,9 +78,24 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML private Slider sliderZoom;
 
-    @FXML public VBox rightSideVBox;
-    @FXML public BorderPane borderPane;
-    @FXML public Button retractBtn;
+    /** Menu buttons*/
+    @FXML private Button profileBtn;
+    @FXML private Button activityBtn;
+    @FXML private Button GPXBtn;
+
+    /** dynamic right side pane that is loaded when an activity file is uploaded*/
+    @FXML private VBox rightSideVBox;
+    @FXML private BorderPane borderPane;
+    @FXML private Button retractBtn;
+
+    /** check boxes to change route data from metric to imperial and vise versa. */
+    @FXML private CheckBox imperialCheckBox;
+    @FXML private CheckBox metricCheckBox;
+
+    /** labels for metric and imperial unit change*/
+    @FXML private Label metricLabel;
+    @FXML private Label imperialLabel;
+
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -205,29 +214,44 @@ public class MainSceneController {
 
     private ArrayList<Label> makeRouteDataLabels(Activity activity) {
         ArrayList<Label> routeDataLabels = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("#.##");
 
-        /* Calculating distance not in a try-catch-block. We assume we can always calculate the distance */
         double totalDistanceM = Math.round(activity.getTotalDistanceM() * 100) / 100.0;
+
         Label totalDistanceLabel = new Label();
-        totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
-        routeDataLabels.add(totalDistanceLabel);
+        Label avgSpeedLabel = new Label();
+        Label totalTimeLabel = new Label();
 
         try {
             // If the GPX file does not have time-data, these function calls will fail:
             double totalTimeM = Math.round(activity.getTotalTimeS() / 60.0 * 100) / 100.0;
             double avgSpeedKMpS = Math.round(activity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
 
-            Label totalTimeLabel = new Label();
-            totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
-            routeDataLabels.add(totalTimeLabel);
+            if (!metricOn) {
+                totalDistanceM = totalDistanceM * 0.0006214;
+                totalDistanceM = Double.parseDouble(df.format(totalDistanceM));
+                totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "mi");
 
-            Label avgSpeedLabel = new Label();
-            avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/h");
+                avgSpeedKMpS = avgSpeedKMpS * 0.6214;
+                avgSpeedKMpS = Double.parseDouble(df.format(avgSpeedKMpS));
+                avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " miles/hr");
+            } else {
+                totalTimeM = Double.parseDouble(df.format(totalTimeM));
+                totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
+                avgSpeedKMpS = Double.parseDouble(df.format(avgSpeedKMpS));
+                avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/hr");
+            }
+
+            totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
+
+            routeDataLabels.add(totalTimeLabel);
             routeDataLabels.add(avgSpeedLabel);
 
         } catch (Exception e) {
             logger.trace(e.toString());
         }
+
+        routeDataLabels.add(totalDistanceLabel);
 
         return routeDataLabels;
     }
@@ -254,7 +278,9 @@ public class MainSceneController {
         if (weather == null) {
             return null;
         }
+
         ArrayList<Label> weatherLabels = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("#.##");
 
         Double temp = weather.getTemperature();
         Double humidity = weather.getHumidity();
@@ -262,19 +288,30 @@ public class MainSceneController {
         String conditions = weather.getConditions();
 
         Label tempLabel = new Label();
-        tempLabel.setText("Temperature: " + temp + "\u00B0C");
-        weatherLabels.add(tempLabel);
-
         Label humidityLabel = new Label();
-        humidityLabel.setText("Humidity: " + humidity + "%");
-        weatherLabels.add(humidityLabel);
-
         Label windSpeedLabel = new Label();
-        windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
+        Label conditionsLabel = new Label();
+
+        if (!metricOn) {
+            temp = ((9.0/5.0) * temp + 32);
+            temp = Double.valueOf(df.format(temp));
+            tempLabel.setText("Temperature: " + temp + "\u00B0F");
+
+            windSpeed = windSpeed * 0.6214;
+            windSpeed = Double.valueOf(df.format(windSpeed));
+            windSpeedLabel.setText("Wind Speed: " + windSpeed + " miles/hr");
+        } else {
+            tempLabel.setText("Temperature: " + temp + "\u00B0C");
+            windSpeedLabel.setText("Wind Speed: " + windSpeed + " km/hr");
+        }
+
+        humidityLabel.setText("Humidity: " + humidity + "%");
+        conditionsLabel.setText("Weather Condition: " + conditions);
+
+        weatherLabels.add(tempLabel);
+        weatherLabels.add(humidityLabel);
         weatherLabels.add(windSpeedLabel);
 
-        Label conditionsLabel = new Label();
-        conditionsLabel.setText("Weather Condition: " + conditions);
         conditionsLabel.setWrapText(true);
         weatherLabels.add(conditionsLabel);
 
@@ -283,6 +320,7 @@ public class MainSceneController {
 
     private void initializeActivity(ArrayList<Waypoint> wayPoints) {
         Activity newActivity = new Activity(wayPoints);
+        currentActivity = newActivity;
         addActivity(newActivity);
         changeShownActivity(newActivity);
         makeRightPane(newActivity);
@@ -371,8 +409,7 @@ public class MainSceneController {
         }
     }
 
-    @FXML
-    private void openGPXFile() {
+    @FXML private void openGPXFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GPX Files", "*.gpx"));
 
@@ -390,8 +427,7 @@ public class MainSceneController {
         }
 
     }
-
-    public void openProfilePane(ActionEvent event) throws FileNotFoundException {
+    @FXML private void openProfilePane(ActionEvent event) throws FileNotFoundException {
         FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
             rightSideVBox = rightSideLoader.load();
@@ -410,35 +446,43 @@ public class MainSceneController {
         borderPane.setRight(rightSideVBox);
     }
 
-    public void retractBtnClicked(ActionEvent event) {
+    @FXML private void retractBtnClicked(ActionEvent event) {
         rightSideVBox.setPrefSize(0,0);
     }
+    @FXML private void retractBtnEntered(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
+    @FXML private void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
 
-    public void retractBtnEntered(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
-    public void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    public void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    public void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void retractBtnExited(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
+    @FXML private void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
-    public void retractBtnExited(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
-    public void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
-    public void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
-    public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML
+    private void metricCheckBoxTicked(ActionEvent mouseEvent) {
+        metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+        metricCheckBox.setDisable(true);
 
-    public void metricCheckBoxTicked(ActionEvent mouseEvent) {
-            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
-            metricCheckBox.setDisable(true);
+        imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+        imperialCheckBox.setDisable(false);
+        imperialCheckBox.setSelected(false);
 
-            imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
-            imperialCheckBox.setDisable(false);
-            imperialCheckBox.setSelected(false);
+        metricOn = true;
+        if (currentActivity != null) makeRightPane(currentActivity);
     }
-    public void imperialCheckBoxTicked(ActionEvent mouseEvent) {
-            imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
-            imperialCheckBox.setDisable(true);
 
-            metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
-            metricCheckBox.setDisable(false);
-            metricCheckBox.setSelected(false);
+    @FXML
+    private void imperialCheckBoxTicked(ActionEvent mouseEvent) {
+        imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+        imperialCheckBox.setDisable(true);
+
+        metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+        metricCheckBox.setDisable(false);
+        metricCheckBox.setSelected(false);
+
+        metricOn = false;
+        if (currentActivity != null) makeRightPane(currentActivity);
     }
 
 }
