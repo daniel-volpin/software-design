@@ -367,10 +367,26 @@ public class MainSceneController {
     }
 
     private void addActivityPane() {
-        TitledPane titledPane = new TitledPane("Activity " + activityHistory.size(), new Label());
-        Label avgSpeedLabel = new Label(" ");
-        AnchorPane par = new AnchorPane(avgSpeedLabel);
-        titledPane.setGraphic(par);
+        TitledPane titledPane = new TitledPane();
+        VBox vBox = new VBox();
+
+        if (!activityHistory.isEmpty()) {
+            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(activityHistory.size() - 1).getTotalDistanceM() + " m");
+            vBox.getChildren().add(totDistanceLabel);
+
+            try {
+                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(activityHistory.size() - 1).getAverageSpeedMpS() + " km/hr");
+                Label totTimeLabel = new Label("Time: " + activityHistory.get(activityHistory.size() - 1).getTotalTimeS() + " min");
+
+                vBox.getChildren().add(avgSpeedLabel);
+                vBox.getChildren().add(totTimeLabel);
+            } catch (Exception e) {
+                logger.trace(e.toString());
+            }
+        }
+
+        titledPane.setText("Activity " + activityHistory.size());
+        titledPane.setContent(vBox);
         titledPaneActivities.add(titledPane);
     }
 
