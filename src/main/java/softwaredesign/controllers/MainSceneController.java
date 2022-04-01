@@ -11,7 +11,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -371,18 +374,27 @@ public class MainSceneController {
         VBox vBox = new VBox();
 
         if (!activityHistory.isEmpty()) {
-            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(activityHistory.size() - 1).getTotalDistanceM() + " m");
+            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(currentActivity.getID()).getTotalDistanceM() + " m");
             vBox.getChildren().add(totDistanceLabel);
 
             try {
-                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(activityHistory.size() - 1).getAverageSpeedMpS() + " km/hr");
-                Label totTimeLabel = new Label("Time: " + activityHistory.get(activityHistory.size() - 1).getTotalTimeS() + " min");
+                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(currentActivity.getID()).getAverageSpeedMpS() + " km/hr");
+                Label totTimeLabel = new Label("Time: " + activityHistory.get(currentActivity.getID()).getTotalTimeS() + " min");
 
                 vBox.getChildren().add(avgSpeedLabel);
                 vBox.getChildren().add(totTimeLabel);
             } catch (Exception e) {
                 logger.trace(e.toString());
             }
+
+            int index = currentActivity.getID();
+            Button button = new Button("open");
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    changeShownActivity(activityHistory.get(index));
+                    makeRightPane(activityHistory.get(index));
+                }
+            );
+            vBox.getChildren().add(button);
         }
 
         titledPane.setText("Activity " + activityHistory.size());
@@ -394,6 +406,7 @@ public class MainSceneController {
         if (activityHistory == null) {
             activityHistory = new ArrayList<>();
         }
+        newActivity.setID(activityHistory.size());
         activityHistory.add(newActivity);
         addActivityPane();
     }

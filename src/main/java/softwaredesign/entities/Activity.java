@@ -1,6 +1,5 @@
 package softwaredesign.entities;
 
-import org.alternativevision.gpx.beans.Track;
 import org.alternativevision.gpx.beans.Waypoint;
 import softwaredesign.helperclasses.Calc;
 
@@ -11,6 +10,7 @@ import java.util.Date;
 public class Activity {
     private final RouteData routeData;
     private final Weather weather;
+    private int id = -1;
     // TODO: private ActivityType type;
 
     public Activity(ArrayList<Waypoint> wayPoints) {
@@ -39,5 +39,9 @@ public class Activity {
     }
 
     public Double getAverageSpeedMpS() { return getTotalDistanceM() / getTotalTimeS(); }
+
+    public int getID() { return id; }
+
+    public void setID(int id) { this.id = id; }
 
 }
