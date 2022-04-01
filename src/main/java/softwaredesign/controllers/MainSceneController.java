@@ -7,10 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -78,10 +75,12 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML private Slider sliderZoom;
 
-    /** Menu buttons*/
+    /** Menu elements*/
     @FXML private Button profileBtn;
     @FXML private Button activityBtn;
     @FXML private Button GPXBtn;
+    @FXML private VBox activityTypeSelection;
+    @FXML private ChoiceBox<String> activityChoiceBox;
 
     /** dynamic right side pane that is loaded when an activity file is uploaded*/
     @FXML private VBox rightSideVBox;
@@ -324,6 +323,13 @@ public class MainSceneController {
         addActivity(newActivity);
         changeShownActivity(newActivity);
         makeRightPane(newActivity);
+        enableActivityTypeSelection();
+    }
+
+    private void enableActivityTypeSelection(){
+        String[] activityTypes = {"Walking", "Running", "Cycling", "Roller Skating"};
+        activityChoiceBox.getItems().addAll( activityTypes);
+        activityTypeSelection.setDisable(false);
     }
 
     private void makeRightPane(Activity newActivity) {
@@ -483,6 +489,11 @@ public class MainSceneController {
 
         metricOn = false;
         if (currentActivity != null) makeRightPane(currentActivity);
+    }
+
+    @FXML
+    private void activityTypeSelected(ActionEvent event) {
+        String activityName =  activityChoiceBox.getValue();
     }
 
 }

@@ -26,17 +26,17 @@ public class Activity {
         }
     }
 
-    public Activity(ArrayList<Waypoint> wayPoints, String activityName) {
-        type = new ActivityTypeFactory().getActivityType(activityName);
-
-        routeData = new RouteData(wayPoints);
-
-        if (routeData.getTimeStamps()[0] == null) {
-            weather = null;
-        } else {
-            weather = new Weather(routeData);
-        }
-    }
+//    public Activity(ArrayList<Waypoint> wayPoints, String activityName) {
+//        type = new ActivityTypeFactory().getActivityType(activityName);
+//
+//        routeData = new RouteData(wayPoints);
+//
+//        if (routeData.getTimeStamps()[0] == null) {
+//            weather = null;
+//        } else {
+//            weather = new Weather(routeData);
+//        }
+//    }
 
     public void setActivityType(String activityName){
         type = new ActivityTypeFactory().getActivityType(activityName);
