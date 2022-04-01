@@ -380,6 +380,7 @@ public class MainSceneController {
                 Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(currentActivity.getID()).getAverageSpeedMpS() + " km/hr");
                 Label totTimeLabel = new Label("Time: " + activityHistory.get(currentActivity.getID()).getTotalTimeS() + " min");
 
+
                 vBox.getChildren().add(avgSpeedLabel);
                 vBox.getChildren().add(totTimeLabel);
             } catch (Exception e) {
@@ -387,17 +388,33 @@ public class MainSceneController {
             }
 
             int index = currentActivity.getID();
-            Button button = new Button("open");
+            Button button = new Button("Open");
+
+            button.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+                    button.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
+                }
+            );
+
+            button.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+                        button.setStyle("-fx-background-color: #C1BBDD;");
+                    }
+            );
+
             button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                     changeShownActivity(activityHistory.get(index));
                     makeRightPane(activityHistory.get(index));
                 }
             );
+
+            button.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
             vBox.getChildren().add(button);
         }
 
+        vBox.setStyle("-fx-background-color: #d3bbdd");
+
         titledPane.setText("Activity " + activityHistory.size());
         titledPane.setContent(vBox);
+        titledPane.setStyle("-fx-background-color: #d3bbdd");
         titledPaneActivities.add(titledPane);
     }
 
