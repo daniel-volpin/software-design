@@ -11,10 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -60,6 +57,7 @@ public class MainSceneController {
     // TODO: Profile
     private ArrayList<Activity> activityHistory;
     private Activity currentActivity = null;
+    private ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
 
     /** GLOBAL boolean to update the routeData information */
     public boolean metricOn = true;
@@ -96,6 +94,7 @@ public class MainSceneController {
 
     /** anchor pane to display the activity history*/
     @FXML private AnchorPane activityAnchorPane;
+
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -367,11 +366,20 @@ public class MainSceneController {
         borderPane.setRight(rightSideVBox);
     }
 
+    private void addActivityPane() {
+        TitledPane titledPane = new TitledPane("Activity " + activityHistory.size(), new Label());
+        Label avgSpeedLabel = new Label(" ");
+        AnchorPane par = new AnchorPane(avgSpeedLabel);
+        titledPane.setGraphic(par);
+        titledPaneActivities.add(titledPane);
+    }
+
     private void addActivity(Activity newActivity) {
         if (activityHistory == null) {
             activityHistory = new ArrayList<>();
         }
         activityHistory.add(newActivity);
+        addActivityPane();
     }
 
     private void changeShownActivity(Activity newActivity) {
@@ -407,6 +415,14 @@ public class MainSceneController {
         } else {
             throw new IOException("Please provide a GPX File with exactly one Track or Route");
         }
+    }
+
+    private void showActivityHistory() {
+        Accordion accordion = new Accordion();
+        accordion.setPrefWidth(200);
+        accordion.getPanes().addAll(titledPaneActivities);
+
+        activityAnchorPane.getChildren().addAll(accordion);
     }
 
     @FXML private void openGPXFile() {
@@ -454,15 +470,7 @@ public class MainSceneController {
             e.printStackTrace();
         }
 
-        TitledPane titledPane = new TitledPane("test", new Label(""));
-        Accordion accordion = new Accordion();
-
-        titledPane.setPrefWidth(200);
-        accordion.setPrefWidth(200);
-
-        accordion.getPanes().add(titledPane);
-
-        activityAnchorPane.getChildren().addAll(accordion);
+        showActivityHistory();
         borderPane.setRight(activityAnchorPane);
     }
 
