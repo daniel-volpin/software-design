@@ -328,7 +328,9 @@ public class MainSceneController {
 
     private void enableActivityTypeSelection(){
         String[] activityTypes = {"Walking", "Running", "Cycling", "Roller Skating"};
-        activityChoiceBox.getItems().addAll( activityTypes);
+        if(activityChoiceBox.isDisabled()){
+            activityChoiceBox.getItems().addAll( activityTypes);
+        }
         activityTypeSelection.setDisable(false);
     }
 

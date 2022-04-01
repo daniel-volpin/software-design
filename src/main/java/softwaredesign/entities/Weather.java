@@ -44,6 +44,8 @@ public class Weather {
             windSpeed = responseJson.getDouble("wspd");
             humidity = responseJson.getDouble("humidity");
 
+            System.out.println(conditions);
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -57,17 +59,29 @@ public class Weather {
         String imagePath;
 
         switch (conditions){
+
+
             case	"Drizzle":
             case	"Heavy Drizzle":
             case	"Light Drizzle":
             case	"Heavy Drizzle/Rain":
             case	"Light Drizzle/Rain":
+                imagePath = "src/main/resources/Media/drizzle.png";
+            break;
+
+            case	"Hail":
+                imagePath = "src/main/resources/Media/hail.png";
+            break;
+
+            case	"Thunderstorm":
+                imagePath = "src/main/resources/Media/thunderstorms.png";
+            break;
+
             case	"Freezing Drizzle/Freezing Rain":
             case	"Heavy Freezing Drizzle/Freezing Rain":
             case	"Light Freezing Drizzle/Freezing Rain":
             case	"Heavy Freezing Rain":
             case	"Light Freezing Rain":
-            case	"Hail":
             case	"Heavy Rain And Snow":
             case	"Light Rain And Snow":
             case	"Rain Showers":
@@ -75,29 +89,44 @@ public class Weather {
             case	"Light Rain":
             case	"Precipitation In Vicinity":
             case	"Rain":
-            case	"Thunderstorm":
-                imagePath = "src/main/resources/Media/umbrella.png";
+                imagePath = "src/main/resources/Media/Weather_icons/rain.png";
+            break;
+
+            case	"Fog":
+                imagePath = "src/main/resources/Media/Weather_icons/fog.png";
+            break;
+
+            case	"Mist":
+                imagePath = "src/main/resources/Media/Weather_icons/mist.png";
             break;
 
             case	"Duststorm":
-            case	"Fog":
+                imagePath = "src/main/resources/Media/Weather_icons/duststorm.png";
+            break;
+
             case	"Freezing Fog":
-            case	"Mist":
             case	"Sky Coverage Increasing":
             case	"Sky Unchanged":
             case	"Smoke Or Haze":
             case	"Diamond Dust":
-                imagePath = "src/main/resources/Media/cloudy.png";
+                imagePath = "src/main/resources/Media/Weather_icons/cloudy.png";
+            break;
+
+            case	"Overcast":
+                imagePath = "src/main/resources/Media/Weather_icons/overcast.png";
             break;
 
             case	"Funnel Cloud/Tornado":
             case	"Hail Showers":
             case	"Lightning Without Thunder":
-            case	"Overcast":
             case	"Partially cloudy":
             case	"Thunderstorm Without Precipitation":
             case	"Squalls":
-                imagePath = "src/main/resources/Media/cloudy.png";
+                imagePath = "src/main/resources/Media/Weather_icons/cloudy.png";
+            break;
+
+            case	"Ice":
+                imagePath = "src/main/resources/Media/Weather_icons/ice.png";
             break;
 
             case	"Heavy Snow":
@@ -105,18 +134,17 @@ public class Weather {
             case	"Snow":
             case	"Snow And Rain Showers":
             case	"Snow Showers":
-            case	"Ice":
             case	"Blowing Or Drifting Snow":
-                imagePath = "src/main/resources/Media/snow.png";
+                imagePath = "src/main/resources/Media/Weather_icons/snow.png";
             break;
 
             case	"Sky Coverage Decreasing":
             case	"Clear":
-                imagePath = "src/main/resources/Media/sunny.png";
+                imagePath = "src/main/resources/Media/Weather_icons/clear-day.png";
             break;
 
             default:
-                imagePath = "src/main/resources/Media/VU-logo.png";
+                imagePath = "src/main/resources/Media/Weather_icons/not-available.png";
 
         }
         return imagePath;
