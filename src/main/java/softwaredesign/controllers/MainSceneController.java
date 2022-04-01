@@ -3,7 +3,6 @@ package softwaredesign.controllers;
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.animation.Transition;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -60,7 +59,7 @@ public class MainSceneController {
     // TODO: Profile
     private ArrayList<Activity> activityHistory;
     private Activity currentActivity = null;
-    private ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
+    private final ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
 
     /** GLOBAL boolean to update the routeData information */
     public boolean metricOn = true;
@@ -102,7 +101,7 @@ public class MainSceneController {
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
     /**
-     * called after the fxml is loaded and all objects are created. This is not called initialize any more,
+     * called after the fxml is loaded and all objects are created. This is not called initialize anymore,
      * because we need to pass in the projection before initializing.
      *
      * @param projection
@@ -111,7 +110,7 @@ public class MainSceneController {
     public void initMapAndControls(Projection projection) {
         logger.trace("begin initialize");
 
-        // set the controls to disabled, this will be changed when the MapView is intialized
+        // set the controls to disabled, this will be changed when the MapView is initialized
         setControlsDisable(true);
 
         // wire the zoom button and connect the slider to the map's zoom
@@ -139,7 +138,7 @@ public class MainSceneController {
      * initializes the event handlers.
      */
     private void setupEventHandlers() {
-        // add an event handler for singleclicks, set the click marker to the new position when it's visible
+        // add an event handler for singleness, set the click marker to the new position when it's visible
         mapView.addEventHandler(MapViewEvent.MAP_CLICKED, event -> {
             event.consume();
             final Coordinate newPosition = event.getCoordinate().normalize();
@@ -200,7 +199,7 @@ public class MainSceneController {
     }
 
     /**
-     * finishes setup after the mpa is initialzed
+     * finishes setup after the mpa is initialized
      */
     private void afterMapIsInitialized() {
         logger.trace("map initialized");
@@ -472,7 +471,7 @@ public class MainSceneController {
         }
 
     }
-    @FXML private void openProfilePane(ActionEvent event) throws FileNotFoundException {
+    @FXML private void openProfilePane() {
         FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
             rightSideVBox = rightSideLoader.load();
@@ -490,7 +489,7 @@ public class MainSceneController {
         rightSideVBox.getChildren().add(titleBox);
         borderPane.setRight(rightSideVBox);
     }
-    @FXML private void openActivityHistoryPane(ActionEvent event) throws IOException {
+    @FXML private void openActivityHistoryPane() {
         FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("/Scenes/activityHistoryScene.fxml"));
 
         try {
@@ -503,20 +502,20 @@ public class MainSceneController {
         borderPane.setRight(activityAnchorPane);
     }
 
-    @FXML private void retractBtnClicked(ActionEvent event) {
+    @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);
     }
-    @FXML private void retractBtnEntered(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
-    @FXML private void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    @FXML private void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    @FXML private void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void retractBtnEntered() { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
+    @FXML private void GPXBtnEntered() {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void profileBtnEntered() {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void activityBtnEntered() { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
 
-    @FXML private void retractBtnExited(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
-    @FXML private void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
-    @FXML private void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
-    @FXML private void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void retractBtnExited() { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
+    @FXML private void GPXBtnExited() { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void profileBtnExited() { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void activityBtnExited() {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
-    @FXML private void metricCheckBoxTicked(ActionEvent mouseEvent) {
+    @FXML private void metricCheckBoxTicked() {
         metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
         metricCheckBox.setDisable(true);
 
@@ -527,7 +526,7 @@ public class MainSceneController {
         metricOn = true;
         if (currentActivity != null) makeRightPane(currentActivity);
     }
-    @FXML private void imperialCheckBoxTicked(ActionEvent mouseEvent) {
+    @FXML private void imperialCheckBoxTicked() {
         imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
         imperialCheckBox.setDisable(true);
 
