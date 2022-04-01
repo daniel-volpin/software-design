@@ -7,13 +7,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -96,6 +94,8 @@ public class MainSceneController {
     @FXML private Label metricLabel;
     @FXML private Label imperialLabel;
 
+    /** anchor pane to display the activity history*/
+    @FXML private AnchorPane activityAnchorPane;
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -445,6 +445,26 @@ public class MainSceneController {
         rightSideVBox.getChildren().add(titleBox);
         borderPane.setRight(rightSideVBox);
     }
+    @FXML private void openActivityHistoryPane(ActionEvent event) throws IOException {
+        FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("/Scenes/activityHistoryScene.fxml"));
+
+        try {
+            activityAnchorPane = activityLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        TitledPane titledPane = new TitledPane("test", new Label(""));
+        Accordion accordion = new Accordion();
+
+        titledPane.setPrefWidth(200);
+        accordion.setPrefWidth(200);
+
+        accordion.getPanes().add(titledPane);
+
+        activityAnchorPane.getChildren().addAll(accordion);
+        borderPane.setRight(activityAnchorPane);
+    }
 
     @FXML private void retractBtnClicked(ActionEvent event) {
         rightSideVBox.setPrefSize(0,0);
@@ -459,8 +479,7 @@ public class MainSceneController {
     @FXML private void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
     @FXML private void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
-    @FXML
-    private void metricCheckBoxTicked(ActionEvent mouseEvent) {
+    @FXML private void metricCheckBoxTicked(ActionEvent mouseEvent) {
         metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
         metricCheckBox.setDisable(true);
 
@@ -471,9 +490,7 @@ public class MainSceneController {
         metricOn = true;
         if (currentActivity != null) makeRightPane(currentActivity);
     }
-
-    @FXML
-    private void imperialCheckBoxTicked(ActionEvent mouseEvent) {
+    @FXML private void imperialCheckBoxTicked(ActionEvent mouseEvent) {
         imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
         imperialCheckBox.setDisable(true);
 
