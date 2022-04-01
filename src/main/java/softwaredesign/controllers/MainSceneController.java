@@ -493,7 +493,7 @@ public class MainSceneController {
 
     @FXML
     private void activityTypeSelected(ActionEvent event) {
-        String activityName =  activityChoiceBox.getValue();
+        currentActivity.setActivityType(activityChoiceBox.getValue());
     }
 
 }
