@@ -28,10 +28,7 @@ import org.alternativevision.gpx.beans.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import softwaredesign.entities.Activity;
-import softwaredesign.entities.ActivityTypeFactory;
-import softwaredesign.entities.RouteData;
-import softwaredesign.entities.Weather;
+import softwaredesign.entities.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -61,10 +58,10 @@ public class MainSceneController {
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
 
-    // TODO: Profile
     private ArrayList<Activity> activityHistory;
     private Activity currentActivity = null;
     private final ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
+    Profile profile = null;
 
     /** GLOBAL boolean to update the routeData information */
     public boolean metricOn = true;
@@ -598,13 +595,12 @@ public class MainSceneController {
 
     @FXML
     private void profileDataProvided(){
-        String h = height.getText();
-        String w = weight.getText();
-        String a = age.getText();
 
-        System.out.println(h);
-        System.out.println(w);
-        System.out.println(a);
+        double newHeight = Double.parseDouble(height.getText());
+        double newWeight = Double.parseDouble(weight.getText());
+        int newAge = Integer.parseUnsignedInt(age.getText());
+
+        profile = new Profile(newHeight, newWeight, newAge);
 
         Stage stage = (Stage) okBtnProfile.getScene().getWindow();
         stage.close();
