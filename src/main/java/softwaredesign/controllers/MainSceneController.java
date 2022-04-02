@@ -2,7 +2,6 @@ package softwaredesign.controllers;
 
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
-import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -19,7 +18,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
 import org.alternativevision.gpx.beans.Route;
@@ -51,9 +49,6 @@ public class MainSceneController {
 
     /** default zoom value. */
     private static final int ZOOM_DEFAULT = 14;
-
-    /** the markers. */
-    private final Marker markerClick;
 
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
@@ -107,7 +102,7 @@ public class MainSceneController {
     @FXML private TextField height;
     @FXML private TextField age;
 
-    public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
+    public MainSceneController() { };
 
     /**
      * called after the fxml is loaded and all objects are created. This is not called initialize anymore,
@@ -147,54 +142,14 @@ public class MainSceneController {
      * initializes the event handlers.
      */
     private void setupEventHandlers() {
-        // add an event handler for singleness, set the click marker to the new position when it's visible
-        mapView.addEventHandler(MapViewEvent.MAP_CLICKED, event -> {
-            event.consume();
-            final Coordinate newPosition = event.getCoordinate().normalize();
-
-            if (markerClick.getVisible()) {
-                final Coordinate oldPosition = markerClick.getPosition();
-                if (oldPosition != null) {
-                    animateClickMarker(oldPosition, newPosition);
-                } else {
-                    markerClick.setPosition(newPosition);
-                    // adding can only be done after coordinate is set
-                    mapView.addMarker(markerClick);
-                }
-            }
-        });
-
         // add an event handler for MapViewEvent#MAP_EXTENT and set the extent in the map
         mapView.addEventHandler(MapViewEvent.MAP_EXTENT, event -> {
             event.consume();
             mapView.setExtent(event.getExtent());
         });
 
-//        mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
+        // mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
         logger.trace("map handlers initialized");
-    }
-
-    private void animateClickMarker(Coordinate oldPosition, Coordinate newPosition) {
-        // animate the marker to the new position
-        final Transition transition = new Transition() {
-            private final Double oldPositionLongitude = oldPosition.getLongitude();
-            private final Double oldPositionLatitude = oldPosition.getLatitude();
-            private final double deltaLatitude = newPosition.getLatitude() - oldPositionLatitude;
-            private final double deltaLongitude = newPosition.getLongitude() - oldPositionLongitude;
-
-            {
-                setCycleDuration(Duration.seconds(1.0));
-                setOnFinished(evt -> markerClick.setPosition(newPosition));
-            }
-
-            @Override
-            protected void interpolate(double v) {
-                final double latitude = oldPosition.getLatitude() + v * deltaLatitude;
-                final double longitude = oldPosition.getLongitude() + v * deltaLongitude;
-                markerClick.setPosition(new Coordinate(latitude, longitude));
-            }
-        };
-        transition.play();
     }
 
     /**
@@ -336,7 +291,6 @@ public class MainSceneController {
         makeRightPane(newActivity);
         enableActivityTypeSelection();
     }
-
 
     private void enableActivityTypeSelection(){
         List<String> activityNames = ActivityTypeFactory.enumValuesToString();//{"Walking", "Running", "Cycling", "Roller Skating"};
@@ -518,7 +472,6 @@ public class MainSceneController {
         showActivityHistory();
         borderPane.setRight(activityAnchorPane);
     }
-
     @FXML private void profileDataPrompt(){
         try {
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
@@ -568,14 +521,12 @@ public class MainSceneController {
         if (currentActivity != null) makeRightPane(currentActivity);
     }
 
-    @FXML
-    private void activityTypeSelected() {
+    @FXML private void activityTypeSelected() {
         currentActivity.setActivityType(activityChoiceBox.getValue());
         System.out.println(currentActivity.getActivityType().getName());
     }
 
-    @FXML
-    private void profileDataProvided(){
+    @FXML private void profileDataProvided(){
 
         if(!height.getText().isEmpty() && !weight.getText().isEmpty() && !age.getText().isEmpty()) {
             double newHeight = Double.parseDouble(height.getText());
