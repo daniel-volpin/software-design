@@ -3,6 +3,8 @@ package softwaredesign.controllers;
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
 import javafx.animation.Transition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -101,11 +103,12 @@ public class MainSceneController {
     /** anchor pane to display the activity history*/
     @FXML private AnchorPane activityAnchorPane;
 
-    /** Profile window elements*/
-    @FXML private Button okBtnProfile;
-    @FXML private TextField weight;
-    @FXML private TextField height;
-    @FXML private TextField age;
+    /** Profile  elements*/
+    @FXML private VBox profileElements;
+    @FXML private TextField heightTextField;
+    @FXML private TextField weigthTextField;
+    @FXML private TextField ageTextField;
+
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -335,6 +338,7 @@ public class MainSceneController {
         changeShownActivity(newActivity);
         makeRightPane(newActivity);
         enableActivityTypeSelection();
+        enableProfileDataInput();
     }
 
 
@@ -344,6 +348,10 @@ public class MainSceneController {
             activityChoiceBox.getItems().addAll(activityNames);
         }
         activityTypeSelection.setDisable(false);
+    }
+
+    private void enableProfileDataInput(){
+        profileElements.setDisable(false);
     }
 
     private void makeRightPane(Activity newActivity) {
@@ -381,11 +389,37 @@ public class MainSceneController {
             vBox.getChildren().add(weatherImage);
         }
 
+        Button calculateCaloriesBtn = new Button("Calculate Calories");
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    System.out.println("calculate calories pressed");
+                }
+        );
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            calculateCaloriesBtn.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
+                }
+        );
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD;");
+                }
+        );
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    calculateCalories();
+                }
+        );
+
+        calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
+
         rightSideVBox.getChildren().add(titleBox);
         rightSideVBox.getChildren().add(vBox);
+        rightSideVBox.getChildren().add(calculateCaloriesBtn);
 
         borderPane.setRight(rightSideVBox);
     }
+
 
     private void addActivityPane() {
         TitledPane titledPane = new TitledPane();
@@ -489,6 +523,12 @@ public class MainSceneController {
         activityAnchorPane.getChildren().addAll(accordion);
     }
 
+    private void calculateCalories(){
+        String age = ageTextField.getText();
+        String weight = weigthTextField.getText();
+        String height = ageTextField.getText();
+    }
+
     @FXML private void openGPXFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GPX Files", "*.gpx"));
@@ -538,18 +578,6 @@ public class MainSceneController {
         borderPane.setRight(activityAnchorPane);
     }
 
-    @FXML private void profileDataPrompt(){
-        try {
-            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Profile");
-            stage.setScene(new Scene(root));
-            stage.show();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);
@@ -592,19 +620,4 @@ public class MainSceneController {
         currentActivity.setActivityType(activityChoiceBox.getValue());
         System.out.println(currentActivity.getActivityType().getName());
     }
-
-    @FXML
-    private void profileDataProvided(){
-
-        double newHeight = Double.parseDouble(height.getText());
-        double newWeight = Double.parseDouble(weight.getText());
-        int newAge = Integer.parseUnsignedInt(age.getText());
-
-        profile = new Profile(newHeight, newWeight, newAge);
-
-        Stage stage = (Stage) okBtnProfile.getScene().getWindow();
-        stage.close();
-        
-    }
-
 }

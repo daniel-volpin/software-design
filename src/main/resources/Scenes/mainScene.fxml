@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.sothawo.mapjfx.MapView?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,84 +18,82 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.CheckBox?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0"
-            xmlns="http://javafx.com/javafx/11.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController"
-            fx:id="borderPane">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController">
     <top>
     </top>
     <center>
-        <MapView fx:id="mapView" BorderPane.alignment="CENTER"/>
+        <MapView fx:id="mapView" BorderPane.alignment="CENTER" />
     </center>
     <left>
-        <VBox prefWidth="170.0" style="-fx-background-color: #C1BBDD;" BorderPane.alignment="CENTER">
+        <VBox prefHeight="531.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" BorderPane.alignment="CENTER">
             <ImageView fitHeight="49.0" fitWidth="166.0">
-                <Image url="@/Media/VU-logo.png"/>
+                <Image url="@/Media/VU-logo.png" />
             </ImageView>
-            <Pane prefHeight="159.0" prefWidth="137.0">
-                <Label layoutX="18.0" layoutY="53.0" text="AerobixTracker" textFill="WHITE">
+            <Pane prefHeight="68.0" prefWidth="170.0">
+                <Label layoutX="30.0" layoutY="30.0" text="AerobixTracker" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="18.0"/>
+                        <Font name="System Bold" size="18.0" />
                     </font>
                 </Label>
             </Pane>
             <AnchorPane>
                 <VBox prefWidth="170.0">
-                    <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER"
-                            onAction="#openGPXFile"
-                            onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0"
-                            prefWidth="170.0"
-                            style="-fx-background-color: #C1BBDD;" text="Upload GPX file"
-                            textFill="WHITE">
+                    <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openGPXFile" onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" text="Upload GPX file" textFill="WHITE">
                         <font>
-                            <Font size="14.0"/>
+                            <Font size="14.0" />
                         </font>
                     </Button>
-                    <Button fx:id="profileBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#profileDataPrompt"
-                            onMouseEntered="#profileBtnEntered" onMouseExited="#profileBtnExited" prefHeight="40.0" prefWidth="170.0"
-                            style="-fx-background-color: #C1BBDD;" styleClass="menuBtn" text="Profile" textFill="WHITE">
+               <VBox fx:id="profileElements" disable="true" prefHeight="140.0" prefWidth="170.0">
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="170.0" text="Profile" textFill="WHITE">
                         <font>
-                            <Font size="14.0"/>
+                           <Font size="14.0" />
                         </font>
-                    </Button>
+                     </Label>
+                     <TextField fx:id="heightTextField" alignment="CENTER" promptText="Height">
+                        <VBox.margin>
+                           <Insets top="5.0" />
+                        </VBox.margin>
+                     </TextField>
+                     <TextField fx:id="weightTextField" alignment="CENTER" promptText="Weight">
+                        <VBox.margin>
+                           <Insets top="5.0" />
+                        </VBox.margin>
+                     </TextField>
+                     <TextField fx:id="ageTextField" alignment="CENTER" promptText="Age">
+                        <VBox.margin>
+                           <Insets top="5.0" />
+                        </VBox.margin>
+                     </TextField>
+               </VBox>
                     <VBox fx:id="activityTypeSelection" disable="true" prefHeight="58.0" prefWidth="170.0">
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="170.0"
-                               text="Select activity:" textFill="WHITE">
+                  <Accordion />
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="170.0" text="Select activity:" textFill="WHITE">
                             <font>
-                                <Font size="14.0"/>
+                                <Font size="14.0" />
                             </font>
                         </Label>
                         <Pane prefHeight="48.0" prefWidth="170.0">
                             <children>
-                                <ChoiceBox fx:id="activityChoiceBox" onAction="#activityTypeSelected" layoutX="28.0"
-                                           layoutY="3.0" prefHeight="26.0" prefWidth="120.0"/>
+                                <ChoiceBox fx:id="activityChoiceBox" layoutX="28.0" layoutY="3.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="120.0" />
                             </children>
                         </Pane>
                     </VBox>
-                    <Button fx:id="activityBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER"
-                            onAction="#openActivityHistoryPane" onMouseEntered="#activityBtnEntered"
-                            onMouseExited="#activityBtnExited" prefHeight="40.0" prefWidth="175.0"
-                            style="-fx-background-color: #C1BBDD;"
-                            text="Activity History" textFill="WHITE">
+                    <Button fx:id="activityBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openActivityHistoryPane" onMouseEntered="#activityBtnEntered" onMouseExited="#activityBtnExited" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #C1BBDD;" text="Activity History" textFill="WHITE">
                         <font>
-                            <Font size="14.0"/>
+                            <Font size="14.0" />
                         </font>
                     </Button>
                 </VBox>
             </AnchorPane>
-            <HBox style="-fx-translate-y: 100;" alignment="CENTER">
+            <HBox alignment="CENTER" style="-fx-translate-y: 100;">
                 <VBox>
                     <HBox alignment="CENTER">
-                        <Label fx:id="metricLabel" text="Metric"
-                               style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold"/>
-                        <Label fx:id="imperialLabel" text="Imperial"
-                               style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal"/>
+                        <Label fx:id="metricLabel" style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold" text="Metric" />
+                        <Label fx:id="imperialLabel" style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal" text="Imperial" />
                     </HBox>
                     <HBox alignment="CENTER">
-                        <CheckBox fx:id="metricCheckBox" onAction="#metricCheckBoxTicked" selected="true"
-                                  disable="true"/>
-                        <CheckBox fx:id="imperialCheckBox" onAction="#imperialCheckBoxTicked"
-                                  style="-fx-padding: 0 0 0 30;"/>
+                        <CheckBox fx:id="metricCheckBox" disable="true" onAction="#metricCheckBoxTicked" selected="true" />
+                        <CheckBox fx:id="imperialCheckBox" onAction="#imperialCheckBoxTicked" style="-fx-padding: 0 0 0 30;" />
                     </HBox>
                 </VBox>
             </HBox>
@@ -103,12 +102,10 @@
     <bottom>
         <HBox fx:id="topControls" alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
             <padding>
-                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
             </padding>
-            <Button fx:id="buttonZoom" text="Zoom 14" style="-fx-background-color: #C1BBDD"/>
-            <Slider fx:id="sliderZoom" blockIncrement="1.0" majorTickUnit="7.0" max="28.0" minorTickCount="6"
-                    showTickLabels="true" showTickMarks="true" snapToTicks="true" value="14.0" HBox.hgrow="ALWAYS"
-                    style="-fx-control-inner-background: #C1BBDD;"/>
+            <Button fx:id="buttonZoom" style="-fx-background-color: #C1BBDD" text="Zoom 14" />
+            <Slider fx:id="sliderZoom" blockIncrement="1.0" majorTickUnit="7.0" max="28.0" minorTickCount="6" showTickLabels="true" showTickMarks="true" snapToTicks="true" style="-fx-control-inner-background: #C1BBDD;" value="14.0" HBox.hgrow="ALWAYS" />
         </HBox>
     </bottom>
     <right>
