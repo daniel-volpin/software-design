@@ -101,7 +101,7 @@ public class MainSceneController {
     @FXML private TextField heightTextField;
     @FXML private TextField weigthTextField;
     @FXML private TextField ageTextField;
-
+    @FXML private Button confirmProfileBtn;
 
     public MainSceneController() { }
 

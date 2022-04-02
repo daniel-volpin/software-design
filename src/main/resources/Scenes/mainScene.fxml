@@ -43,8 +43,8 @@
                             <Font size="14.0" />
                         </font>
                     </Button>
-               <VBox fx:id="profileElements" disable="true" prefHeight="140.0" prefWidth="170.0">
-                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="37.0" prefWidth="170.0" text="Profile" textFill="WHITE">
+               <VBox fx:id="profileElements" alignment="CENTER" disable="true" prefHeight="140.0" prefWidth="170.0">
+                     <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="170.0" text="Profile" textFill="WHITE">
                         <font>
                            <Font size="14.0" />
                         </font>
@@ -64,6 +64,14 @@
                            <Insets top="5.0" />
                         </VBox.margin>
                      </TextField>
+                  <Button fx:id="confirmProfileBtn" onAction="#test" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="39.0" text="OK">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Button>
                </VBox>
                     <VBox fx:id="activityTypeSelection" disable="true" prefHeight="58.0" prefWidth="170.0">
                   <Accordion />
