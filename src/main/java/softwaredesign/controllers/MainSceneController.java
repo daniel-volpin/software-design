@@ -7,6 +7,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
@@ -95,6 +98,9 @@ public class MainSceneController {
     @FXML private Label metricLabel;
     @FXML private Label imperialLabel;
 
+    @FXML private TextField weight;
+    @FXML private TextField heigth;
+    @FXML private TextField age;
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -454,6 +460,19 @@ public class MainSceneController {
         borderPane.setRight(rightSideVBox);
     }
 
+    @FXML private void profileDataPrompt(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Profile");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML private void retractBtnClicked(ActionEvent event) {
         rightSideVBox.setPrefSize(0,0);
     }
@@ -496,6 +515,18 @@ public class MainSceneController {
     @FXML
     private void activityTypeSelected(ActionEvent event) {
         currentActivity.setActivityType(activityChoiceBox.getValue());
+    }
+
+    @FXML
+    private void profileDataProvided(ActionEvent e){
+        String h = heigth.getText();
+        String w = weight.getText();
+        String a = age.getText();
+
+        System.out.println(h);
+        System.out.println(w);
+        System.out.println(a);
+        
     }
 
 }

@@ -49,7 +49,7 @@
                                         <Font size="14.0" />
                                     </font>
                                 </Button>
-                                <Button fx:id="profileBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openProfilePane" onMouseEntered="#profileBtnEntered" onMouseExited="#profileBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" styleClass="menuBtn" text="Profile" textFill="WHITE">
+                                <Button fx:id="profileBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#profileDataPrompt" onMouseEntered="#profileBtnEntered" onMouseExited="#profileBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" styleClass="menuBtn" text="Profile" textFill="WHITE">
                                     <font>
                                         <Font size="14.0" />
                                     </font>

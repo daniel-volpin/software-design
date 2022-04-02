@@ -31,7 +31,7 @@ public class Weather {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://visual-crossing-weather.p.rapidapi.com/history?startDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&aggregateHours=1&location="+latitude+"%2C"+longitude+"&endDateTime="+year+"-"+month+"-"+date+"T"+hours+"%3A"+minutes+"%3A00&unitGroup=metric&contentType=json&shortColumnNames=true"))
                 .header("x-rapidapi-host", "visual-crossing-weather.p.rapidapi.com")
-                .header("x-rapidapi-key", "0c4cb4457emsh59a9f18425466a7p1045c9jsn08640ab722bc")
+                .header("x-rapidapi-key", "d8d19f348dmshd5222cee5ec4365p1a6b9cjsnaa94cd9f818a")
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
 
