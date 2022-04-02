@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
+import softwaredesign.entities.ActivityTypeFactory;
 import softwaredesign.entities.RouteData;
 import softwaredesign.entities.Weather;
 
@@ -39,7 +40,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 
 public class MainSceneController {
@@ -332,10 +335,11 @@ public class MainSceneController {
         enableActivityTypeSelection();
     }
 
+
     private void enableActivityTypeSelection(){
-        String[] activityTypes = {"Walking", "Running", "Cycling", "Roller Skating"};
+        List<String> activityNames = ActivityTypeFactory.enumValuesToString();//{"Walking", "Running", "Cycling", "Roller Skating"};
         if(activityChoiceBox.isDisabled()){
-            activityChoiceBox.getItems().addAll( activityTypes);
+            activityChoiceBox.getItems().addAll(activityNames);
         }
         activityTypeSelection.setDisable(false);
     }
@@ -515,6 +519,7 @@ public class MainSceneController {
     @FXML
     private void activityTypeSelected(ActionEvent event) {
         currentActivity.setActivityType(activityChoiceBox.getValue());
+        System.out.println(currentActivity.getActivityType().getName());
     }
 
     @FXML
