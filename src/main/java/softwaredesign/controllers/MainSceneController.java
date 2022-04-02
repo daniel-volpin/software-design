@@ -596,11 +596,13 @@ public class MainSceneController {
     @FXML
     private void profileDataProvided(){
 
-        double newHeight = Double.parseDouble(height.getText());
-        double newWeight = Double.parseDouble(weight.getText());
-        int newAge = Integer.parseUnsignedInt(age.getText());
+        if(!height.getText().isEmpty() && !weight.getText().isEmpty() && !age.getText().isEmpty()) {
+            double newHeight = Double.parseDouble(height.getText());
+            double newWeight = Double.parseDouble(weight.getText());
+            int newAge = Integer.parseUnsignedInt(age.getText());
 
-        profile = new Profile(newHeight, newWeight, newAge);
+            profile = new Profile(newHeight, newWeight, newAge);
+        }
 
         Stage stage = (Stage) okBtnProfile.getScene().getWindow();
         stage.close();

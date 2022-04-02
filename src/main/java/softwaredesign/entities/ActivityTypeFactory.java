@@ -12,9 +12,9 @@ public class ActivityTypeFactory {
     }
 
     public ActivityType getActivityType(String activityName)  {
+
         String enumName = ActivityTypeFactory.stringToEnumValue(activityName);
         ActivityTypeEnum activityType = ActivityTypeEnum.valueOf(enumName);
-
 
         if (activityType == ActivityTypeEnum.WALKING) {
             return new Walking();
