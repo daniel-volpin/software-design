@@ -99,7 +99,7 @@ public class MainSceneController {
     /** Profile  elements*/
     @FXML private VBox profileElements;
     @FXML private TextField heightTextField;
-    @FXML private TextField weigthTextField;
+    @FXML private TextField weightTextField;
     @FXML private TextField ageTextField;
     @FXML private Button confirmProfileBtn;
 
@@ -549,7 +549,7 @@ public class MainSceneController {
 
     @FXML private void profileConfirmed(){
         double height = Double.parseDouble(heightTextField.getText());
-        double weight = Double.parseDouble(weigthTextField.getText());
+        double weight = Double.parseDouble(weightTextField.getText());
         int age = Integer.parseInt(ageTextField.getText());
 
         profile = new Profile(height, weight, age);
