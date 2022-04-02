@@ -2,9 +2,6 @@ package softwaredesign.controllers;
 
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
-import javafx.animation.Transition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -21,7 +18,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
 import org.alternativevision.gpx.beans.Route;
@@ -54,9 +50,6 @@ public class MainSceneController {
     /** default zoom value. */
     private static final int ZOOM_DEFAULT = 14;
 
-    /** the markers. */
-    private final Marker markerClick;
-
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
 
@@ -65,8 +58,8 @@ public class MainSceneController {
     private final ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
     Profile profile = null;
 
-    /** GLOBAL boolean to update the routeData information */
-    public boolean metricOn = true;
+    /** boolean to update the routeData information */
+    private boolean metricOn = true;
 
     /** button to set the map's zoom. */
     @FXML private Button buttonZoom;
@@ -110,7 +103,7 @@ public class MainSceneController {
     @FXML private TextField ageTextField;
 
 
-    public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
+    public MainSceneController() { }
 
     /**
      * called after the fxml is loaded and all objects are created. This is not called initialize anymore,
@@ -150,54 +143,12 @@ public class MainSceneController {
      * initializes the event handlers.
      */
     private void setupEventHandlers() {
-        // add an event handler for singleness, set the click marker to the new position when it's visible
-        mapView.addEventHandler(MapViewEvent.MAP_CLICKED, event -> {
-            event.consume();
-            final Coordinate newPosition = event.getCoordinate().normalize();
-
-            if (markerClick.getVisible()) {
-                final Coordinate oldPosition = markerClick.getPosition();
-                if (oldPosition != null) {
-                    animateClickMarker(oldPosition, newPosition);
-                } else {
-                    markerClick.setPosition(newPosition);
-                    // adding can only be done after coordinate is set
-                    mapView.addMarker(markerClick);
-                }
-            }
-        });
-
         // add an event handler for MapViewEvent#MAP_EXTENT and set the extent in the map
         mapView.addEventHandler(MapViewEvent.MAP_EXTENT, event -> {
             event.consume();
             mapView.setExtent(event.getExtent());
         });
-
-//        mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
         logger.trace("map handlers initialized");
-    }
-
-    private void animateClickMarker(Coordinate oldPosition, Coordinate newPosition) {
-        // animate the marker to the new position
-        final Transition transition = new Transition() {
-            private final Double oldPositionLongitude = oldPosition.getLongitude();
-            private final Double oldPositionLatitude = oldPosition.getLatitude();
-            private final double deltaLatitude = newPosition.getLatitude() - oldPositionLatitude;
-            private final double deltaLongitude = newPosition.getLongitude() - oldPositionLongitude;
-
-            {
-                setCycleDuration(Duration.seconds(1.0));
-                setOnFinished(evt -> markerClick.setPosition(newPosition));
-            }
-
-            @Override
-            protected void interpolate(double v) {
-                final double latitude = oldPosition.getLatitude() + v * deltaLatitude;
-                final double longitude = oldPosition.getLongitude() + v * deltaLongitude;
-                markerClick.setPosition(new Coordinate(latitude, longitude));
-            }
-        };
-        transition.play();
     }
 
     /**
@@ -341,7 +292,6 @@ public class MainSceneController {
         enableProfileDataInput();
     }
 
-
     private void enableActivityTypeSelection(){
         List<String> activityNames = ActivityTypeFactory.enumValuesToString();//{"Walking", "Running", "Cycling", "Roller Skating"};
         if(activityChoiceBox.isDisabled()){
@@ -426,12 +376,12 @@ public class MainSceneController {
         VBox vBox = new VBox();
 
         if (!activityHistory.isEmpty()) {
-            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(currentActivity.getID()).getTotalDistanceM() + " m");
+            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(activityHistory.size()-1).getTotalDistanceM() + " m");
             vBox.getChildren().add(totDistanceLabel);
 
             try {
-                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(currentActivity.getID()).getAverageSpeedMpS() + " km/hr");
-                Label totTimeLabel = new Label("Time: " + activityHistory.get(currentActivity.getID()).getTotalTimeS() + " min");
+                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(activityHistory.size()-1).getAverageSpeedMpS() + " km/hr");
+                Label totTimeLabel = new Label("Time: " + activityHistory.get(activityHistory.size()-1).getTotalTimeS() + " min");
 
 
                 vBox.getChildren().add(avgSpeedLabel);
@@ -440,7 +390,7 @@ public class MainSceneController {
                 logger.trace(e.toString());
             }
 
-            int index = currentActivity.getID();
+            int index = activityHistory.size()-1;
             Button button = new Button("Open");
 
             button.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
@@ -475,7 +425,6 @@ public class MainSceneController {
         if (activityHistory == null) {
             activityHistory = new ArrayList<>();
         }
-        newActivity.setID(activityHistory.size());
         activityHistory.add(newActivity);
         addActivityPane();
     }
@@ -547,24 +496,6 @@ public class MainSceneController {
         }
 
     }
-    @FXML private void openProfilePane() {
-        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
-        try {
-            rightSideVBox = rightSideLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Label rightPaneLabel = new Label("Profile");
-        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: large; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 0 0 10 0");
-
-        HBox titleBox = new HBox();
-        titleBox.setStyle("-fx-alignment: center");
-
-        titleBox.getChildren().add(rightPaneLabel);
-        rightSideVBox.getChildren().add(titleBox);
-        borderPane.setRight(rightSideVBox);
-    }
     @FXML private void openActivityHistoryPane() {
         FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("/Scenes/activityHistoryScene.fxml"));
 
@@ -576,6 +507,20 @@ public class MainSceneController {
 
         showActivityHistory();
         borderPane.setRight(activityAnchorPane);
+    }
+
+
+    @FXML private void profileDataPrompt(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Profile");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -615,9 +560,9 @@ public class MainSceneController {
         if (currentActivity != null) makeRightPane(currentActivity);
     }
 
-    @FXML
-    private void activityTypeSelected() {
+    @FXML private void activityTypeSelected() {
         currentActivity.setActivityType(activityChoiceBox.getValue());
         System.out.println(currentActivity.getActivityType().getName());
     }
+
 }

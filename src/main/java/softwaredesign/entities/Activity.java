@@ -8,15 +8,14 @@ import java.util.Date;
 
 
 public class Activity {
+
     private final RouteData routeData;
     private final Weather weather;
-    private int id = -1;
     private ActivityType type;
-    // TODO: private ActivityType type;
 
     public Activity(ArrayList<Waypoint> wayPoints) {
-        routeData = new RouteData(wayPoints);
 
+        routeData = new RouteData(wayPoints);
         type = null;
 
         if (routeData.getTimeStamps()[0] == null) {
@@ -26,17 +25,6 @@ public class Activity {
         }
     }
 
-//    public Activity(ArrayList<Waypoint> wayPoints, String activityName) {
-//        type = new ActivityTypeFactory().getActivityType(activityName);
-//
-//        routeData = new RouteData(wayPoints);
-//
-//        if (routeData.getTimeStamps()[0] == null) {
-//            weather = null;
-//        } else {
-//            weather = new Weather(routeData);
-//        }
-//    }
 
     public void setActivityType(String activityName){
         type = new ActivityTypeFactory().getActivityType(activityName);
@@ -62,9 +50,5 @@ public class Activity {
     }
 
     public Double getAverageSpeedMpS() { return getTotalDistanceM() / getTotalTimeS(); }
-
-    public int getID() { return id; }
-
-    public void setID(int id) { this.id = id; }
 
 }
