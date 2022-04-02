@@ -370,7 +370,7 @@ public class MainSceneController {
                 });
 
         calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD;");
+            calculateCaloriesBtn.setStyle("-fx-background-color: #d3bbdd;");
                 });
         calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
         return calculateCaloriesBtn;
@@ -533,6 +533,10 @@ public class MainSceneController {
             e.printStackTrace();
         }
     }
+    @FXML private void activityTypeSelected() {
+        currentActivity.setActivityType(activityChoiceBox.getValue());
+        System.out.println(currentActivity.getActivityType().getName());
+    }
 
     @FXML private void profileDataPrompt(){
         try {
@@ -546,7 +550,6 @@ public class MainSceneController {
             e.printStackTrace();
         }
     }
-
     @FXML private void profileConfirmed(){
         double height = Double.parseDouble(heightTextField.getText());
         double weight = Double.parseDouble(weightTextField.getText());
@@ -557,7 +560,10 @@ public class MainSceneController {
         System.out.println(profile.getWeight());
         System.out.println(profile.getHeight());
     }
-
+    @FXML private void promptOK() {
+        Stage stage = (Stage) okBtn.getScene().getWindow();
+        stage.close();
+    }
 
     @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);
@@ -595,14 +601,10 @@ public class MainSceneController {
         if (currentActivity != null) makeRightPane(currentActivity);
     }
 
-    @FXML private void promptOK() {
-        Stage stage = (Stage) okBtn.getScene().getWindow();
-        stage.close();
+    @FXML private void confirmProfileBtnEntered() {
+        confirmProfileBtn.setStyle("-fx-background-color: white;  -fx-font-weight: bold; -fx-font-size: larger");
     }
-    
-    @FXML private void activityTypeSelected() {
-        currentActivity.setActivityType(activityChoiceBox.getValue());
-        System.out.println(currentActivity.getActivityType().getName());
+    @FXML private void confirmProfileBtnExited() {
+        confirmProfileBtn.setStyle("-fx-background-color: #d3bbdd");
     }
-
 }

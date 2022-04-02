@@ -64,7 +64,9 @@
                            <Insets top="5.0" />
                         </VBox.margin>
                      </TextField>
-                  <Button fx:id="confirmProfileBtn" onAction="#profileConfirmed" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="39.0" text="OK">
+                  <Button fx:id="confirmProfileBtn" onAction="#profileConfirmed" alignment="CENTER" contentDisplay="CENTER"
+                          mnemonicParsing="false" prefHeight="30.0" prefWidth="50.0" text="OK" style="-fx-background-color: #d3bbdd"
+                          onMouseEntered="#confirmProfileBtnEntered" onMouseExited="#confirmProfileBtnExited">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -82,7 +84,7 @@
                         </Label>
                         <Pane prefHeight="48.0" prefWidth="170.0">
                             <children>
-                                <ChoiceBox fx:id="activityChoiceBox" layoutX="28.0" layoutY="3.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="120.0" />
+                                <ChoiceBox fx:id="activityChoiceBox" layoutX="28.0" layoutY="3.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="120.0"/>
                             </children>
                         </Pane>
                     </VBox>
@@ -93,7 +95,7 @@
                     </Button>
                 </VBox>
             </AnchorPane>
-            <HBox alignment="CENTER" style="-fx-translate-y: 100;">
+            <HBox alignment="CENTER" style="-fx-translate-y: 75;">
                 <VBox>
                     <HBox alignment="CENTER">
                         <Label fx:id="metricLabel" style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold" text="Metric" />
