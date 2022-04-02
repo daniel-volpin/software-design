@@ -58,8 +58,8 @@ public class MainSceneController {
     private final ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
     Profile profile = null;
 
-    /** GLOBAL boolean to update the routeData information */
-    public boolean metricOn = true;
+    /** boolean to update the routeData information */
+    private boolean metricOn = true;
 
     /** button to set the map's zoom. */
     @FXML private Button buttonZoom;
@@ -102,7 +102,7 @@ public class MainSceneController {
     @FXML private TextField height;
     @FXML private TextField age;
 
-    public MainSceneController() { };
+    public MainSceneController() { }
 
     /**
      * called after the fxml is loaded and all objects are created. This is not called initialize anymore,
@@ -147,8 +147,6 @@ public class MainSceneController {
             event.consume();
             mapView.setExtent(event.getExtent());
         });
-
-        // mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
         logger.trace("map handlers initialized");
     }
 
