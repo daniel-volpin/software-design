@@ -506,24 +506,6 @@ public class MainSceneController {
         }
 
     }
-    @FXML private void openProfilePane() {
-        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
-        try {
-            rightSideVBox = rightSideLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Label rightPaneLabel = new Label("Profile");
-        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: large; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 0 0 10 0");
-
-        HBox titleBox = new HBox();
-        titleBox.setStyle("-fx-alignment: center");
-
-        titleBox.getChildren().add(rightPaneLabel);
-        rightSideVBox.getChildren().add(titleBox);
-        borderPane.setRight(rightSideVBox);
-    }
     @FXML private void openActivityHistoryPane() {
         FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("/Scenes/activityHistoryScene.fxml"));
 
