@@ -6,14 +6,15 @@ public class ActivityTypeFactory {
 
     public ActivityType getActivityType(String activityName)  {
         String enumName = ActivityTypeFactory.stringToEnumValue(activityName);
+        ActivityTypeEnum activityType = ActivityTypeEnum.valueOf(enumName);
 
-        if (ActivityTypeEnum.valueOf(enumName) == ActivityTypeEnum.WALKING) {
+        if (activityType == ActivityTypeEnum.WALKING) {
             return new Walking();
-        } else if (ActivityTypeEnum.valueOf(enumName) == ActivityTypeEnum.RUNNING){
+        } else if (activityType == ActivityTypeEnum.RUNNING){
             return new Running();
-        } else if (ActivityTypeEnum.valueOf(enumName) == ActivityTypeEnum.CYCLING) {
+        } else if (activityType == ActivityTypeEnum.CYCLING) {
             return new Cycling();
-        } else if (ActivityTypeEnum.valueOf(enumName) == ActivityTypeEnum.ROLLER_SKATING) {
+        } else if (activityType == ActivityTypeEnum.ROLLER_SKATING) {
             return new RollerSkating();
         } else {
             return null;
@@ -24,7 +25,7 @@ public class ActivityTypeFactory {
         WALKING,
         RUNNING,
         CYCLING,
-        ROLLER_SKATING
+        ROLLER_SKATING,
     }
 
     public static String enumValueToString(String enumValue) {
