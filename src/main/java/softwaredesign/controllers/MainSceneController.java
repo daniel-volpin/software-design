@@ -6,11 +6,8 @@ import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-<<<<<<< HEAD
-=======
 import javafx.scene.Parent;
 import javafx.scene.Scene;
->>>>>>> origin/ActivityType_Factory_method
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -43,7 +40,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -109,7 +105,7 @@ public class MainSceneController {
     @FXML private AnchorPane activityAnchorPane;
 
     @FXML private TextField weight;
-    @FXML private TextField heigth;
+    @FXML private TextField height;
     @FXML private TextField age;
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
@@ -543,7 +539,6 @@ public class MainSceneController {
         borderPane.setRight(activityAnchorPane);
     }
 
-    @FXML private void retractBtnClicked() {
     @FXML private void profileDataPrompt(){
         try {
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
@@ -557,7 +552,7 @@ public class MainSceneController {
         }
     }
 
-    @FXML private void retractBtnClicked(ActionEvent event) {
+    @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);
     }
     @FXML private void retractBtnEntered() { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
@@ -594,14 +589,14 @@ public class MainSceneController {
     }
 
     @FXML
-    private void activityTypeSelected(ActionEvent event) {
+    private void activityTypeSelected() {
         currentActivity.setActivityType(activityChoiceBox.getValue());
         System.out.println(currentActivity.getActivityType().getName());
     }
 
     @FXML
-    private void profileDataProvided(ActionEvent e){
-        String h = heigth.getText();
+    private void profileDataProvided(){
+        String h = height.getText();
         String w = weight.getText();
         String a = age.getText();
 
