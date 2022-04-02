@@ -43,3 +43,19 @@ class RollerSkating extends ActivityType {
     @Override
     public Double getMET() { return 6.5; }
 }
+
+class Swimming extends ActivityType {
+    @Override
+    public ActivityTypeEnum getType() { return ActivityTypeEnum.SWIMMING; }
+
+    @Override
+    public Double getMET() { return 5.8; }
+}
+
+class HorseRiding extends ActivityType {
+    @Override
+    public ActivityTypeEnum getType() { return ActivityTypeEnum.HORSE_RIDING; }
+
+    @Override
+    public Double getMET() { return 5.5; }
+}
