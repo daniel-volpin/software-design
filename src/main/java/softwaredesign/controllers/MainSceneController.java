@@ -547,6 +547,17 @@ public class MainSceneController {
         }
     }
 
+    @FXML private void profileConfirmed(){
+        double height = Double.parseDouble(heightTextField.getText());
+        double weight = Double.parseDouble(weigthTextField.getText());
+        int age = Integer.parseInt(ageTextField.getText());
+
+        profile = new Profile(height, weight, age);
+        System.out.println(profile.getAge());
+        System.out.println(profile.getWeight());
+        System.out.println(profile.getHeight());
+    }
+
 
     @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);

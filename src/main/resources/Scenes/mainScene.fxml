@@ -64,7 +64,7 @@
                            <Insets top="5.0" />
                         </VBox.margin>
                      </TextField>
-                  <Button fx:id="confirmProfileBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="39.0" text="OK">
+                  <Button fx:id="confirmProfileBtn" onAction="#profileConfirmed" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="39.0" text="OK">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
