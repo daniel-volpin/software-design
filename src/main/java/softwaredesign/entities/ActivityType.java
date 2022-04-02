@@ -1,47 +1,39 @@
 package softwaredesign.entities;
 
 abstract public class ActivityType {
-    private String activityName;
-    private Double metabolicEquivalent;
-
-    public ActivityType(String activityType, Double metabolicEquivalent) {
-        this.activityName = activityType;
-        this.metabolicEquivalent = metabolicEquivalent;
-    }
-
-    public String getName() {
-        return activityName;
-    }
-    public Double getMET()  {
-        return metabolicEquivalent;
-    }
+    public abstract String getName();
+    public abstract Double getMET();
 }
 
 
 class Walking extends ActivityType {
+    @Override
+    public String getName() { return "Walking"; }
 
-    public Walking(String activityName, Double metabolicEquivalent) {
-        super(activityName, metabolicEquivalent);
-    }
+    @Override
+    public Double getMET() { return 2.9; }
 }
 
 class Running extends ActivityType {
+    @Override
+    public String getName() { return "Running"; }
 
-    public Running(String activityName, Double metabolicEquivalent) {
-        super(activityName, metabolicEquivalent);
-    }
+    @Override
+    public Double getMET() { return 7.0; }
 }
 
 class Cycling extends ActivityType {
+    @Override
+    public String getName() { return "Cycling"; }
 
-    public Cycling(String activityName, Double metabolicEquivalent) {
-        super(activityName, metabolicEquivalent);
-    }
+    @Override
+    public Double getMET() { return 4.0; }
 }
 
 class RollerSkating extends ActivityType {
+    @Override
+    public String getName() { return "Roller Skating"; }
 
-    public RollerSkating(String activityName, Double metabolicEquivalent) {
-        super(activityName, metabolicEquivalent);
-    }
+    @Override
+    public Double getMET() { return 6.5; }
 }
