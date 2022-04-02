@@ -10,5 +10,5 @@
       prefWidth="500.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="softwaredesign.controllers.MainSceneController">
    <Button fx:id="okBtn" layoutX="34.0" onAction="#promptOK" layoutY="40.0" mnemonicParsing="false" text="OK"/>
-   <Label layoutX="34.0" layoutY="13.0" text="Please first provide a profile, before it is possible to calculate the burned calories"/>
+   <Label layoutX="34.0" layoutY="13.0" text="Please first provide an activity type, before it is possible to calculate the burned calories"/>
 </Pane>

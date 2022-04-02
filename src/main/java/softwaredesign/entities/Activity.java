@@ -26,6 +26,14 @@ public class Activity {
     }
 
 
+    public Double calculateCalories(Profile profile){
+        if(type == null) {
+            return null;
+        }
+        return (type.getMET() * profile.getWeight()) * (this.getTotalTimeS() / 3600);
+    }
+
+
     public void setActivityType(String activityName){
         type = new ActivityTypeFactory().getActivityType(activityName);
     }

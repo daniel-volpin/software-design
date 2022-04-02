@@ -331,7 +331,7 @@ public class MainSceneController {
 
         vBox.getChildren().addAll(routeDataLabels);
         vBox.getChildren().add(separatorLabel);
-        
+
         if (weatherLabels != null) {
             vBox.getChildren().addAll(weatherLabels);
         }
@@ -339,35 +339,41 @@ public class MainSceneController {
             vBox.getChildren().add(weatherImage);
         }
 
-        Button calculateCaloriesBtn = new Button("Calculate Calories");
-
-        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    System.out.println("calculate calories pressed");
-                }
-        );
-
-        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
-            calculateCaloriesBtn.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
-                }
-        );
-
-        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD;");
-                }
-        );
-
-        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                    calculateCalories();
-                }
-        );
-
-        calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
+        if (profile == null || newActivity.getActivityType() == null) {
+            Button calculateCaloriesBtn = makeCaloriesButton();
+            vBox.getChildren().add(calculateCaloriesBtn);
+        } else {
+            Double calories = newActivity.calculateCalories(profile);
+            if (calories != null) {
+                Label caloriesLabel = new Label();
+                caloriesLabel.setText("Total calories burned: " + Math.round(calories));
+                caloriesLabel.setWrapText(true);
+                vBox.getChildren().add(caloriesLabel);
+            }            
+        }
 
         rightSideVBox.getChildren().add(titleBox);
         rightSideVBox.getChildren().add(vBox);
-        rightSideVBox.getChildren().add(calculateCaloriesBtn);
 
         borderPane.setRight(rightSideVBox);
+    }
+
+    private Button makeCaloriesButton() {
+        Button calculateCaloriesBtn = new Button("Calculate Calories");
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            calculateCalories();
+                });
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            calculateCaloriesBtn.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
+                });
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD;");
+                });
+        calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
+        return calculateCaloriesBtn;
     }
 
 
@@ -473,9 +479,15 @@ public class MainSceneController {
     }
 
     private void calculateCalories(){
-        String age = ageTextField.getText();
-        String weight = weigthTextField.getText();
-        String height = ageTextField.getText();
+        if (profile == null) {
+            profileDataPrompt();
+            return;
+        }
+        if (currentActivity.getActivityType() == null) {
+            activityTypePrompt();
+            return;
+        }
+        makeRightPane(currentActivity);
     }
 
     @FXML private void openGPXFile() {
@@ -509,12 +521,24 @@ public class MainSceneController {
         borderPane.setRight(activityAnchorPane);
     }
 
+    @FXML private void activityTypePrompt(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/activityTypePrompt.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Provide Activity Type");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML private void profileDataPrompt(){
         try {
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
             Stage stage = new Stage();
-            stage.setTitle("Profile");
+            stage.setTitle("Provide Profile");
             stage.setScene(new Scene(root));
             stage.show();
         }
@@ -560,6 +584,11 @@ public class MainSceneController {
         if (currentActivity != null) makeRightPane(currentActivity);
     }
 
+    @FXML private void promptOK() {
+        // TODO:
+//        stage.close();
+    }
+    
     @FXML private void activityTypeSelected() {
         currentActivity.setActivityType(activityChoiceBox.getValue());
         System.out.println(currentActivity.getActivityType().getName());

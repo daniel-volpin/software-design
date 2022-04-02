@@ -29,10 +29,4 @@ public class Profile {
         this.weight = weight;
     }
 
-    public Double calculateCalories(Activity activity){
-        if(activity.getActivityType() != null) {
-            return (activity.getActivityType().getMET() * this.weight) * (activity.getTotalTimeS() / 3600);
-        }
-        return null;
-    }
 }
