@@ -4,9 +4,17 @@ import java.util.ArrayList;
 
 public class ActivityTypeFactory {
 
+    public enum ActivityTypeEnum {
+        WALKING,
+        RUNNING,
+        CYCLING,
+        ROLLER_SKATING,
+    }
+
     public ActivityType getActivityType(String activityName)  {
         String enumName = ActivityTypeFactory.stringToEnumValue(activityName);
         ActivityTypeEnum activityType = ActivityTypeEnum.valueOf(enumName);
+
 
         if (activityType == ActivityTypeEnum.WALKING) {
             return new Walking();
@@ -21,12 +29,7 @@ public class ActivityTypeFactory {
         }
     }
 
-    public enum ActivityTypeEnum {
-        WALKING,
-        RUNNING,
-        CYCLING,
-        ROLLER_SKATING,
-    }
+
 
     public static String enumValueToString(String enumValue) {
         // Convert "ROLLER_SKATING" to "Roller skating"
