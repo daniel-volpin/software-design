@@ -74,7 +74,7 @@ public class MainSceneController {
     @FXML private Slider sliderZoom;
 
     /** Menu elements*/
-    @FXML private Button profileBtn;
+    @FXML private Button okBtn;
     @FXML private Button activityBtn;
     @FXML private Button GPXBtn;
     @FXML private VBox activityTypeSelection;
@@ -553,12 +553,12 @@ public class MainSceneController {
     }
     @FXML private void retractBtnEntered() { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
     @FXML private void GPXBtnEntered() {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    @FXML private void profileBtnEntered() {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void profileBtnEntered() {okBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
     @FXML private void activityBtnEntered() { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
 
     @FXML private void retractBtnExited() { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
     @FXML private void GPXBtnExited() { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
-    @FXML private void profileBtnExited() { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void profileBtnExited() { okBtn.setStyle("-fx-background-color: #C1BBDD");}
     @FXML private void activityBtnExited() {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
     @FXML private void metricCheckBoxTicked() {
@@ -585,8 +585,8 @@ public class MainSceneController {
     }
 
     @FXML private void promptOK() {
-        // TODO:
-//        stage.close();
+        Stage stage = (Stage) okBtn.getScene().getWindow();
+        stage.close();
     }
     
     @FXML private void activityTypeSelected() {
