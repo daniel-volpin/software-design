@@ -392,12 +392,12 @@ public class MainSceneController {
         VBox vBox = new VBox();
 
         if (!activityHistory.isEmpty()) {
-            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(currentActivity.getID()).getTotalDistanceM() + " m");
+            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(activityHistory.size()-1).getTotalDistanceM() + " m");
             vBox.getChildren().add(totDistanceLabel);
 
             try {
-                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(currentActivity.getID()).getAverageSpeedMpS() + " km/hr");
-                Label totTimeLabel = new Label("Time: " + activityHistory.get(currentActivity.getID()).getTotalTimeS() + " min");
+                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(activityHistory.size()-1).getAverageSpeedMpS() + " km/hr");
+                Label totTimeLabel = new Label("Time: " + activityHistory.get(activityHistory.size()-1).getTotalTimeS() + " min");
 
 
                 vBox.getChildren().add(avgSpeedLabel);
@@ -406,7 +406,7 @@ public class MainSceneController {
                 logger.trace(e.toString());
             }
 
-            int index = currentActivity.getID();
+            int index = activityHistory.size()-1;
             Button button = new Button("Open");
 
             button.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
