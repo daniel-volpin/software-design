@@ -50,7 +50,7 @@ public class RouteData {
             Double timeDifferenceSec = timeDifferenceMilliSec / 1000.0;
 
             Double threePointDistance = 0.0;
-            for (int j = from; j < to; j++) {
+            for (int j = from; j <= to; j++) {
                 threePointDistance += distances[j];
             }
             double velocityMpS = threePointDistance / timeDifferenceSec;  // in Meters per Second

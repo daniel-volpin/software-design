@@ -454,7 +454,7 @@ public class MainSceneController {
 
         /** Make a CoordinateLine for plotting */
         CoordinateLine trackLine = new CoordinateLine(routeData.getCoordinates());
-        trackLine.setColor(Color.ORANGERED).setVisible(true);
+        trackLine.setColor(Color.ORANGERED).setVisible(true).setWidth(4);
 
         if (shownTrackLine != null) {
             mapView.removeCoordinateLine(shownTrackLine);
