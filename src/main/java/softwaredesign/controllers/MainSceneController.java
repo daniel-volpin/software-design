@@ -441,7 +441,6 @@ public class MainSceneController {
         if (activityHistory == null) {
             activityHistory = new ArrayList<>();
         }
-        newActivity.setID(activityHistory.size());
         activityHistory.add(newActivity);
         addActivityPane();
     }
