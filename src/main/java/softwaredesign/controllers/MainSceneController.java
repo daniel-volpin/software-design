@@ -6,6 +6,11 @@ import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+<<<<<<< HEAD
+=======
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+>>>>>>> origin/ActivityType_Factory_method
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
@@ -26,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import softwaredesign.entities.Activity;
+import softwaredesign.entities.ActivityTypeFactory;
 import softwaredesign.entities.RouteData;
 import softwaredesign.entities.Weather;
 
@@ -36,7 +43,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 
 public class MainSceneController {
@@ -76,10 +85,12 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML private Slider sliderZoom;
 
-    /** Menu buttons*/
+    /** Menu elements*/
     @FXML private Button profileBtn;
     @FXML private Button activityBtn;
     @FXML private Button GPXBtn;
+    @FXML private VBox activityTypeSelection;
+    @FXML private ChoiceBox<String> activityChoiceBox;
 
     /** dynamic right side pane that is loaded when an activity file is uploaded*/
     @FXML private VBox rightSideVBox;
@@ -97,6 +108,9 @@ public class MainSceneController {
     /** anchor pane to display the activity history*/
     @FXML private AnchorPane activityAnchorPane;
 
+    @FXML private TextField weight;
+    @FXML private TextField heigth;
+    @FXML private TextField age;
 
     public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
 
@@ -325,6 +339,16 @@ public class MainSceneController {
         addActivity(newActivity);
         changeShownActivity(newActivity);
         makeRightPane(newActivity);
+        enableActivityTypeSelection();
+    }
+
+
+    private void enableActivityTypeSelection(){
+        List<String> activityNames = ActivityTypeFactory.enumValuesToString();//{"Walking", "Running", "Cycling", "Roller Skating"};
+        if(activityChoiceBox.isDisabled()){
+            activityChoiceBox.getItems().addAll(activityNames);
+        }
+        activityTypeSelection.setDisable(false);
     }
 
     private void makeRightPane(Activity newActivity) {
@@ -520,6 +544,20 @@ public class MainSceneController {
     }
 
     @FXML private void retractBtnClicked() {
+    @FXML private void profileDataPrompt(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Profile");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML private void retractBtnClicked(ActionEvent event) {
         rightSideVBox.setPrefSize(0,0);
     }
     @FXML private void retractBtnEntered() { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
@@ -553,6 +591,24 @@ public class MainSceneController {
 
         metricOn = false;
         if (currentActivity != null) makeRightPane(currentActivity);
+    }
+
+    @FXML
+    private void activityTypeSelected(ActionEvent event) {
+        currentActivity.setActivityType(activityChoiceBox.getValue());
+        System.out.println(currentActivity.getActivityType().getName());
+    }
+
+    @FXML
+    private void profileDataProvided(ActionEvent e){
+        String h = heigth.getText();
+        String w = weight.getText();
+        String a = age.getText();
+
+        System.out.println(h);
+        System.out.println(w);
+        System.out.println(a);
+        
     }
 
 }

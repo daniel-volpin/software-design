@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import softwaredesign.controllers.MainSceneController;
 
+import java.io.IOException;
+
 public class MainDisplay extends Application {
 
     /** Logger for the class */
