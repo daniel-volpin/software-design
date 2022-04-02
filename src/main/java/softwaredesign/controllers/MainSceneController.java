@@ -104,6 +104,8 @@ public class MainSceneController {
     /** anchor pane to display the activity history*/
     @FXML private AnchorPane activityAnchorPane;
 
+    /** Profile window elements*/
+    @FXML private Button okBtnProfile;
     @FXML private TextField weight;
     @FXML private TextField height;
     @FXML private TextField age;
@@ -603,6 +605,9 @@ public class MainSceneController {
         System.out.println(h);
         System.out.println(w);
         System.out.println(a);
+
+        Stage stage = (Stage) okBtnProfile.getScene().getWindow();
+        stage.close();
         
     }
 

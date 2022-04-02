@@ -66,15 +66,15 @@ public class Weather {
             case	"Light Drizzle":
             case	"Heavy Drizzle/Rain":
             case	"Light Drizzle/Rain":
-                imagePath = "src/main/resources/Media/drizzle.png";
+                imagePath = "src/main/resources/Media/Weather_icons/drizzle.png";
             break;
 
             case	"Hail":
-                imagePath = "src/main/resources/Media/hail.png";
+                imagePath = "src/main/resources/Media/Weather_icons/hail.png";
             break;
 
             case	"Thunderstorm":
-                imagePath = "src/main/resources/Media/thunderstorms.png";
+                imagePath = "src/main/resources/Media/Weather_icons/thunderstorms.png";
             break;
 
             case	"Freezing Drizzle/Freezing Rain":
