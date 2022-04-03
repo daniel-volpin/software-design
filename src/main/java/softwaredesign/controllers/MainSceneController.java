@@ -39,7 +39,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
 
 public class MainSceneController {
@@ -513,7 +512,7 @@ public class MainSceneController {
 
     private void calculateCalories(){
         if (!Profile.getInstance().isInitialized()) {
-            profileDataPrompt();
+            profilePrompt();
             return;
         }
         if (currentActivity.getActivityType() == null) {
@@ -567,7 +566,7 @@ public class MainSceneController {
         }
     }
 
-    @FXML private void profileDataPrompt(){
+    @FXML private void profilePrompt(){
         try {
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
             Stage stage = new Stage();
