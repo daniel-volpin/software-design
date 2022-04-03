@@ -30,7 +30,11 @@ public class Activity {
         if(type == null) {
             return null;
         }
-        return (type.getMET() * profile.getWeight()) * (this.getTotalTimeS() / 3600);
+        try {
+            return (type.getMET() * profile.getWeight()) * (this.getTotalTimeS() / 3600);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 

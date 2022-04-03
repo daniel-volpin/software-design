@@ -376,12 +376,14 @@ public class MainSceneController {
             vBox.getChildren().add(calculateCaloriesBtn);
         } else {
             Double calories = newActivity.calculateCalories(profile);
+            Label caloriesLabel = new Label();
+            caloriesLabel.setWrapText(true);
             if (calories != null) {
-                Label caloriesLabel = new Label();
                 caloriesLabel.setText("Total calories burned: " + Math.round(calories));
-                caloriesLabel.setWrapText(true);
-                vBox.getChildren().add(caloriesLabel);
-            }            
+            } else {
+                caloriesLabel.setText("Cannot calculate calories for this route");
+            }
+            vBox.getChildren().add(caloriesLabel);
         }
 
         rightSideVBox.getChildren().add(titleBox);
@@ -579,8 +581,8 @@ public class MainSceneController {
         }
     }
 
-    @FXML private void profileConfirmed(){
-        if(heightTextField.getText().equals("")
+    @FXML private void profileConfirmed() {
+        if (heightTextField.getText().equals("")
                 || weightTextField.getText().equals("")
                 || ageTextField.getText().equals("")){
             return;
