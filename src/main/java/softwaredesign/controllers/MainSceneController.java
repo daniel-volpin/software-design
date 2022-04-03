@@ -519,10 +519,8 @@ public class MainSceneController {
             ArrayList<Waypoint> wayPoints = getWayPointsFromFile(gpxFile);
             initializeActivity(wayPoints);
         } catch (java.io.FileNotFoundException e) {
-            // TODO: Write the error to the screen such that the user knows something went wrong
             logger.info("ERROR: GPX file not found");
         } catch (Exception e) {
-            // TODO: Write the error to the screen such that the user knows something went wrong
             logger.info("ERROR: " + e.getMessage());
         }
 
