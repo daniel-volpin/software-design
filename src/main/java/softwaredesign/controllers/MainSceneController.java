@@ -59,7 +59,6 @@ public class MainSceneController {
     private ArrayList<Activity> activityHistory;
     private Activity currentActivity = null;
     private final ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
-    Profile profile = null;
 
     /** boolean to update the routeData information */
     private boolean metricOn = true;
@@ -371,11 +370,11 @@ public class MainSceneController {
             vBox.getChildren().add(weatherImage);
         }
 
-        if (profile == null || newActivity.getActivityType() == null) {
+        if (!Profile.getInstance().isInitialized() || newActivity.getActivityType() == null) {
             Button calculateCaloriesBtn = makeCaloriesButton();
             vBox.getChildren().add(calculateCaloriesBtn);
         } else {
-            Double calories = newActivity.calculateCalories(profile);
+            Double calories = newActivity.calculateCalories(Profile.getInstance());
             Label caloriesLabel = new Label();
             caloriesLabel.setWrapText(true);
             if (calories != null) {
@@ -513,7 +512,7 @@ public class MainSceneController {
     }
 
     private void calculateCalories(){
-        if (profile == null) {
+        if (!Profile.getInstance().isInitialized()) {
             profileDataPrompt();
             return;
         }
@@ -592,7 +591,10 @@ public class MainSceneController {
         double weight = Double.parseDouble(weightTextField.getText());
         int age = Integer.parseInt(ageTextField.getText());
 
-        profile = new Profile(height, weight, age);
+        Profile.getInstance().setWeight(weight);
+        Profile.getInstance().setHeight(height);
+        Profile.getInstance().setAge(age);
+        Profile.getInstance().initialize();
     }
 
 

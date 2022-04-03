@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="softwaredesign.controllers.MainSceneController">
@@ -30,19 +31,21 @@
                 <Image url="@/Media/VU-logo.png" />
             </ImageView>
             <Pane prefHeight="62.0" prefWidth="170.0">
-                <Label layoutX="17.0" layoutY="21.0" prefHeight="26.0" prefWidth="134.0" text="AerobixTracker" textFill="WHITE">
+                <Label layoutX="27.0" layoutY="17.0" prefHeight="28.0" prefWidth="149.0" text="AerobixTracker" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="20.0" />
+                        <Font name="System Bold" size="23.0" />
                     </font>
                 </Label>
             </Pane>
             <AnchorPane prefHeight="280.0" prefWidth="170.0">
-                <VBox prefWidth="170.0">
-                    <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openGPXFile" onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" text="Upload GPX file" textFill="WHITE">
+                <VBox alignment="CENTER" prefWidth="170.0">
+               <Line endX="100.0" opacity="0.07" startX="-100.0" strokeWidth="2.0" />
+                    <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openGPXFile" onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0" prefWidth="212.0" style="-fx-background-color: #C1BBDD;" text="Upload GPX file" textFill="WHITE">
                         <font>
                             <Font size="14.0" />
                         </font>
                     </Button>
+               <Line endX="100.0" opacity="0.07" startX="-100.0" strokeWidth="2.0" />
                <VBox fx:id="profileElements" alignment="CENTER" disable="true" prefHeight="140.0" prefWidth="170.0">
                      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="170.0" text="Profile" textFill="WHITE">
                         <font>
@@ -76,30 +79,33 @@
                      <Insets bottom="10.0" top="10.0" />
                   </VBox.margin>
                </VBox>
-                    <VBox fx:id="activityTypeSelection" disable="true" prefHeight="58.0" prefWidth="170.0">
+               <Line endX="100.0" opacity="0.07" startX="-100.0" strokeWidth="2.0" />
+                    <VBox fx:id="activityTypeSelection" alignment="CENTER" disable="true" prefHeight="68.0" prefWidth="202.0">
                   <Accordion />
-                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="40.0" prefWidth="170.0" text="Select activity:" textFill="WHITE">
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="44.0" prefWidth="170.0" text="Select activity:" textFill="WHITE">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Label>
-                        <Pane prefHeight="48.0" prefWidth="170.0">
+                        <Pane prefHeight="40.0" prefWidth="202.0">
                             <children>
-                                <ChoiceBox fx:id="activityChoiceBox" layoutX="28.0" layoutY="3.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="120.0" />
+                                <ChoiceBox fx:id="activityChoiceBox" layoutX="35.0" layoutY="1.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="132.0" />
                             </children>
                         </Pane>
                     </VBox>
-                    <Button fx:id="activityBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openActivityHistoryPane" onMouseEntered="#activityBtnEntered" onMouseExited="#activityBtnExited" prefHeight="40.0" prefWidth="175.0" style="-fx-background-color: #C1BBDD;" text="Activity History" textFill="WHITE">
+               <Line endX="100.0" opacity="0.07" startX="-100.0" strokeWidth="2.0" />
+                    <Button fx:id="activityBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openActivityHistoryPane" onMouseEntered="#activityBtnEntered" onMouseExited="#activityBtnExited" prefHeight="40.0" prefWidth="212.0" style="-fx-background-color: #C1BBDD;" text="Activity History" textFill="WHITE">
                         <font>
                             <Font size="14.0" />
                         </font>
                   <VBox.margin>
-                     <Insets top="10.0" />
+                     <Insets />
                   </VBox.margin>
                     </Button>
+               <Line endX="100.0" opacity="0.07" startX="-100.0" strokeWidth="2.0" />
                 </VBox>
             </AnchorPane>
-            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="170.0" style="-fx-translate-y: 50;">
+            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="170.0" style="-fx-translate-y: 10;">
                 <VBox>
                     <HBox alignment="CENTER">
                         <Label fx:id="metricLabel" style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold" text="Metric" />
