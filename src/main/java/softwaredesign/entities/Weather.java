@@ -89,6 +89,7 @@ public class Weather {
             case	"Light Rain":
             case	"Precipitation In Vicinity":
             case	"Rain":
+            case    "Rain, Partially cloudy":
                 imagePath = "src/main/resources/Media/Weather_icons/rain.png";
             break;
 

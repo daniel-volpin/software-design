@@ -26,17 +26,17 @@
     </center>
     <left>
         <VBox prefHeight="531.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" BorderPane.alignment="CENTER">
-            <ImageView fitHeight="49.0" fitWidth="166.0">
+            <ImageView fitHeight="49.0" fitWidth="170.0">
                 <Image url="@/Media/VU-logo.png" />
             </ImageView>
-            <Pane prefHeight="68.0" prefWidth="170.0">
-                <Label layoutX="30.0" layoutY="30.0" text="AerobixTracker" textFill="WHITE">
+            <Pane prefHeight="62.0" prefWidth="170.0">
+                <Label layoutX="17.0" layoutY="21.0" prefHeight="26.0" prefWidth="134.0" text="AerobixTracker" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="20.0" />
                     </font>
                 </Label>
             </Pane>
-            <AnchorPane>
+            <AnchorPane prefHeight="280.0" prefWidth="170.0">
                 <VBox prefWidth="170.0">
                     <Button fx:id="GPXBtn" accessibleRole="MENU_ITEM" contentDisplay="CENTER" onAction="#openGPXFile" onMouseEntered="#GPXBtnEntered" onMouseExited="#GPXBtnExited" prefHeight="40.0" prefWidth="170.0" style="-fx-background-color: #C1BBDD;" text="Upload GPX file" textFill="WHITE">
                         <font>
@@ -49,12 +49,12 @@
                            <Font size="14.0" />
                         </font>
                      </Label>
-                     <TextField fx:id="heightTextField" alignment="CENTER" promptText="Height">
+                     <TextField fx:id="heightTextField" alignment="CENTER" promptText="Height (in cm)">
                         <VBox.margin>
                            <Insets top="5.0" />
                         </VBox.margin>
                      </TextField>
-                     <TextField fx:id="weightTextField" alignment="CENTER" promptText="Weight">
+                     <TextField fx:id="weightTextField" alignment="CENTER" promptText="Weight (in kg)">
                         <VBox.margin>
                            <Insets top="5.0" />
                         </VBox.margin>
@@ -64,14 +64,17 @@
                            <Insets top="5.0" />
                         </VBox.margin>
                      </TextField>
-                  <Button fx:id="confirmProfileBtn" onAction="#profileConfirmed" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="39.0" text="OK">
+                  <Button fx:id="confirmProfileBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#profileConfirmed" prefHeight="26.0" prefWidth="39.0" text="OK">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <VBox.margin>
-                        <Insets bottom="5.0" top="5.0" />
+                        <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Button>
+                  <VBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </VBox.margin>
                </VBox>
                     <VBox fx:id="activityTypeSelection" disable="true" prefHeight="58.0" prefWidth="170.0">
                   <Accordion />
@@ -90,10 +93,13 @@
                         <font>
                             <Font size="14.0" />
                         </font>
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
                     </Button>
                 </VBox>
             </AnchorPane>
-            <HBox alignment="CENTER" style="-fx-translate-y: 100;">
+            <HBox alignment="CENTER" prefHeight="52.0" prefWidth="170.0" style="-fx-translate-y: 50;">
                 <VBox>
                     <HBox alignment="CENTER">
                         <Label fx:id="metricLabel" style="-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold" text="Metric" />
@@ -103,7 +109,13 @@
                         <CheckBox fx:id="metricCheckBox" disable="true" onAction="#metricCheckBoxTicked" selected="true" />
                         <CheckBox fx:id="imperialCheckBox" onAction="#imperialCheckBoxTicked" style="-fx-padding: 0 0 0 30;" />
                     </HBox>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
                 </VBox>
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
             </HBox>
         </VBox>
     </left>

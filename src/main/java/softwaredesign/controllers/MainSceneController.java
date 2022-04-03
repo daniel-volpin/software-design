@@ -2,6 +2,8 @@ package softwaredesign.controllers;
 
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -37,6 +39,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MainSceneController {
@@ -101,7 +104,6 @@ public class MainSceneController {
     @FXML private TextField heightTextField;
     @FXML private TextField weightTextField;
     @FXML private TextField ageTextField;
-    @FXML private Button confirmProfileBtn;
 
     public MainSceneController() { }
 
@@ -301,6 +303,36 @@ public class MainSceneController {
     }
 
     private void enableProfileDataInput(){
+        heightTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\"\\\\d{0,2}\\\\.\\\\d{1,2}\"")) {
+                    heightTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        weightTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\"\\\\d{0,2}\\\\.\\\\d{1,2}\"")) {
+                    weightTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        ageTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("[0-9]+")) {
+                    ageTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
         profileElements.setDisable(false);
     }
 
@@ -548,14 +580,17 @@ public class MainSceneController {
     }
 
     @FXML private void profileConfirmed(){
+        if(heightTextField.getText().equals("")
+                || weightTextField.getText().equals("")
+                || ageTextField.getText().equals("")){
+            return;
+        }
+
         double height = Double.parseDouble(heightTextField.getText());
         double weight = Double.parseDouble(weightTextField.getText());
         int age = Integer.parseInt(ageTextField.getText());
 
         profile = new Profile(height, weight, age);
-        System.out.println(profile.getAge());
-        System.out.println(profile.getWeight());
-        System.out.println(profile.getHeight());
     }
 
 
@@ -602,7 +637,6 @@ public class MainSceneController {
     
     @FXML private void activityTypeSelected() {
         currentActivity.setActivityType(activityChoiceBox.getValue());
-        System.out.println(currentActivity.getActivityType().getName());
     }
 
 }
