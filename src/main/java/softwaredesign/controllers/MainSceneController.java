@@ -102,6 +102,7 @@ public class MainSceneController {
     @FXML private TextField heightTextField;
     @FXML private TextField weightTextField;
     @FXML private TextField ageTextField;
+    @FXML private Button confirmProfileBtn;
 
     public MainSceneController() { }
 
@@ -180,7 +181,7 @@ public class MainSceneController {
         ArrayList<Label> routeDataLabels = new ArrayList<>();
         DecimalFormat df = new DecimalFormat("#.##");
 
-        double totalDistanceM = Math.round(activity.getTotalDistanceM() * 100) / 100.0;
+        double totalDistanceKM = Math.round(activity.getTotalDistanceM() / 1000 * 100) / 100.0;
 
         Label totalDistanceLabel = new Label();
         Label avgSpeedLabel = new Label();
@@ -192,16 +193,16 @@ public class MainSceneController {
             double avgSpeedKMpS = Math.round(activity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
 
             if (!metricOn) {
-                totalDistanceM = totalDistanceM * 0.0006214;
-                totalDistanceM = Double.parseDouble(df.format(totalDistanceM));
-                totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "mi");
+                totalDistanceKM = totalDistanceKM * 0.0006214 * 1000;
+                totalDistanceKM = Double.parseDouble(df.format(totalDistanceKM));
+                totalDistanceLabel.setText("Total Distance: " + totalDistanceKM + "mi");
 
                 avgSpeedKMpS = avgSpeedKMpS * 0.6214;
                 avgSpeedKMpS = Double.parseDouble(df.format(avgSpeedKMpS));
                 avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " miles/hr");
             } else {
                 totalTimeM = Double.parseDouble(df.format(totalTimeM));
-                totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
+                totalDistanceLabel.setText("Total Distance: " + totalDistanceKM + "km");
                 avgSpeedKMpS = Double.parseDouble(df.format(avgSpeedKMpS));
                 avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/hr");
             }
@@ -402,7 +403,7 @@ public class MainSceneController {
                 });
 
         calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
-            calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD;");
+            calculateCaloriesBtn.setStyle("-fx-background-color: #d3bbdd;");
                 });
         calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
         return calculateCaloriesBtn;
@@ -414,38 +415,24 @@ public class MainSceneController {
         VBox vBox = new VBox();
 
         if (!activityHistory.isEmpty()) {
-            Label totDistanceLabel = new Label("Distance: " + activityHistory.get(activityHistory.size()-1).getTotalDistanceM() + " m");
-            vBox.getChildren().add(totDistanceLabel);
-
-            try {
-                Label avgSpeedLabel = new Label("Avg Speed: " + activityHistory.get(activityHistory.size()-1).getAverageSpeedMpS() + " km/hr");
-                Label totTimeLabel = new Label("Time: " + activityHistory.get(activityHistory.size()-1).getTotalTimeS() + " min");
-
-
-                vBox.getChildren().add(avgSpeedLabel);
-                vBox.getChildren().add(totTimeLabel);
-            } catch (Exception e) {
-                logger.trace(e.toString());
-            }
+            ArrayList<Label> routeDataLabels = makeRouteDataLabels(activityHistory.get(activityHistory.size()-1));
+            vBox.getChildren().addAll(routeDataLabels);
 
             int index = activityHistory.size()-1;
             Button button = new Button("Open");
 
             button.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
                     button.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
-                }
-            );
+                });
 
             button.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
                         button.setStyle("-fx-background-color: #C1BBDD;");
-                    }
-            );
+                    });
 
             button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                     changeShownActivity(activityHistory.get(index));
                     makeRightPane(activityHistory.get(index));
-                }
-            );
+                });
 
             button.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
             vBox.getChildren().add(button);
@@ -595,7 +582,10 @@ public class MainSceneController {
         Profile.getInstance().setAge(age);
         Profile.getInstance().initialize();
     }
-
+    @FXML private void promptOK() {
+        Stage stage = (Stage) okBtn.getScene().getWindow();
+        stage.close();
+    }
 
     @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);
@@ -633,13 +623,16 @@ public class MainSceneController {
         if (currentActivity != null) makeRightPane(currentActivity);
     }
 
-    @FXML private void promptOK() {
-        Stage stage = (Stage) okBtn.getScene().getWindow();
-        stage.close();
+    @FXML private void confirmProfileBtnEntered() {
+        confirmProfileBtn.setStyle("-fx-background-color: white;  -fx-font-weight: bold; -fx-font-size: larger");
     }
-    
+
     @FXML private void activityTypeSelected() {
         currentActivity.setActivityType(activityChoiceBox.getValue());
+    }
+
+    @FXML private void confirmProfileBtnExited() {
+        confirmProfileBtn.setStyle("-fx-background-color: #d3bbdd");
     }
 
 }

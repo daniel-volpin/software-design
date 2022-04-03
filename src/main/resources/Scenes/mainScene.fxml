@@ -33,7 +33,7 @@
             <Pane prefHeight="62.0" prefWidth="170.0">
                 <Label layoutX="27.0" layoutY="17.0" prefHeight="28.0" prefWidth="149.0" text="AerobixTracker" textFill="WHITE">
                     <font>
-                        <Font name="System Bold" size="23.0" />
+                        <Font name="System Bold" size="20.0" />
                     </font>
                 </Label>
             </Pane>
@@ -67,7 +67,9 @@
                            <Insets top="5.0" />
                         </VBox.margin>
                      </TextField>
-                  <Button fx:id="confirmProfileBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#profileConfirmed" prefHeight="26.0" prefWidth="39.0" text="OK">
+                  <Button fx:id="confirmProfileBtn" onAction="#profileConfirmed" alignment="CENTER" contentDisplay="CENTER"
+                          mnemonicParsing="false" prefHeight="30.0" prefWidth="50.0" text="OK" style="-fx-background-color: #d3bbdd"
+                          onMouseEntered="#confirmProfileBtnEntered" onMouseExited="#confirmProfileBtnExited">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -89,7 +91,7 @@
                         </Label>
                         <Pane prefHeight="40.0" prefWidth="202.0">
                             <children>
-                                <ChoiceBox fx:id="activityChoiceBox" layoutX="35.0" layoutY="1.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="132.0" />
+                                <ChoiceBox fx:id="activityChoiceBox" layoutX="28.0" layoutY="3.0" onAction="#activityTypeSelected" prefHeight="26.0" prefWidth="120.0"/>
                             </children>
                         </Pane>
                     </VBox>
