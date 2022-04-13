@@ -1,23 +1,49 @@
 package softwaredesign.entities;
 
-import org.alternativevision.gpx.beans.Track;
+import org.alternativevision.gpx.beans.Waypoint;
 import softwaredesign.helperclasses.Calc;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 
 public class Activity {
+
     private final RouteData routeData;
     private final Weather weather;
-    // TODO: private ActivityType type;
+    private ActivityType type;
 
-    public Activity(Track track) {
-        routeData = new RouteData(track);
+    public Activity(ArrayList<Waypoint> wayPoints) {
+
+        routeData = new RouteData(wayPoints);
+        type = null;
 
         if (routeData.getTimeStamps()[0] == null) {
             weather = null;
         } else {
             weather = new Weather(routeData);
         }
+    }
+
+
+    public Double calculateCalories(Profile profile){
+        if(type == null) {
+            return null;
+        }
+        try {
+            return (type.getMET() * profile.getWeight()) * (this.getTotalTimeS() / 3600);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+
+    public void setActivityType(String activityName){
+        type = new ActivityTypeFactory().getActivityType(activityName);
+    }
+
+    public ActivityType getActivityType(){
+        return type;
     }
 
     public RouteData getRouteData() { return routeData;}

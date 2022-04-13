@@ -2,38 +2,43 @@ package softwaredesign.controllers;
 
 import com.sothawo.mapjfx.*;
 import com.sothawo.mapjfx.event.MapViewEvent;
-import javafx.animation.Transition;
-import javafx.event.ActionEvent;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.util.Duration;
+import javafx.stage.Stage;
 import org.alternativevision.gpx.GPXParser;
 import org.alternativevision.gpx.beans.GPX;
+import org.alternativevision.gpx.beans.Route;
 import org.alternativevision.gpx.beans.Track;
+import org.alternativevision.gpx.beans.Waypoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
-import softwaredesign.entities.Activity;
-import softwaredesign.entities.RouteData;
-import softwaredesign.entities.Weather;
+import softwaredesign.entities.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 
 public class MainSceneController {
@@ -42,24 +47,20 @@ public class MainSceneController {
     private static final Logger logger = LoggerFactory.getLogger(MainSceneController.class);
 
     /** Coordinate of Amsterdam city centre. */
-    private static Coordinate centerPoint = new Coordinate(52.3717204, 4.9020727);
+    private static final Coordinate centerPoint = new Coordinate(52.3717204, 4.9020727);
 
     /** default zoom value. */
     private static final int ZOOM_DEFAULT = 14;
 
-    /** the markers. */
-    private final Marker markerClick;
-
     /** For removing the trackLine if a new file is uploaded */
     private CoordinateLine shownTrackLine;
 
-    // TODO: Profile
     private ArrayList<Activity> activityHistory;
+    private Activity currentActivity = null;
+    private final ArrayList<TitledPane> titledPaneActivities = new ArrayList<>();
 
-    /** Menu buttons*/
-    @FXML private Button profileBtn;
-    @FXML private Button activityBtn;
-    @FXML private Button GPXBtn;
+    /** boolean to update the routeData information */
+    private boolean metricOn = true;
 
     /** button to set the map's zoom. */
     @FXML private Button buttonZoom;
@@ -73,14 +74,40 @@ public class MainSceneController {
     /** Slider to change the zoom value */
     @FXML private Slider sliderZoom;
 
-    @FXML public VBox rightSideVBox;
-    @FXML public BorderPane borderPane;
-    @FXML public Button retractBtn;
+    /** Menu elements*/
+    @FXML private Button okBtn;
+    @FXML private Button activityBtn;
+    @FXML private Button GPXBtn;
+    @FXML private VBox activityTypeSelection;
+    @FXML private ChoiceBox<String> activityChoiceBox;
 
-    public MainSceneController() { markerClick = Marker.createProvided(Marker.Provided.ORANGE).setVisible(false);}
+    /** dynamic right side pane that is loaded when an activity file is uploaded*/
+    @FXML private VBox rightSideVBox;
+    @FXML private BorderPane borderPane;
+    @FXML private Button retractBtn;
+
+    /** check boxes to change route data from metric to imperial and vise versa. */
+    @FXML private CheckBox imperialCheckBox;
+    @FXML private CheckBox metricCheckBox;
+
+    /** labels for metric and imperial unit change*/
+    @FXML private Label metricLabel;
+    @FXML private Label imperialLabel;
+
+    /** anchor pane to display the activity history*/
+    @FXML private AnchorPane activityAnchorPane;
+
+    /** Profile  elements*/
+    @FXML private VBox profileElements;
+    @FXML private TextField heightTextField;
+    @FXML private TextField weightTextField;
+    @FXML private TextField ageTextField;
+    @FXML private Button confirmProfileBtn;
+
+    public MainSceneController() { }
 
     /**
-     * called after the fxml is loaded and all objects are created. This is not called initialize any more,
+     * called after the fxml is loaded and all objects are created. This is not called initialize anymore,
      * because we need to pass in the projection before initializing.
      *
      * @param projection
@@ -89,7 +116,7 @@ public class MainSceneController {
     public void initMapAndControls(Projection projection) {
         logger.trace("begin initialize");
 
-        // set the controls to disabled, this will be changed when the MapView is intialized
+        // set the controls to disabled, this will be changed when the MapView is initialized
         setControlsDisable(true);
 
         // wire the zoom button and connect the slider to the map's zoom
@@ -117,54 +144,12 @@ public class MainSceneController {
      * initializes the event handlers.
      */
     private void setupEventHandlers() {
-        // add an event handler for singleclicks, set the click marker to the new position when it's visible
-        mapView.addEventHandler(MapViewEvent.MAP_CLICKED, event -> {
-            event.consume();
-            final Coordinate newPosition = event.getCoordinate().normalize();
-
-            if (markerClick.getVisible()) {
-                final Coordinate oldPosition = markerClick.getPosition();
-                if (oldPosition != null) {
-                    animateClickMarker(oldPosition, newPosition);
-                } else {
-                    markerClick.setPosition(newPosition);
-                    // adding can only be done after coordinate is set
-                    mapView.addMarker(markerClick);
-                }
-            }
-        });
-
         // add an event handler for MapViewEvent#MAP_EXTENT and set the extent in the map
         mapView.addEventHandler(MapViewEvent.MAP_EXTENT, event -> {
             event.consume();
             mapView.setExtent(event.getExtent());
         });
-
-//        mapView.addEventHandler(MapViewEvent.MAP_POINTER_MOVED, event -> logger.debug("pointer moved to " + event.getCoordinate()));
         logger.trace("map handlers initialized");
-    }
-
-    private void animateClickMarker(Coordinate oldPosition, Coordinate newPosition) {
-        // animate the marker to the new position
-        final Transition transition = new Transition() {
-            private final Double oldPositionLongitude = oldPosition.getLongitude();
-            private final Double oldPositionLatitude = oldPosition.getLatitude();
-            private final double deltaLatitude = newPosition.getLatitude() - oldPositionLatitude;
-            private final double deltaLongitude = newPosition.getLongitude() - oldPositionLongitude;
-
-            {
-                setCycleDuration(Duration.seconds(1.0));
-                setOnFinished(evt -> markerClick.setPosition(newPosition));
-            }
-
-            @Override
-            protected void interpolate(double v) {
-                final double latitude = oldPosition.getLatitude() + v * deltaLatitude;
-                final double longitude = oldPosition.getLongitude() + v * deltaLongitude;
-                markerClick.setPosition(new Coordinate(latitude, longitude));
-            }
-        };
-        transition.play();
     }
 
     /**
@@ -178,7 +163,7 @@ public class MainSceneController {
     }
 
     /**
-     * finishes setup after the mpa is initialzed
+     * finishes setup after the mpa is initialized
      */
     private void afterMapIsInitialized() {
         logger.trace("map initialized");
@@ -192,84 +177,171 @@ public class MainSceneController {
         setControlsDisable(false);
     }
 
-    private void initializeActivity(Track track) {
-        Activity newActivity = new Activity(track);
-        addActivity(newActivity);
-        changeShownActivity(newActivity);
+    private ArrayList<Label> makeRouteDataLabels(Activity activity) {
+        ArrayList<Label> routeDataLabels = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("#.##");
 
-        ArrayList<Label> routDataLabels = null;
-        ArrayList<Label> weatherLabels = null;
+        double totalDistanceKM = Math.round(activity.getTotalDistanceM() / 1000 * 100) / 100.0;
+
+        Label totalDistanceLabel = new Label();
+        Label avgSpeedLabel = new Label();
+        Label totalTimeLabel = new Label();
 
         try {
-            double totalDistanceM = Math.round(newActivity.getTotalDistanceM() * 100) / 100.0;
-            double totalTimeM = Math.round(newActivity.getTotalTimeS() / 60.0 * 100) / 100.0;
-            double avgSpeedKMpS = Math.round(newActivity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
+            // If the GPX file does not have time-data, these function calls will fail:
+            double totalTimeM = Math.round(activity.getTotalTimeS() / 60.0 * 100) / 100.0;
+            double avgSpeedKMpS = Math.round(activity.getAverageSpeedMpS() * 3.6 * 100) / 100.0;
 
-            routDataLabels = new ArrayList<>();
+            if (!metricOn) {
+                totalDistanceKM = totalDistanceKM * 0.0006214 * 1000;
+                totalDistanceKM = Double.parseDouble(df.format(totalDistanceKM));
+                totalDistanceLabel.setText("Total Distance: " + totalDistanceKM + "mi");
 
-            Label totalDistanceLabel = new Label();
-            totalDistanceLabel.setText("Total Distance: " + totalDistanceM + "m");
-            routDataLabels.add(totalDistanceLabel);
+                avgSpeedKMpS = avgSpeedKMpS * 0.6214;
+                avgSpeedKMpS = Double.parseDouble(df.format(avgSpeedKMpS));
+                avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " miles/hr");
+            } else {
+                totalTimeM = Double.parseDouble(df.format(totalTimeM));
+                totalDistanceLabel.setText("Total Distance: " + totalDistanceKM + "km");
+                avgSpeedKMpS = Double.parseDouble(df.format(avgSpeedKMpS));
+                avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/hr");
+            }
 
-            Label totalTimeLabel = new Label();
             totalTimeLabel.setText("Total Duration: " + totalTimeM + " min");
-            routDataLabels.add(totalTimeLabel);
 
-            Label avgSpeedLabel = new Label();
-            avgSpeedLabel.setText("Average Speed: " + avgSpeedKMpS + " km/h");
-            routDataLabels.add(avgSpeedLabel);
+            routeDataLabels.add(totalTimeLabel);
+            routeDataLabels.add(avgSpeedLabel);
 
         } catch (Exception e) {
             logger.trace(e.toString());
         }
+
+        routeDataLabels.add(totalDistanceLabel);
+
+        return routeDataLabels;
+    }
+
+    private ImageView getWeatherImage(Weather weather) {
+        if (weather == null) {
+            return null;
+        }
+        ImageView weatherImage = null;
+
+        try {
+            String weatherImagePath = weather.getImagePath();
+            Image image = new Image(new FileInputStream(weatherImagePath));
+            weatherImage = new ImageView(image);
+            weatherImage.setFitWidth(100);
+            weatherImage.setPreserveRatio(true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return weatherImage;
+    }
+
+    private ArrayList<Label> makeWeatherLabels(Weather weather) {
+        if (weather == null) {
+            return null;
+        }
+
+        ArrayList<Label> weatherLabels = new ArrayList<>();
+        DecimalFormat df = new DecimalFormat("#.##");
+
+        Double temp = weather.getTemperature();
+        Double humidity = weather.getHumidity();
+        Double windSpeed = weather.getWindSpeed();
+        String conditions = weather.getConditions();
+
+        Label tempLabel = new Label();
+        Label humidityLabel = new Label();
+        Label windSpeedLabel = new Label();
+        Label conditionsLabel = new Label();
+
+        if (!metricOn) {
+            temp = ((9.0/5.0) * temp + 32);
+            temp = Double.valueOf(df.format(temp));
+            tempLabel.setText("Temperature: " + temp + "\u00B0F");
+
+            windSpeed = windSpeed * 0.6214;
+            windSpeed = Double.valueOf(df.format(windSpeed));
+            windSpeedLabel.setText("Wind Speed: " + windSpeed + " miles/hr");
+        } else {
+            tempLabel.setText("Temperature: " + temp + "\u00B0C");
+            windSpeedLabel.setText("Wind Speed: " + windSpeed + " km/hr");
+        }
+
+        humidityLabel.setText("Humidity: " + humidity + "%");
+        conditionsLabel.setText("Weather Condition: " + conditions);
+
+        weatherLabels.add(tempLabel);
+        weatherLabels.add(humidityLabel);
+        weatherLabels.add(windSpeedLabel);
+
+        conditionsLabel.setWrapText(true);
+        weatherLabels.add(conditionsLabel);
+
+        return weatherLabels;
+    }
+
+    private void initializeActivity(ArrayList<Waypoint> wayPoints) {
+        Activity newActivity = new Activity(wayPoints);
+        currentActivity = newActivity;
+        addActivity(newActivity);
+        changeShownActivity(newActivity);
+        makeRightPane(newActivity);
+        enableActivityTypeSelection();
+        enableProfileDataInput();
+    }
+
+    private void enableActivityTypeSelection(){
+        List<String> activityNames = ActivityTypeFactory.enumValuesToString();//{"Walking", "Running", "Cycling", "Roller Skating"};
+        if(activityChoiceBox.isDisabled()){
+            activityChoiceBox.getItems().addAll(activityNames);
+        }
+        activityTypeSelection.setDisable(false);
+    }
+
+    private void enableProfileDataInput(){
+        heightTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\"\\\\d{0,2}\\\\.\\\\d{1,2}\"")) {
+                    heightTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        weightTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\"\\\\d{0,2}\\\\.\\\\d{1,2}\"")) {
+                    weightTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        ageTextField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("[0-9]+")) {
+                    ageTextField.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+
+        profileElements.setDisable(false);
+    }
+
+    private void makeRightPane(Activity newActivity) {
+        ArrayList<Label> routeDataLabels = makeRouteDataLabels(newActivity);
+        ArrayList<Label> weatherLabels = makeWeatherLabels(newActivity.getWeather());
+        ImageView weatherImage = getWeatherImage(newActivity.getWeather());
 
         Label separatorLabel = new Label();
         separatorLabel.setText("\n\n");
-
-        ImageView imageView = null;
-        Weather weather = null;
-
-        try {
-            weather = newActivity.getWeather();
-        } catch (Exception e) {
-            logger.trace(e.toString());
-        }
-
-        if (weather != null) {
-            Double temp = weather.getTemperature();
-            Double humidity = weather.getHumidity();
-            Double windSpeed = weather.getWindSpeed();
-
-            weatherLabels = new ArrayList<>();
-
-            Label tempLabel = new Label();
-            tempLabel.setText("Temperature: " + temp + "\u00B0C");
-            weatherLabels.add(tempLabel);
-
-            Label humidityLabel = new Label();
-            humidityLabel.setText("Humidity: " + humidity + "%");
-            weatherLabels.add(humidityLabel);
-
-            Label windSpeedLabel = new Label();
-            windSpeedLabel.setText("Wind Speed: " + windSpeed + "km/h");
-            weatherLabels.add(windSpeedLabel);
-
-            String conditions = weather.getConditions();
-            Label conditionsLabel = new Label();
-            conditionsLabel.setText("Weather Condition: " + conditions);
-            conditionsLabel.setWrapText(true);
-            weatherLabels.add(conditionsLabel);
-
-            try {
-                String weatherImagePath = weather.getImagePath();
-                Image image = new Image(new FileInputStream(weatherImagePath));
-                imageView = new ImageView(image);
-                imageView.setFitWidth(100);
-                imageView.setPreserveRatio(true);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
 
         FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
@@ -288,17 +360,90 @@ public class MainSceneController {
         VBox vBox = new VBox();
         vBox.setPadding(new Insets(0, 0, 0, 10));
 
-        if (routDataLabels != null && weatherLabels != null) {
-            vBox.getChildren().addAll(routDataLabels);
-            vBox.getChildren().add(separatorLabel);
-            vBox.getChildren().addAll(weatherLabels);
-            vBox.getChildren().add(imageView);
+        vBox.getChildren().addAll(routeDataLabels);
+        vBox.getChildren().add(separatorLabel);
 
-            rightSideVBox.getChildren().add(titleBox);
-            rightSideVBox.getChildren().add(vBox);
+        if (weatherLabels != null) {
+            vBox.getChildren().addAll(weatherLabels);
+        }
+        if (weatherImage != null) {
+            vBox.getChildren().add(weatherImage);
         }
 
+        if (!Profile.getInstance().isInitialized() || newActivity.getActivityType() == null) {
+            Button calculateCaloriesBtn = makeCaloriesButton();
+            vBox.getChildren().add(calculateCaloriesBtn);
+        } else {
+            Double calories = newActivity.calculateCalories(Profile.getInstance());
+            Label caloriesLabel = new Label();
+            caloriesLabel.setWrapText(true);
+            if (calories != null) {
+                caloriesLabel.setText("Total calories burned: " + Math.round(calories));
+            } else {
+                caloriesLabel.setText("Cannot calculate calories for this route");
+            }
+            vBox.getChildren().add(caloriesLabel);
+        }
+
+        rightSideVBox.getChildren().add(titleBox);
+        rightSideVBox.getChildren().add(vBox);
+
         borderPane.setRight(rightSideVBox);
+    }
+
+    private Button makeCaloriesButton() {
+        Button calculateCaloriesBtn = new Button("Calculate Calories");
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            calculateCalories();
+                });
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+            calculateCaloriesBtn.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
+                });
+
+        calculateCaloriesBtn.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+            calculateCaloriesBtn.setStyle("-fx-background-color: #d3bbdd;");
+                });
+        calculateCaloriesBtn.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
+        return calculateCaloriesBtn;
+    }
+
+
+    private void addActivityPane() {
+        TitledPane titledPane = new TitledPane();
+        VBox vBox = new VBox();
+
+        if (!activityHistory.isEmpty()) {
+            ArrayList<Label> routeDataLabels = makeRouteDataLabels(activityHistory.get(activityHistory.size()-1));
+            vBox.getChildren().addAll(routeDataLabels);
+
+            int index = activityHistory.size()-1;
+            Button button = new Button("Open");
+
+            button.addEventHandler(MouseEvent.MOUSE_ENTERED, event -> {
+                    button.setStyle("-fx-background-color: white; -fx-font-weight: bold; -fx-font-size: larger");
+                });
+
+            button.addEventHandler(MouseEvent.MOUSE_EXITED, event -> {
+                        button.setStyle("-fx-background-color: #C1BBDD;");
+                    });
+
+            button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                    changeShownActivity(activityHistory.get(index));
+                    makeRightPane(activityHistory.get(index));
+                });
+
+            button.setStyle("-fx-background-color: #C1BBDD; -fx-end-margin: 20");
+            vBox.getChildren().add(button);
+        }
+
+        vBox.setStyle("-fx-background-color: #d3bbdd");
+
+        titledPane.setText("Activity " + activityHistory.size());
+        titledPane.setContent(vBox);
+        titledPane.setStyle("-fx-background-color: #d3bbdd");
+        titledPaneActivities.add(titledPane);
     }
 
     private void addActivity(Activity newActivity) {
@@ -306,6 +451,7 @@ public class MainSceneController {
             activityHistory = new ArrayList<>();
         }
         activityHistory.add(newActivity);
+        addActivityPane();
     }
 
     private void changeShownActivity(Activity newActivity) {
@@ -313,7 +459,7 @@ public class MainSceneController {
 
         /** Make a CoordinateLine for plotting */
         CoordinateLine trackLine = new CoordinateLine(routeData.getCoordinates());
-        trackLine.setColor(Color.ORANGERED).setVisible(true);
+        trackLine.setColor(Color.ORANGERED).setVisible(true).setWidth(4);
 
         if (shownTrackLine != null) {
             mapView.removeCoordinateLine(shownTrackLine);
@@ -326,71 +472,165 @@ public class MainSceneController {
         mapView.setExtent(Extent.forCoordinates(routeExtent));
     }
 
-    private Track getTrackFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
+    private ArrayList<Waypoint> getWayPointsFromFile(FileInputStream gpxFile) throws ParserConfigurationException, IOException, SAXException {
         GPXParser p = new GPXParser();
         GPX gpx = p.parseGPX(gpxFile);
+        HashSet<Route> routes = gpx.getRoutes();
         HashSet<Track> tracks = gpx.getTracks();
 
-        // TODO: Multiple tracks --> trackHistory?
-        if (tracks.size() == 1) {
+        if (routes != null && routes.size() == 1) {
+            Route[] routeArray = routes.toArray(new Route[0]);
+            return routeArray[0].getRoutePoints();
+        } else if (tracks != null && tracks.size() == 1) {
             Track[] trackArray = tracks.toArray(new Track[0]);
-            return trackArray[0];
+            return trackArray[0].getTrackPoints();
         } else {
-            throw new IOException("Please provide a GPX File with exactly one Track");
+            throw new IOException("Please provide a GPX File with exactly one Track or Route");
         }
     }
 
-    @FXML
-    private void openGPXFile() {
+    private void showActivityHistory() {
+        Accordion accordion = new Accordion();
+        accordion.setPrefWidth(200);
+        accordion.getPanes().addAll(titledPaneActivities);
+
+        activityAnchorPane.getChildren().addAll(accordion);
+    }
+
+    private void calculateCalories(){
+        if (!Profile.getInstance().isInitialized()) {
+            profilePrompt();
+            return;
+        }
+        if (currentActivity.getActivityType() == null) {
+            activityTypePrompt();
+            return;
+        }
+        makeRightPane(currentActivity);
+    }
+
+    @FXML private void openGPXFile() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("GPX Files", "*.gpx"));
 
         File file = fileChooser.showOpenDialog(null);
         try {
             FileInputStream gpxFile = new FileInputStream(file);
-            Track track = getTrackFromFile(gpxFile);
-            initializeActivity(track);
+            ArrayList<Waypoint> wayPoints = getWayPointsFromFile(gpxFile);
+            initializeActivity(wayPoints);
         } catch (java.io.FileNotFoundException e) {
-            // TODO: Write the error to the screen such that the user knows something went wrong
             logger.info("ERROR: GPX file not found");
         } catch (Exception e) {
-            // TODO: Write the error to the screen such that the user knows something went wrong
             logger.info("ERROR: " + e.getMessage());
         }
 
     }
+    @FXML private void openActivityHistoryPane() {
+        FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("/Scenes/activityHistoryScene.fxml"));
 
-    public void openProfilePane(ActionEvent event) throws FileNotFoundException {
-        FXMLLoader rightSideLoader = new FXMLLoader(getClass().getResource("/Scenes/rightPane.fxml"));
         try {
-            rightSideVBox = rightSideLoader.load();
+            activityAnchorPane = activityLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Label rightPaneLabel = new Label("Profile");
-        rightPaneLabel.setStyle("-fx-color-label-visible: false; -fx-font-size: large; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 0 0 10 0");
-
-        HBox titleBox = new HBox();
-        titleBox.setStyle("-fx-alignment: center");
-
-        titleBox.getChildren().add(rightPaneLabel);
-        rightSideVBox.getChildren().add(titleBox);
-        borderPane.setRight(rightSideVBox);
+        showActivityHistory();
+        borderPane.setRight(activityAnchorPane);
     }
 
-    public void retractBtnClicked(ActionEvent event) {
+    @FXML private void activityTypePrompt(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/activityTypePrompt.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Provide Activity Type");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML private void profilePrompt(){
+        try {
+            Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Scenes/profilePrompt.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Provide Profile");
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML private void profileConfirmed() {
+        if (heightTextField.getText().equals("")
+                || weightTextField.getText().equals("")
+                || ageTextField.getText().equals("")){
+            return;
+        }
+
+        double height = Double.parseDouble(heightTextField.getText());
+        double weight = Double.parseDouble(weightTextField.getText());
+        int age = Integer.parseInt(ageTextField.getText());
+
+        Profile.getInstance().setWeight(weight);
+        Profile.getInstance().setHeight(height);
+        Profile.getInstance().setAge(age);
+        Profile.getInstance().initialize();
+    }
+    @FXML private void promptOK() {
+        Stage stage = (Stage) okBtn.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML private void retractBtnClicked() {
         rightSideVBox.setPrefSize(0,0);
     }
+    @FXML private void retractBtnEntered() { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
+    @FXML private void GPXBtnEntered() {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void profileBtnEntered() {okBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void activityBtnEntered() { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
 
-    public void retractBtnEntered(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large"); }
-    public void GPXBtnEntered(MouseEvent mouseEvent) {GPXBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    public void profileBtnEntered(MouseEvent mouseEvent) {profileBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
-    public void activityBtnEntered(MouseEvent mouseEvent) { activityBtn.setStyle("-fx-background-color: #d3bbdd; -fx-font-size: x-large");}
+    @FXML private void retractBtnExited() { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
+    @FXML private void GPXBtnExited() { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void profileBtnExited() { okBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void activityBtnExited() {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
 
-    public void retractBtnExited(MouseEvent event) { retractBtn.setStyle("-fx-background-color: #C1BBDD"); }
-    public void GPXBtnExited(MouseEvent mouseEvent) { GPXBtn.setStyle("-fx-background-color: #C1BBDD");}
-    public void profileBtnExited(MouseEvent mouseEvent) { profileBtn.setStyle("-fx-background-color: #C1BBDD");}
-    public void activityBtnExited(MouseEvent mouseEvent) {activityBtn.setStyle("-fx-background-color: #C1BBDD");}
+    @FXML private void metricCheckBoxTicked() {
+        metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+        metricCheckBox.setDisable(true);
+
+        imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+        imperialCheckBox.setDisable(false);
+        imperialCheckBox.setSelected(false);
+
+        metricOn = true;
+        if (currentActivity != null) makeRightPane(currentActivity);
+    }
+    @FXML private void imperialCheckBoxTicked() {
+        imperialLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: bold");
+        imperialCheckBox.setDisable(true);
+
+        metricLabel.setStyle("-fx-text-fill: white; -fx-padding: 5; -fx-font-size: large; -fx-font-weight: normal");
+        metricCheckBox.setDisable(false);
+        metricCheckBox.setSelected(false);
+
+        metricOn = false;
+        if (currentActivity != null) makeRightPane(currentActivity);
+    }
+
+    @FXML private void confirmProfileBtnEntered() {
+        confirmProfileBtn.setStyle("-fx-background-color: white;  -fx-font-weight: bold; -fx-font-size: larger");
+    }
+
+    @FXML private void activityTypeSelected() {
+        currentActivity.setActivityType(activityChoiceBox.getValue());
+    }
+
+    @FXML private void confirmProfileBtnExited() {
+        confirmProfileBtn.setStyle("-fx-background-color: #d3bbdd");
+    }
 
 }

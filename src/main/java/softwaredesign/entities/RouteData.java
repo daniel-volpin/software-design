@@ -1,8 +1,6 @@
 package softwaredesign.entities;
 
 import com.sothawo.mapjfx.Coordinate;
-import com.sothawo.mapjfx.Extent;
-import org.alternativevision.gpx.beans.Track;
 import org.alternativevision.gpx.beans.Waypoint;
 import softwaredesign.helperclasses.Calc;
 
@@ -15,8 +13,7 @@ public class RouteData {
     private final Double[] longitudes;
     private final Double[] elevations;
 
-    public RouteData(Track track) {
-        ArrayList<Waypoint> wayPoints = track.getTrackPoints();
+    public RouteData(ArrayList<Waypoint> wayPoints) {
         int nrWayPoints = wayPoints.size();
 
         timeStamps = new Date[nrWayPoints];
@@ -34,31 +31,6 @@ public class RouteData {
                 elevations[i] = elevations[i-1];
             }
         }
-    }
-
-    public Double[] getVelocities() {
-        int nrWayPoints = timeStamps.length;
-        Double[] velocities = new Double[nrWayPoints-1];
-        Double[] distances = getDistances();
-
-        // Calculating velocities between every wayPoint seems to yield very volatile values (from 0.1 to 40.2 km/h)
-        // Solution: apply a 3-waypoint moving average; velocity[i] = avg velocity from i-1 to i+1
-        for (int i = 0; i < nrWayPoints - 1; i++) {
-            int from = Math.max(i - 1, 0);
-            int to = Math.min(i + 1, nrWayPoints - 1);
-
-            long timeDifferenceMilliSec = timeStamps[to].getTime() - timeStamps[from].getTime();
-            Double timeDifferenceSec = timeDifferenceMilliSec / 1000.0;
-
-            Double threePointDistance = 0.0;
-            for (int j = from; j < to; j++) {
-                threePointDistance += distances[j];
-            }
-            double velocityMpS = threePointDistance / timeDifferenceSec;  // in Meters per Second
-            velocities[i] = velocityMpS * 3.6;                            // Convert m/s to km/h
-        }
-
-        return velocities;
     }
 
     public Double[] getDistances() {
